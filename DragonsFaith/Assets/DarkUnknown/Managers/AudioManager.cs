@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -203,3 +204,4 @@ public class AudioManager : Singleton<AudioManager>
         _backgroundMusic.PlayOneShot(_soundBank.EnterDoor);
     }
 }
+*/

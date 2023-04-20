@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -314,9 +315,9 @@ public class RoomLogic : MonoBehaviour
     private IEnumerator SpawnEnemies(int number)
     {
         /*int spiderCounter = 0;
-        int spiderMax = (int) (number * spiderPercentage);*/
+        int spiderMax = (int) (number * spiderPercentage);#1#
         /*print("spiders: " + spiderMax);
-        print("skeletons" + (_numOfEnemies-spiderMax));*/
+        print("skeletons" + (_numOfEnemies-spiderMax));#1#
         
         //while (_availablePlaces.Count!=0) // uncomment to infinitely spawn enemies until no places are left
         for (int i = 0; i < number; i++) // uncomment to spawn a fixed amount of enemies
@@ -338,7 +339,7 @@ public class RoomLogic : MonoBehaviour
             {
                 i--;
             }
-            */
+            #1#
         }
     }
 
@@ -364,7 +365,7 @@ public class RoomLogic : MonoBehaviour
             yield return new WaitForSeconds(_spawnTime);
             _enemies.Add(_enemySpawner.Spawn(crystalController));
         }
-    }*/
+    }#1#
 
     public void DestroyAllEnemies()
     {
@@ -418,3 +419,4 @@ public class RoomLogic : MonoBehaviour
         return _roomType;
     }
 }
+*/

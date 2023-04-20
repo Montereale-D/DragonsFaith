@@ -1,3 +1,4 @@
+/*
 using System;
 using Menu;
 using UnityEngine;
@@ -16,3 +17,4 @@ public class RebindPanelScript : MonoBehaviour
         Debug.Log("disabled");
     }
 }
+*/

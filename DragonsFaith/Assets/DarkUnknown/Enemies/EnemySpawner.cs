@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -60,5 +60,5 @@ public class EnemySpawner : MonoBehaviour
             Instantiate(enemyPrefab, randomPlace, Quaternion.identity);
             _availablePlaces.Remove(randomPlace);
         }
-    }*/
-}
+    }#1#
+}*/

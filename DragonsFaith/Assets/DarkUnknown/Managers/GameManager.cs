@@ -1,3 +1,4 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -107,3 +108,4 @@ public class GameManager : Singleton<GameManager>
         _playerRespawned = value;
     }
 }
+*/

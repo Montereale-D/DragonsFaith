@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using UnityEngine;
@@ -54,7 +55,7 @@ public class UIController : Singleton<UIController>
         /*foreach (var letter in _availableLetters)
         {
             Resources.UnloadAsset(letter);
-        }*/
+        }#1#
     }
 
     public void SetMaxHealth(float maxHealth, float currentHealth)
@@ -102,7 +103,7 @@ public class UIController : Singleton<UIController>
     {
         if (showing) healthPotionSpawned.enabled = true;
         else healthPotionSpawned.enabled = false;
-    }*/
+    }#1#
     public void SetSpeedMultiplierText(string text)
     {
         _speedMultiplierText.text = text;
@@ -185,7 +186,7 @@ public class UIController : Singleton<UIController>
             btn.MyIcon.color = _emptyActionButton;
             btn.MyUsable = null;
         }
-    }*/
+    }#1#
 
     private void SetKeyActionSlot(ActionButton btn, string action)
     {
@@ -201,3 +202,4 @@ public class UIController : Singleton<UIController>
         Tooltip.Instance.GetComponent<Tooltip>().StartOpen();
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -123,3 +124,4 @@ public class PauseMenu : MonoBehaviour
         AudioManager.Instance.SetEnemyVolume(value);
     }
 }
+*/
