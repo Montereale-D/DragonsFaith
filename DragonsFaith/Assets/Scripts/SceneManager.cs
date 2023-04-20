@@ -4,27 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class SceneManager : NetworkBehaviour
 {
-    /// INFO: You can remove the #if UNITY_EDITOR code segment and make SceneName public,
-    /// but this code assures if the scene name changes you won't have to remember to
-    /// manually update it.
-#if UNITY_EDITOR
-    public UnityEditor.SceneAsset sceneAsset;
-
-    private void OnValidate()
-    {
-        if (sceneAsset != null)
-        {
-            _mSceneName = sceneAsset.name;
-        }
-    }
-#endif
-
-    private string _mSceneName;
-    private Scene _mLoadedScene;
-
+    private Scene _loadedScene;
     public override void OnNetworkSpawn()
     {
-        if (IsServer && !string.IsNullOrEmpty(_mSceneName))
+        DontDestroyOnLoad(this);
+        if (IsServer /*&& !string.IsNullOrEmpty(_mSceneName)*/)
         {
             NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
         }
@@ -32,17 +16,19 @@ public class SceneManager : NetworkBehaviour
         base.OnNetworkSpawn();
     }
 
-    public bool SceneIsLoaded => _mLoadedScene.IsValid() && _mLoadedScene.isLoaded;
+    public bool SceneIsLoaded => _loadedScene.IsValid() && _loadedScene.isLoaded;
 
-    public void LoadSceneSingle()
+    public void LoadSceneSingle(string sceneName)
     {
-        var status = NetworkManager.SceneManager.LoadScene(_mSceneName, LoadSceneMode.Single);
+        if (!IsHost) return;
+        
+        var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         CheckStatus(status);
     }
 
-    public void LoadSceneAdditive()
+    public void LoadSceneAdditive(string sceneName)
     {
-        var status = NetworkManager.SceneManager.LoadScene(_mSceneName, LoadSceneMode.Additive);
+        var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
         CheckStatus(status);
     }
 
@@ -51,7 +37,7 @@ public class SceneManager : NetworkBehaviour
         var sceneEventAction = isLoading ? "load" : "unload";
         if (status != SceneEventProgressStatus.Started)
         {
-            Debug.LogWarning($"Failed to {sceneEventAction} {_mSceneName} with" +
+            Debug.LogWarning($"Failed to {sceneEventAction} with" +
                              $" a {nameof(SceneEventProgressStatus)}: {status}");
         }
     }
@@ -71,7 +57,7 @@ public class SceneManager : NetworkBehaviour
                 {
                     // *** IMPORTANT ***
                     // Keep track of the loaded scene, you need this to unload it
-                    _mLoadedScene = sceneEvent.Scene;
+                    _loadedScene = sceneEvent.Scene;
                 }
 
                 Debug.Log($"Loaded the {sceneEvent.SceneName} scene on " +
@@ -105,12 +91,12 @@ public class SceneManager : NetworkBehaviour
     {
         // Assure only the server calls this when the NetworkObject is
         // spawned and the scene is loaded.
-        if (!IsServer || !IsSpawned || !_mLoadedScene.IsValid() || !_mLoadedScene.isLoaded)
+        if (!IsServer || !IsSpawned || !_loadedScene.IsValid() || !_loadedScene.isLoaded)
         {
             return;
         }
         
-        var status = NetworkManager.SceneManager.UnloadScene(_mLoadedScene);
+        var status = NetworkManager.SceneManager.UnloadScene(_loadedScene);
         CheckStatus(status, false);
     }
 }

@@ -1,0 +1,7 @@
+1- Build and run (check the scene included)
+2- Run on Editor (starting from the Lobby scene)
+3- One player must click on host and on host ready
+4- One player must click on client and on client ready
+5- Have fun!
+
+Note: follow the steps, I have not tested all the possible combination and the cancel button reliability.
