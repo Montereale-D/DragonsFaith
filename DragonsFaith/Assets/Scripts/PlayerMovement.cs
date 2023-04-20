@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    [SerializeField] private float speed = 3f;
     private void Update()
     {
-        if (!IsOwner) return;
+        if (!IsLocalPlayer) return;
         
         var moveDir = new Vector3(0, 0, 0);
-        var speed = 3f;
 
         if (Input.GetKey(KeyCode.W)) moveDir.y = +1f;
         if (Input.GetKey(KeyCode.S)) moveDir.y = -1f;
