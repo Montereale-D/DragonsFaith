@@ -1268,8 +1268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4d9f1def0cc43498496f8b133d421c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SceneAsset: {fileID: 102900000, guid: 881d656fc12335d459d56628d128e821, type: 3}
-  m_SceneName: Hub
+  sceneAsset: {fileID: 102900000, guid: 881d656fc12335d459d56628d128e821, type: 3}
+  mSceneName: Hub
 --- !u!114 &1243585075
 MonoBehaviour:
   m_ObjectHideFlags: 0

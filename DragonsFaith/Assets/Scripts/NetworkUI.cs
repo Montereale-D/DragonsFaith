@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using TMPro;
+﻿using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class is used to handle connections in the lobby screen
+/// </summary>
 public class NetworkUI : NetworkBehaviour
 {
     [SerializeField] private Button hostButton;
@@ -29,43 +30,22 @@ public class NetworkUI : NetworkBehaviour
         cancelButton.onClick.AddListener(OnCancelButtonClick);
     }
 
-    private void OnCancelButtonClick()
-    {
-        hostButton.image.color = offButtonColor;
-        clientButton.image.color = offButtonColor;
-        logText.text = "Log: shutted down";
-
-        if (IsOwner)
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
-            HostDisconnectedClientRpc();
-        }
-        
-        hostButton.enabled = true;
-        clientButton.enabled = true;
-        clientReadyButton.gameObject.SetActive(false);
-        hostReadyButton.gameObject.SetActive(false);
-
-        clientReadyButton.onClick.RemoveAllListeners();
-        hostReadyButton.onClick.RemoveAllListeners();
-
-        NetworkManager.Singleton.Shutdown();
-    }
-
     private void OnClientButtonClick()
     {
         var confirmed = NetworkManager.Singleton.StartClient();
         if (!confirmed) return;
-        
+
+        //Update UI
         clientButton.image.color = onButtonColor;
         logText.text = "Log: you are a client";
-
         hostButton.enabled = false;
         clientButton.enabled = false;
+        
+        //Make ready buttons appear
         clientReadyButton.gameObject.SetActive(true);
         hostReadyButton.gameObject.SetActive(true);
-        
+
+        //Only client can click on ClientReadyButton
         clientReadyButton.onClick.AddListener(OnClientReadyButtonClick);
     }
 
@@ -73,21 +53,53 @@ public class NetworkUI : NetworkBehaviour
     {
         var confirmed = NetworkManager.Singleton.StartHost();
         if (!confirmed) return;
-        
-        logText.text = "Log: you are a host";
 
+        //Register to client connection events
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-
+        
+        //Update UI
         hostButton.image.color = onButtonColor;
-
+        logText.text = "Log: you are a host";
         hostButton.enabled = false;
         clientButton.enabled = false;
+        
+        //Make ready buttons appear
         clientReadyButton.gameObject.SetActive(true);
         hostReadyButton.gameObject.SetActive(true);
-        
+
+        //Only host can click on HostReadyButton
         hostReadyButton.onClick.AddListener(OnHostReadyButtonClick);
+    }
+    
+    private void OnCancelButtonClick()
+    {
+        if (IsHost)
+        {
+            //Unregister to client connection events
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+            
+            //Warn client
+            HostDisconnectedClientRpc();
+        }
         
+        
+        clientReadyButton.onClick.RemoveAllListeners();
+        hostReadyButton.onClick.RemoveAllListeners();
+        
+        //Update UI
+        hostButton.image.color = offButtonColor;
+        clientButton.image.color = offButtonColor;
+        logText.text = "Log: shut down";
+        hostButton.enabled = true;
+        clientButton.enabled = true;
+        
+        //Make ready buttons disappear
+        clientReadyButton.gameObject.SetActive(false);
+        hostReadyButton.gameObject.SetActive(false);
+
+        NetworkManager.Singleton.Shutdown();
     }
 
     private void OnHostReadyButtonClick()
@@ -104,11 +116,9 @@ public class NetworkUI : NetworkBehaviour
             hostReadyButton.image.color = onButtonColor;
             HostReadyClientRpc();
 
-            if (_isClientReady)
-            {
-                logText.text = "Log: NEXT SCENE";
-                sceneManager.LoadSceneSingle();
-            }
+            if (!_isClientReady) return;
+            
+            OnBothPlayersReady();
         }
     }
 
@@ -132,29 +142,36 @@ public class NetworkUI : NetworkBehaviour
     {
         logText.text = "Log: Client connected";
     }
+
     private void OnClientDisconnected(ulong clientId)
     {
         logText.text = "Log: Client disconnected";
+    }
+    
+    private void OnBothPlayersReady()
+    {
+        logText.text = "Log: NEXT SCENE";
+        sceneManager.LoadSceneSingle();
     }
 
     [ClientRpc]
     private void HostDisconnectedClientRpc()
     {
-        if (IsOwner) return;
+        if (IsHost) return;
         logText.text = "Log: ATTENTION: Host disconnected";
     }
-    
+
     [ClientRpc]
     private void HostReadyClientRpc()
     {
-        if (IsOwner) return;
+        if (IsHost) return;
         hostReadyButton.image.color = onButtonColor;
     }
-    
+
     [ClientRpc]
     private void HostNotReadyClientRpc()
     {
-        if (IsOwner) return;
+        if (IsHost) return;
         hostReadyButton.image.color = offButtonColor;
     }
 
@@ -167,10 +184,10 @@ public class NetworkUI : NetworkBehaviour
             _isClientReady = true;
 
             if (_isReady)
-                logText.text = "Log: NEXT SCENE";
+                OnBothPlayersReady();
         }
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     private void ClientNotReadyServerRpc()
     {
