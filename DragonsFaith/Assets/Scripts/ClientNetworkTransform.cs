@@ -1,5 +1,6 @@
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [DisallowMultipleComponent]
 public class ClientNetworkTransform : NetworkTransform
