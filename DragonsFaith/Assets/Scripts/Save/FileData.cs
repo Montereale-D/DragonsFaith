@@ -55,5 +55,10 @@ namespace Save
                 Debug.LogError("Error when trying to save in " + fullPath + "\n" + e);
             }
         }
+
+        public void NewGame(GameData data)
+        {
+            Save(data);
+        }
     }
 }

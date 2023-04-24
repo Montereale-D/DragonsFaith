@@ -1,20 +1,23 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerMovement : NetworkBehaviour
+namespace Player
 {
-    [SerializeField] private float speed = 3f;
-    private void Update()
+    public class PlayerMovement : NetworkBehaviour
     {
-        if (!IsLocalPlayer) return;
+        [SerializeField] private float speed = 3f;
+        private void Update()
+        {
+            if (!IsLocalPlayer) return;
         
-        var moveDir = new Vector3(0, 0, 0);
+            var moveDir = new Vector3(0, 0, 0);
 
-        if (Input.GetKey(KeyCode.W)) moveDir.y = +1f;
-        if (Input.GetKey(KeyCode.S)) moveDir.y = -1f;
-        if (Input.GetKey(KeyCode.A)) moveDir.x = -1f;
-        if (Input.GetKey(KeyCode.D)) moveDir.x = +1f;
+            if (Input.GetKey(KeyCode.W)) moveDir.y = +1f;
+            if (Input.GetKey(KeyCode.S)) moveDir.y = -1f;
+            if (Input.GetKey(KeyCode.A)) moveDir.x = -1f;
+            if (Input.GetKey(KeyCode.D)) moveDir.x = +1f;
 
-        transform.position += moveDir * (speed * Time.deltaTime);
+            transform.position += moveDir * (speed * Time.deltaTime);
+        }
     }
 }

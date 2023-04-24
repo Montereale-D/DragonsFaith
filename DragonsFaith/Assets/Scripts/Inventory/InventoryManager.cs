@@ -1,13 +1,13 @@
 using Save;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Inventory
 {
-    public class InventoryManager : MonoBehaviour, IGameData
+    public class InventoryManager : NetworkBehaviour, IGameData
     {
         public InventorySlot[] inventorySlots;
-        [FormerlySerializedAs("itemGenerator")] public ItemSyllabus itemSyllabus;
+        public ItemSyllabus itemSyllabus;
         public GameObject itemGameObject;
         public int maxStackable = 5;
 
@@ -25,7 +25,7 @@ namespace Inventory
                     return true;
                 }
 
-                if ( /*itemInSlot != null && */itemInSlot.item == newItem && itemInSlot.item.stackable &&
+                if (itemInSlot.item == newItem && itemInSlot.item.stackable &&
                                                itemInSlot.count < maxStackable)
                 {
                     itemInSlot.count++;
@@ -80,7 +80,7 @@ namespace Inventory
         public void LoadData(GameData data)
         {
             CleanupInventory();
-            foreach (var itemData in data.GetAllItemsData())
+            foreach (var itemData in data.GetAllItemsData(GetPlayerType()))
             {
                 SpawnNewItem(itemSyllabus.SearchItem(itemData.itemId), inventorySlots[itemData.slotNumber], itemData.quantity);
             }
@@ -88,7 +88,7 @@ namespace Inventory
 
         public void SaveData(ref GameData data)
         {
-            data.CleanupItemData();
+            data.CleanupItemData(GetPlayerType());
             for (var i = 0; i < inventorySlots.Length; i++)
             {
                 var slot = inventorySlots[i];
@@ -97,7 +97,7 @@ namespace Inventory
                 if (itemInSlot != null)
                 {
                     Debug.Log("AddItemData");
-                    data.AddItemData(itemInSlot.item, i, itemInSlot.count);
+                    data.AddItemData(GetPlayerType(), itemInSlot.item, i, itemInSlot.count);
                 }
             }
         }
@@ -110,6 +110,11 @@ namespace Inventory
                 if (inventoryItem == null) continue;
                 Destroy(inventoryItem.gameObject);
             }
+        }
+        
+        private GameData.PlayerType GetPlayerType()
+        {
+            return IsHost ? GameData.PlayerType.Host : GameData.PlayerType.Client;
         }
     }
 }
