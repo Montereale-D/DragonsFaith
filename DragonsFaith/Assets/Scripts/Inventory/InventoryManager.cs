@@ -13,6 +13,19 @@ namespace Inventory
 
         private InventorySlot _prevSelectedSlot;
 
+        public static InventoryManager Instance { get; private set; }
+        private void Awake() 
+        { 
+            if (Instance != null && Instance != this) 
+            { 
+                Destroy(this); 
+            } 
+            else 
+            { 
+                Instance = this; 
+            } 
+        }
+        
         public bool AddItem(Item newItem)
         {
             foreach (var slot in inventorySlots)
