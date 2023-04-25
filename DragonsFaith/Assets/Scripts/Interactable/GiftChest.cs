@@ -2,60 +2,82 @@ using Inventory;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
-public class GiftChest : NetworkBehaviour
+namespace Interactable
 {
-    [SerializeField] private Item item;
-    [SerializeField] private Sprite openSprite;
-    [SerializeField] private Sprite closeSprite;
-    private SpriteRenderer _spriteRenderer;
-    private Collider2D _collider;
-
-    private readonly NetworkVariable<bool> _isOpen = new(false, NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
-
-    private void Awake()
+    [RequireComponent(typeof(Collider2D))]
+    public class GiftChest : NetworkBehaviour
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<Collider2D>();
-        _collider.isTrigger = true;
-    }
+        [SerializeField] [Tooltip("Item inside the chest")]
+        private Item item;
 
-    public override void OnNetworkSpawn()
-    {
-        _isOpen.OnValueChanged += (_, newValue) =>
+        [SerializeField] private Sprite openSprite;
+        [SerializeField] private Sprite closeSprite;
+        private SpriteRenderer _spriteRenderer;
+        private Collider2D _collider;
+
+        //synchronize state between host and client
+        private readonly NetworkVariable<bool> _isOpen = new(false, NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner);
+
+        private void Awake()
         {
-            _spriteRenderer.sprite = newValue ? openSprite : closeSprite;
-            _collider.enabled = !newValue;
-        };
-    }
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _collider = GetComponent<Collider2D>();
 
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        if (!col.gameObject.GetComponent<NetworkObject>().IsOwner) return;
-        
-        if (!_isOpen.Value)
-        {
-            if(!InventoryManager.Instance.AddItem(item))
-            {
-                Debug.Log("No space in the inventory!");
-                return;
-            }
-            
-            Debug.Log("Get item");
-            if (IsHost)
-                _isOpen.Value = true;
-            else 
-                UpdateChestStatusServerRpc(true);
-            
+            //ensure isTrigger
+            _collider.isTrigger = true;
         }
-    }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void UpdateChestStatusServerRpc(bool b)
-    {
-        if (!IsHost) return;
+        public override void OnNetworkSpawn()
+        {
+            //subscribe to status change event
+            _isOpen.OnValueChanged += (_, newValue) =>
+            {
+                _spriteRenderer.sprite = newValue ? openSprite : closeSprite;
 
-        _isOpen.Value = b;
+                //disable collider, no more needed
+                _collider.enabled = !newValue;
+            };
+        }
+
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            //check if the player is mine
+            if (!col.gameObject.GetComponent<NetworkObject>().IsOwner) return;
+
+            if (!_isOpen.Value)
+            {
+                //try to add item to the inventory
+                if (!InventoryManager.Instance.AddItem(item))
+                {
+                    Debug.Log("No space in the inventory!");
+                    return;
+                }
+
+                Debug.Log("Get item");
+                if (IsHost)
+                {
+                    //direct change
+                    _isOpen.Value = true;
+                }
+                else
+                {
+                    //ask host to change
+                    UpdateChestStatusServerRpc(true);
+                }
+            }
+        }
+
+        //Server receive a change status request -> client get the item
+        [ServerRpc(RequireOwnership = false)]
+        private void UpdateChestStatusServerRpc(bool b)
+        {
+            if (!IsHost) return;
+
+            if (_isOpen.Value != b)
+            {
+                _isOpen.Value = b;
+            }
+        }
     }
 }

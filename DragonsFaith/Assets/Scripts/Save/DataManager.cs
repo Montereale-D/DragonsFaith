@@ -25,14 +25,15 @@ namespace Save
         private void Start()
         {
             _dataObjects = FindDataObjects();
-            //if (IsHost) 
             _fileData = new FileData(Application.persistentDataPath, FileName);
         }
 
-        private List<IGameData> FindDataObjects()
+        /// <summary>
+        /// Get all game objects that use IGameData 
+        /// </summary>
+        private static List<IGameData> FindDataObjects()
         {
-            IEnumerable<IGameData> dataGameObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameData>();
-
+            var dataGameObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameData>();
             return new List<IGameData>(dataGameObjects);
         }
 
@@ -70,6 +71,7 @@ namespace Save
             if (_gameData == null)
                 _gameData = new GameData();
 
+            //save data for each object
             foreach (var dataObject in _dataObjects)
             {
                 dataObject.SaveData(ref _gameData);
@@ -77,17 +79,24 @@ namespace Save
 
             if (IsHost)
             {
+                //write save on local file
                 _fileData.Save(_gameData);
+                
+                //notify client
                 SaveDataClientRpc();
             }
             else
+            {
+                //ask host to save
                 SavePlayerDataServerRpc(_gameData);
+            }
         }
 
         private void LoadGame()
         {
             if (!IsHost) return;
 
+            //load save from local file
             _gameData = _fileData.Load();
 
             if (_gameData == null)
@@ -96,8 +105,10 @@ namespace Save
                 NewGame();
             }
 
+            //send game data to client
             LoadDataClientRpc(_gameData);
             
+            //load data for each object
             foreach (var dataObject in _dataObjects)
             {
                 dataObject.LoadData(_gameData);
@@ -122,6 +133,7 @@ namespace Save
                 Debug.Log("[CLIENT RPC] Load data request from server");
                 _gameData = gameData;
                 
+                //load data for each object
                 foreach (var dataObject in _dataObjects)
                 {
                     dataObject.LoadData(_gameData);

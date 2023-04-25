@@ -55,7 +55,6 @@ namespace Save
 
                 for (var n = 0; n < length; ++n)
                 {
-                    //serializer.SerializeValue(ref array[n]);
                     array[n].NetworkSerialize(serializer);
                 }
                 
@@ -112,6 +111,9 @@ namespace Save
             clientData = new PlayerData(PlayerType.Client, new List<ItemData>());
         }
 
+        /// <summary>
+        /// Add an item to the tmp file data
+        /// </summary>
         public void AddItemData(PlayerType player, Item item, int slotNumber, int quantity)
         {
             if(player == PlayerType.Host)
@@ -121,6 +123,9 @@ namespace Save
                 
         }
 
+        /// <summary>
+        /// Overwrite inventory tmp file data
+        /// </summary>
         public void UpdateInventoryData(PlayerType player, IEnumerable<ItemData> inventory)
         {
             if(player == PlayerType.Host)
@@ -129,6 +134,9 @@ namespace Save
                 clientData.itemDataList = new List<ItemData>(inventory);
         }
 
+        /// <summary>
+        /// Clean up inventory tmp file data
+        /// </summary>
         public void CleanupItemData(PlayerType player)
         {
             if(player == PlayerType.Host)
@@ -137,6 +145,9 @@ namespace Save
                 clientData.itemDataList = new List<ItemData>();
         }
 
+        /// <summary>
+        /// Get all items from tmp file data
+        /// </summary>
         public List<ItemData> GetAllItemsData(PlayerType player)
         {
             return player == PlayerType.Host ? hostData.itemDataList : clientData.itemDataList;

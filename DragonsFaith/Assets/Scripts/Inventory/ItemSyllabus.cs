@@ -3,10 +3,13 @@ using System.Linq;
 
 namespace Inventory
 {
+    /// <summary>
+    /// Utility class used as a catalogue for items
+    /// </summary>
     public class ItemSyllabus : MonoBehaviour
     {
         
-        public Item[] itemList;
+         [SerializeField] private Item[] itemList;
 
         public static ItemSyllabus Instance { get; private set; }
         private void Awake() 
@@ -20,6 +23,10 @@ namespace Inventory
                 Instance = this; 
             } 
         }
+        
+        /// <summary>
+        /// Get an item
+        /// </summary>
         public Item SearchItem(string idOrName)
         {
             var item = itemList.First(item => (item.id == idOrName) || (item.name == idOrName));

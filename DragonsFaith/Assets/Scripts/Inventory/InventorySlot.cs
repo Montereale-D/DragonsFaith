@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace Inventory
 {
+    /// <summary>
+    /// Represent a single slot in an inventory
+    /// </summary>
     public class InventorySlot : MonoBehaviour, IDropHandler
     {
         public Image image;
@@ -17,10 +20,11 @@ namespace Inventory
 
         public void OnDrop(PointerEventData eventData)
         {
+            //if an item is dropped here and it is empty, set this slot as parent of item
             if (transform.childCount == 0)
             {
                 var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
-                inventoryItem.parentAfterDrag = transform;
+                inventoryItem.UpdateParent(transform);
             }
         }
 
@@ -34,16 +38,19 @@ namespace Inventory
             image.color = onDeselectColor;
         }
 
+        /// <summary>
+        /// Notify this slot that the item has been clicked
+        /// </summary>
         public void OnItemClick(InventoryItem inventoryItem)
         {
-            Debug.Log("Click on " + inventoryItem.item.itemName);
-            //tshow info
-            inventoryManager.OnSelectedChange(this);
+            inventoryManager.OnItemSelected(this, inventoryItem);
         }
 
+        /// <summary>
+        /// Notify this slot that the item has been used
+        /// </summary>
         public void OnItemUse(InventoryItem inventoryItem)
         {
-            Debug.Log("Double click on " + inventoryItem.item.itemName);
             inventoryManager.OnItemUse(this, inventoryItem);
         }
     }

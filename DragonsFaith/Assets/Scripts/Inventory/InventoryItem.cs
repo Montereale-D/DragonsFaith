@@ -1,19 +1,24 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Inventory
 {
+    /// <summary>
+    /// Represent an item (icon) inside a slot. Contains a reference to the item and the quantity (in that slot).
+    /// </summary>
     public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 
     {
-        [HideInInspector] public Item item;
-        [HideInInspector] public int count = 1;
         public Image image;
         public Text countText;
-        [HideInInspector] public Transform parentAfterDrag;
+
+        [HideInInspector] public Item item;
+        [HideInInspector] public int count = 1;
+        private Transform _parentAfterDrag;
+
+        private IEnumerator _coroutineOnClick;
 
         public void SetItem(Item newItem, int quantity)
         {
@@ -23,43 +28,54 @@ namespace Inventory
             UpdateCount();
         }
 
+        //Update the text containing the number of this item in that slot
         public void UpdateCount()
         {
             countText.text = count.ToString();
+
+            //show number only if there is more than one item in that slot
             countText.gameObject.SetActive(count > 1);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            //save reference to parent and set parent to the topmost transform
             image.raycastTarget = false;
-            parentAfterDrag = transform.parent;
+            _parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            //update item image position according to mouse position
             transform.position = Input.mousePosition;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            //set the new parent according to the new parent
             image.raycastTarget = true;
-            transform.SetParent(parentAfterDrag);
+            transform.SetParent(_parentAfterDrag);
         }
 
-        private IEnumerator _coroutine;
+        public void UpdateParent(Transform parentTransform)
+        {
+            _parentAfterDrag = parentTransform;
+        }
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.clickCount == 2)
             {
-                if (_coroutine != null) StopCoroutine(_coroutine);
+                //if one click action is waiting, stop it
+                if (_coroutineOnClick != null) StopCoroutine(_coroutineOnClick);
                 DoubleClickAction();
             }
             else if (eventData.clickCount == 1)
             {
-                _coroutine = OneClickAction();
-                StartCoroutine(_coroutine);
+                //wait, maybe is a double click
+                _coroutineOnClick = OneClickAction();
+                StartCoroutine(_coroutineOnClick);
             }
         }
 
@@ -67,12 +83,17 @@ namespace Inventory
         {
             yield return new WaitForSeconds(0.35f);
             GetComponentInParent<InventorySlot>().OnItemClick(this);
-            _coroutine = null;
+            _coroutineOnClick = null;
         }
 
         private void DoubleClickAction()
         {
             GetComponentInParent<InventorySlot>().OnItemUse(this);
+        }
+
+        public override string ToString()
+        {
+            return count + " X " + item;
         }
     }
 }

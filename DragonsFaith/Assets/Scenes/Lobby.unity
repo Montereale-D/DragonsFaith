@@ -5005,8 +5005,7 @@ MonoBehaviour:
   - {fileID: 1480581144}
   - {fileID: 869647310}
   - {fileID: 849321756}
-  itemSyllabus: {fileID: 984471532}
-  itemGameObject: {fileID: 4163214210657359685, guid: 37e6f7731c89daa41b8c74e48157ff05, type: 3}
+  inventoryItemPrefab: {fileID: 4163214210657359685, guid: 37e6f7731c89daa41b8c74e48157ff05, type: 3}
   maxStackable: 5
 --- !u!4 &1134787680
 Transform:

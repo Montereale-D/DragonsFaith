@@ -7,14 +7,23 @@ namespace Inventory
     public class Item : ScriptableObject
     {
         public string itemName = "item name";
+
+        [Tooltip("Readme -> how to generate an id")]
         public string id;
-        public TileBase tile;
-        public Sprite image;
+
         public ItemType type;
         public ActionType action;
         public bool consumable = true;
-        public Vector2Int range = new Vector2Int(5, 4);
         public bool stackable = true;
+
+        public TileBase tile;
+        public Sprite image;
+
+        public override string ToString()
+        {
+            return itemName + " (" + id + "): [type: " + type + ", action: " + action + ", consumable: " + consumable +
+                   ", stackable: " + stackable + "]";
+        }
 
         [ContextMenu("Generate guid")]
         private void GenerateGuid()
@@ -25,11 +34,16 @@ namespace Inventory
 
     public enum ItemType
     {
-        Items, Weapons, Armory
+        Items,
+        Weapons,
+        Armory
     }
 
     public enum ActionType
     {
-        Skill, Melee, Ranged, Heal
+        Skill,
+        Melee,
+        Ranged,
+        Heal
     }
 }
