@@ -34,6 +34,7 @@ public class NetworkUI : NetworkBehaviour
         cancelButton.onClick.AddListener(OnCancelButtonClick);
     }
 
+
     private void OnClientButtonClick()
     {
         var confirmed = NetworkManager.Singleton.StartClient();
