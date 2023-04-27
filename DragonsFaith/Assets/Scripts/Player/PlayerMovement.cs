@@ -1,4 +1,6 @@
-﻿using Unity.Netcode;
+﻿using System;
+using Save;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Player
@@ -6,6 +8,24 @@ namespace Player
     public class PlayerMovement : NetworkBehaviour
     {
         [SerializeField] private float speed = 3f;
+
+        public void ForcePosition(Vector3 position)
+        {
+            if (!IsOwner) return;
+
+            transform.position = position;
+        }
+
+        /*private void Start()
+        {
+            var spawnPointer = FindObjectOfType<SpawnPointer>();
+            if (!spawnPointer) return;
+            
+            var playerType = IsHost ? GameData.PlayerType.Host : GameData.PlayerType.Client;
+            var position = spawnPointer.GetSpawnPoint(playerType);
+            transform.position = position;
+        }*/
+
         private void Update()
         {
             if (!IsLocalPlayer) return;
