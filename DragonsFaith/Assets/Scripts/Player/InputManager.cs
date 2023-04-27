@@ -1,6 +1,5 @@
-/*
 using System.Linq;
-using Menu;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,4 +42,3 @@ public class InputManager : Singleton<InputManager>
         MenuManager.Instance.UpdateText(player);
     }
 }
-*/

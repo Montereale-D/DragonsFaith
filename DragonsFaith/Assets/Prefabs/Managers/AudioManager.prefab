@@ -301,14 +301,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 858696182090611391}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d1603a189b5f5042a64601372e2835d, type: 3}
+  m_Script: {fileID: 11500000, guid: 628be7f6d1cd1534e982bd38eabc5193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundBank: {fileID: 11400000, guid: 1d8134fc5049ac748ba4b06bcdabde75, type: 2}
-  _backgroundMusic: {fileID: 858696182069835295}
-  _UISound: {fileID: 295365860131251210}
-  _enemySound: {fileID: 858696182992480515}
-  _playerSound: {fileID: 858696181166159098}
 --- !u!1 &858696182992480512
 GameObject:
   m_ObjectHideFlags: 0

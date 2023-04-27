@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,7 +13,8 @@ namespace Inventory
 
     {
         public Image image;
-        public Text countText;
+        public TMP_Text countText;
+        public Image frame;
 
         [HideInInspector] public Item item;
         [HideInInspector] public int count = 1;
@@ -34,7 +36,7 @@ namespace Inventory
             countText.text = count.ToString();
 
             //show number only if there is more than one item in that slot
-            countText.gameObject.SetActive(count > 1);
+            frame.gameObject.SetActive(count > 1);
         }
 
         public void OnBeginDrag(PointerEventData eventData)

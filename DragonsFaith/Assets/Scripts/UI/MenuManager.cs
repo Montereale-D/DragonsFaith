@@ -1,13 +1,10 @@
-/*
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Menu
+namespace UI
 {
     public class MenuManager : Singleton<MenuManager>
     {
@@ -19,25 +16,23 @@ namespace Menu
             Graphics,
             Keybindings,
             Credits,
-            Suggestions,
             Gamepad
         };
     
         public Animator animator;
         private static readonly int Quit = Animator.StringToHash("Quit");
     
-        public GameObject MainMenu;
-        public GameObject OptionsMenu;
-        public GameObject AudioMenu;
-        public GameObject GraphicsMenu;
-        public GameObject KeybindingsMenu;
-        public GameObject GamepadMenu;
-        public GameObject CreditsMenu;
-        public GameObject SuggestionsMenu;
+        public GameObject mainMenu;
+        public GameObject optionsMenu;
+        public GameObject audioMenu;
+        public GameObject graphicsMenu;
+        public GameObject keybindingsMenu;
+        public GameObject gamepadMenu;
+        public GameObject creditsMenu;
 
-        public Slider _playerVolumeSlider;
-        public Slider _enemyVolumeSlider;
-        public Slider _backgroundVolumeSlider;
+        public Slider playerVolumeSlider;
+        public Slider enemyVolumeSlider;
+        public Slider backgroundVolumeSlider;
         
         public Text move, dash, interact, potion, spell;
         public Tooltip toolTip;
@@ -47,7 +42,6 @@ namespace Menu
 
         private GameObject[] _keybindingButtons;
         public static bool IsChangingKey;
-        [SerializeField] private Texture2D customCursor;
     
         private UnityEngine.InputSystem.PlayerInput _playerInput;
 
@@ -55,40 +49,36 @@ namespace Menu
         //generic function to activate a certain menu screen
         private void SetMenu(Menu menu)
         {
-            MainMenu.SetActive(false);
-            OptionsMenu.SetActive(false);
-            AudioMenu.SetActive(false);
-            GraphicsMenu.SetActive(false);
-            KeybindingsMenu.SetActive(false);
-            GamepadMenu.SetActive(false);
-            CreditsMenu.SetActive(false);
-            SuggestionsMenu.SetActive(false);
+            mainMenu.SetActive(false);
+            optionsMenu.SetActive(false);
+            audioMenu.SetActive(false);
+            graphicsMenu.SetActive(false);
+            keybindingsMenu.SetActive(false);
+            gamepadMenu.SetActive(false);
+            creditsMenu.SetActive(false);
 
             switch (menu)
             {
                 case Menu.Main:
-                    MainMenu.SetActive(true);
+                    mainMenu.SetActive(true);
                     break;
                 case Menu.Options:
-                    OptionsMenu.SetActive(true);
+                    optionsMenu.SetActive(true);
                     break;
                 case Menu.Audio:
-                    AudioMenu.SetActive(true);
+                    audioMenu.SetActive(true);
                     break;
                 case Menu.Graphics:
-                    GraphicsMenu.SetActive(true);
+                    graphicsMenu.SetActive(true);
                     break;
                 case Menu.Keybindings:
-                    KeybindingsMenu.SetActive(true);
+                    keybindingsMenu.SetActive(true);
                     break;
                 case Menu.Gamepad:
-                    GamepadMenu.SetActive(true);
+                    gamepadMenu.SetActive(true);
                     break;
                 case Menu.Credits:
-                    CreditsMenu.SetActive(true);
-                    break;
-                case Menu.Suggestions:
-                    SuggestionsMenu.SetActive(true);
+                    creditsMenu.SetActive(true);
                     break;
             }
         }
@@ -97,9 +87,9 @@ namespace Menu
         {
             SetMenu(Menu.Main);
 
-            _playerInput = InputManager.Instance.playerInput;
+            /*_playerInput = //InputManager.Instance.playerInput;
             _playerInput.camera = Camera.main;
-            _playerInput.uiInputModule = FindObjectOfType<InputSystemUIInputModule>();
+            _playerInput.uiInputModule = FindObjectOfType<InputSystemUIInputModule>();*/
         
             _playerInput.SwitchCurrentActionMap("UI");
         
@@ -127,23 +117,23 @@ namespace Menu
             resolutionDropdown.value = currentResolutionIndex;
             resolutionDropdown.RefreshShownValue();
         
-            _playerVolumeSlider.value = AudioManager.Instance.GetPlayerVolumeSound();
-            _enemyVolumeSlider.value = AudioManager.Instance.GetEnemyVolumeSound();
-            _backgroundVolumeSlider.value = AudioManager.Instance.GetBackgroundVolumeSound();
+            /*playerVolumeSlider.value = AudioManager.Instance.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = AudioManager.Instance.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = AudioManager.Instance.GetBackgroundVolumeSound();*/
         }
 
         private void Update()
         {
-            if ((AudioMenu.activeSelf ||
-                 GraphicsMenu.activeSelf ||
-                 GamepadMenu.activeSelf ||
-                 (KeybindingsMenu.activeSelf && !IsChangingKey)) &&
+            if ((audioMenu.activeSelf ||
+                 graphicsMenu.activeSelf ||
+                 gamepadMenu.activeSelf ||
+                 (keybindingsMenu.activeSelf && !IsChangingKey)) &&
                 _playerInput.actions["Back"].WasPressedThisFrame())   //return to main menu
             {
                 SetMenu(Menu.Options);
-                InputManager.Instance.ResetIfNotSaved(_playerInput);
+                //InputManager.Instance.ResetIfNotSaved(_playerInput);
             }
-            else if (KeybindingsMenu.activeSelf && IsChangingKey)
+            else if (keybindingsMenu.activeSelf && IsChangingKey)
             {
             }
             else if (_playerInput.actions["Back"].WasPressedThisFrame())
@@ -204,31 +194,20 @@ namespace Menu
         {
             SetMenu(Menu.Credits);
         }
-    
-        public void OpenSuggestionsMenu()
-        {
-            SetMenu(Menu.Suggestions);
-        }
-    
-        public void Submit()
-        {
-            SetMenu(Menu.Main);
-        }
 
         public void PlayGame()
         {
-            Cursor.SetCursor(customCursor, Vector2.zero, CursorMode.ForceSoftware);
-            InputManager.Instance.playerInput.SwitchCurrentActionMap("Gameplay");
+            //InputManager.Instance.playerInput.SwitchCurrentActionMap("Gameplay");
             animator.SetTrigger(Quit);
             StartCoroutine(LoadGameCoroutine());
 
-            AudioManager.Instance.PlaySoundTrackIntro();
+            //AudioManager.Instance.PlaySoundTrackIntro();
         }
     
         private static IEnumerator LoadGameCoroutine()
         {
             yield return new WaitForSeconds(1);
-            SceneManager.LoadScene("InitialCutscene");
+            //SceneManager.LoadScene("InitialCutscene");
         }
 
         public void QuitGame()
@@ -247,25 +226,25 @@ namespace Menu
         //UI AUDIO
         public void PlayOverUIButtonSound()
         {
-            AudioManager.Instance.PlayOverUIButtonSound();
+            //AudioManager.Instance.PlayOverUIButtonSound();
         }
         public void PlayClickUIButtonSound()
         {
-            AudioManager.Instance.PlayClickUIButtonSound();
+            //AudioManager.Instance.PlayClickUIButtonSound();
         }
 
         //OPTION SETTINGS
         public void SetBackgroundVolume(float value)
         {
-            AudioManager.Instance.SetBackgroundVolume(value);
+            //AudioManager.Instance.SetBackgroundVolume(value);
         }
         public void SetPlayerVolume(float value)
         {
-            AudioManager.Instance.SetPlayerVolume(value);
+            //AudioManager.Instance.SetPlayerVolume(value);
         }
         public void SetEnemyVolume(float value)
         {
-            AudioManager.Instance.SetEnemyVolume(value);
+            //AudioManager.Instance.SetEnemyVolume(value);
         }
 
         public void SetQuality(int qualityIndex)
@@ -286,4 +265,3 @@ namespace Menu
 
     }
 }
-*/

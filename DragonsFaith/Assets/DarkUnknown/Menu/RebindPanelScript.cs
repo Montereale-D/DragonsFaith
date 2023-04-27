@@ -1,6 +1,5 @@
-/*
 using System;
-using Menu;
+using UI;
 using UnityEngine;
 
 public class RebindPanelScript : MonoBehaviour
@@ -17,4 +16,3 @@ public class RebindPanelScript : MonoBehaviour
         Debug.Log("disabled");
     }
 }
-*/
