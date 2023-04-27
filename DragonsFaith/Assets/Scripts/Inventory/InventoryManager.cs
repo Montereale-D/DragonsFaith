@@ -55,6 +55,21 @@ namespace Inventory
                     return true;
                 }
             }
+            
+            foreach (var slot in equipmentSlots)
+            {
+                var itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+
+                if (itemInSlot != null && itemInSlot.item == newItem && itemInSlot.item.stackable &&
+                    itemInSlot.count < maxStackable && itemInSlot.item.type == ItemType.Items)
+                {
+                    itemInSlot.count++;
+                    itemInSlot.UpdateCount();
+                    slot.onSlotUpdate.Invoke(itemInSlot);
+                    return true;
+                }
+            }
+            
 
             //if there is an empty slot, add this item in the slot
             foreach (var slot in inventorySlots)
@@ -89,6 +104,7 @@ namespace Inventory
             var newItemGameObject = Instantiate(inventoryItemPrefab, slot.transform);
             var inventoryItem = newItemGameObject.GetComponent<InventoryItem>();
             inventoryItem.SetItem(item, quantity);
+            slot.onSlotUpdate.Invoke(inventoryItem);
         }
 
         /// <summary>
@@ -96,17 +112,6 @@ namespace Inventory
         /// </summary>
         public void OnSlotUse(InventorySlot slot, InventoryItem item)
         {
-            Debug.Log("Use item " + item);
-            if (item.item.consumable)
-            {
-                item.count--;
-                if (item.count <= 0) Destroy(item.gameObject);
-                else item.UpdateCount();
-            }
-            else
-            {
-                //active item
-            }
         }
 
         /// <summary>
@@ -128,9 +133,25 @@ namespace Inventory
         {
             foreach (var slot in equipmentSlots)
             {
-                slot.blockDrag = b;
+                if (slot.slotType is ItemType.Armory or ItemType.Skills or ItemType.Weapons)
+                {
+                    slot.blockDrag = b;
+                }
             }
         }
+
+        [ContextMenu("Lock Equipment")]
+        private void LockEquipmentFromMenu()
+        {
+            BlockEquipmentSlots(true);
+        }
+        
+        [ContextMenu("Unlock Equipment")]
+        private void UnlockEquipmentFromMenu()
+        {
+            BlockEquipmentSlots(false);
+        }
+        
 
         /// <summary>
         /// Load inventory item from local files

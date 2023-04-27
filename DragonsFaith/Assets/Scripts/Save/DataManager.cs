@@ -46,6 +46,11 @@ namespace Save
 
         public void SaveGameRequest()
         {
+            if (!IsHost && !IsClient)
+            {
+                Debug.LogWarning("NO AUTHENTICATION - some functions may not working correctly");    
+            }
+            
             if (!IsHost) return;
             Debug.Log("Save Game request");
             SaveGame();
@@ -53,6 +58,11 @@ namespace Save
 
         public void LoadGameRequest()
         {
+            if (!IsHost && !IsClient)
+            {
+                Debug.LogWarning("NO AUTHENTICATION - some functions may not working correctly");    
+            }
+            
             if (!IsHost) return;
             Debug.Log("Load Game request");
             LoadGame();

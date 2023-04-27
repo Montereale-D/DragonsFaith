@@ -61,7 +61,13 @@ namespace Inventory
 
         public void UpdateParent(Transform parentTransform)
         {
-            if (_parentAfterDrag.GetComponent<InventorySlot>().blockDrag) return;
+            var slot = _parentAfterDrag.GetComponent<InventorySlot>();
+            if (slot.blockDrag) return;
+
+            if (_parentAfterDrag != null && _parentAfterDrag != parentTransform)
+            {
+                slot.onSlotRemoved.Invoke(this);
+            }
             
             _parentAfterDrag = parentTransform;
         }

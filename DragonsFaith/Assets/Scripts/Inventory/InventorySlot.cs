@@ -1,5 +1,8 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Inventory
@@ -13,8 +16,19 @@ namespace Inventory
         public Image image;
         public Color onSelectColor, onDeselectColor;
         public InventoryManager inventoryManager;
+
         public ItemType slotType = ItemType.Items;
-        
+        /*public delegate void SlotUpdate();
+        public SlotUpdate onSlotUpdate;*/
+
+        [Serializable]
+        public class SlotUpdateEvent : UnityEvent<InventoryItem>
+        {
+        }
+
+        [HideInInspector] public SlotUpdateEvent onSlotUpdate;
+        [HideInInspector] public SlotUpdateEvent onSlotRemoved;
+
         private void Awake()
         {
             OnDeselect();
@@ -23,23 +37,32 @@ namespace Inventory
         public void OnDrop(PointerEventData eventData)
         {
             if (blockDrag) return;
-            
+
             //if an item is dropped here and it is empty, set this slot as parent of item
             if (transform.childCount != 0) return;
             var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
 
             if (slotType == ItemType.All || inventoryItem.item.type == slotType)
+            {
                 inventoryItem.UpdateParent(transform);
+                onSlotUpdate.Invoke(inventoryItem);
+            }
         }
 
         public void OnSelect()
         {
-            image.color = onSelectColor;
+            if (image)
+            {
+                image.color = onSelectColor;
+            }
         }
 
         public void OnDeselect()
         {
-            image.color = onDeselectColor;
+            if (image)
+            {
+                image.color = onDeselectColor;
+            }
         }
 
         /// <summary>
@@ -53,9 +76,29 @@ namespace Inventory
         /// <summary>
         /// Notify this slot that the item has been used
         /// </summary>
-        public void OnItemUse(InventoryItem inventoryItem)
+        public virtual void OnItemUse(InventoryItem item)
         {
-            inventoryManager.OnSlotUse(this, inventoryItem);
+            Debug.Log("Use item " + item);
+            if (item.item.consumable)
+            {
+                item.count--;
+                if (item.count <= 0)
+                {
+                    Destroy(item.gameObject);
+                    onSlotRemoved.Invoke(item);
+                }
+                else
+                {
+                    item.UpdateCount();
+                    onSlotUpdate.Invoke(item);
+                }
+            }
+            else
+            {
+                //active item
+            }
+            
+            inventoryManager.OnSlotUse(this, item);
         }
     }
 }
