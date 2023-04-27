@@ -17,7 +17,15 @@ namespace Save
         [Serializable]
         public enum PlayerType
         {
-            Host, Client
+            Host,
+            Client
+        }
+
+        [Serializable]
+        public enum InventoryType
+        {
+            Inventory,
+            Equipment
         }
 
         [Serializable]
@@ -35,11 +43,11 @@ namespace Save
             public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
             {
                 serializer.SerializeValue(ref playerType);
-                
+
                 // List
                 var length = 0;
                 var array = Array.Empty<ItemData>();
-                
+
                 if (!serializer.IsReader)
                 {
                     array = itemDataList.ToArray();
@@ -47,7 +55,7 @@ namespace Save
                 }
 
                 serializer.SerializeValue(ref length);
-                
+
                 if (serializer.IsReader)
                 {
                     array = new ItemData[length];
@@ -57,7 +65,7 @@ namespace Save
                 {
                     array[n].NetworkSerialize(serializer);
                 }
-                
+
                 if (serializer.IsReader)
                 {
                     itemDataList = array.ToList();
@@ -74,20 +82,23 @@ namespace Save
                 return list.Aggregate("", (current, itemData) => current + (itemData + " "));
             }
         }
-        
+
         [Serializable]
         public struct ItemData : INetworkSerializable
         {
             public string itemId;
             public int slotNumber;
             public int quantity;
-            
-            public ItemData(string itemId, int slotNumber, int quantity)
+            [SerializeField] public InventoryType inventoryType;
+
+            public ItemData(string itemId, InventoryType inventoryType, int slotNumber, int quantity)
             {
                 this.itemId = itemId;
                 this.slotNumber = slotNumber;
                 this.quantity = quantity;
+                this.inventoryType = inventoryType;
             }
+
 
             public override string ToString()
             {
@@ -97,14 +108,15 @@ namespace Save
             public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
             {
                 serializer.SerializeValue(ref itemId);
+                serializer.SerializeValue(ref inventoryType);
                 serializer.SerializeValue(ref slotNumber);
                 serializer.SerializeValue(ref quantity);
             }
         }
 
         [SerializeField] private PlayerData hostData;
-        [SerializeField] private PlayerData clientData; 
-        
+        [SerializeField] private PlayerData clientData;
+
         public GameData()
         {
             hostData = new PlayerData(PlayerType.Host, new List<ItemData>());
@@ -114,13 +126,12 @@ namespace Save
         /// <summary>
         /// Add an item to the tmp file data
         /// </summary>
-        public void AddItemData(PlayerType player, Item item, int slotNumber, int quantity)
+        public void AddItemData(PlayerType player, Item item, InventoryType inventoryType, int slotNumber, int quantity)
         {
-            if(player == PlayerType.Host)
-                hostData.itemDataList.Add(new ItemData(item.id, slotNumber, quantity));
+            if (player == PlayerType.Host)
+                hostData.itemDataList.Add(new ItemData(item.id, inventoryType, slotNumber, quantity));
             else
-                clientData.itemDataList.Add(new ItemData(item.id, slotNumber, quantity));
-                
+                clientData.itemDataList.Add(new ItemData(item.id, inventoryType, slotNumber, quantity));
         }
 
         /// <summary>
@@ -128,7 +139,7 @@ namespace Save
         /// </summary>
         public void UpdateInventoryData(PlayerType player, IEnumerable<ItemData> inventory)
         {
-            if(player == PlayerType.Host)
+            if (player == PlayerType.Host)
                 hostData.itemDataList = new List<ItemData>(inventory);
             else
                 clientData.itemDataList = new List<ItemData>(inventory);
@@ -139,7 +150,7 @@ namespace Save
         /// </summary>
         public void CleanupItemData(PlayerType player)
         {
-            if(player == PlayerType.Host)
+            if (player == PlayerType.Host)
                 hostData.itemDataList = new List<ItemData>();
             else
                 clientData.itemDataList = new List<ItemData>();

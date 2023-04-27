@@ -9,10 +9,12 @@ namespace Inventory
     /// </summary>
     public class InventorySlot : MonoBehaviour, IDropHandler
     {
+        public bool blockDrag;
         public Image image;
         public Color onSelectColor, onDeselectColor;
         public InventoryManager inventoryManager;
-
+        public ItemType slotType = ItemType.Items;
+        
         private void Awake()
         {
             OnDeselect();
@@ -20,12 +22,14 @@ namespace Inventory
 
         public void OnDrop(PointerEventData eventData)
         {
+            if (blockDrag) return;
+            
             //if an item is dropped here and it is empty, set this slot as parent of item
-            if (transform.childCount == 0)
-            {
-                var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
+            if (transform.childCount != 0) return;
+            var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
+
+            if (slotType == ItemType.All || inventoryItem.item.type == slotType)
                 inventoryItem.UpdateParent(transform);
-            }
         }
 
         public void OnSelect()
@@ -43,7 +47,7 @@ namespace Inventory
         /// </summary>
         public void OnItemClick(InventoryItem inventoryItem)
         {
-            inventoryManager.OnItemSelected(this, inventoryItem);
+            inventoryManager.OnSlotSelected(this, inventoryItem);
         }
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace Inventory
         /// </summary>
         public void OnItemUse(InventoryItem inventoryItem)
         {
-            inventoryManager.OnItemUse(this, inventoryItem);
+            inventoryManager.OnSlotUse(this, inventoryItem);
         }
     }
 }

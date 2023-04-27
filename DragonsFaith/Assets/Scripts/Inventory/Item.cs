@@ -36,7 +36,9 @@ namespace Inventory
     {
         Items,
         Weapons,
-        Armory
+        Armory,
+        Skills,
+        All
     }
 
     public enum ActionType

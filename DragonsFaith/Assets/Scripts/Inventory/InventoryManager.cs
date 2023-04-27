@@ -9,8 +9,11 @@ namespace Inventory
     /// </summary>
     public class InventoryManager : NetworkBehaviour, IGameData
     {
-        [SerializeField] [Tooltip("Insert (in order) all the slots, toolbar, inventory, ...")]
+        [SerializeField] [Tooltip("Insert (in order) all the inventory slots, ...")]
         private InventorySlot[] inventorySlots;
+        
+        [SerializeField] [Tooltip("Insert (in order) all the equipment slots, ...")]
+        private InventorySlot[] equipmentSlots;
 
         [SerializeField] [Tooltip("Insert reference to the inventory item prefab")]
         private GameObject inventoryItemPrefab;
@@ -89,9 +92,9 @@ namespace Inventory
         }
 
         /// <summary>
-        /// Use this item
+        /// Use this slot
         /// </summary>
-        public void OnItemUse(InventorySlot slot, InventoryItem item)
+        public void OnSlotUse(InventorySlot slot, InventoryItem item)
         {
             Debug.Log("Use item " + item);
             if (item.item.consumable)
@@ -107,9 +110,9 @@ namespace Inventory
         }
 
         /// <summary>
-        /// This item has been selected
+        /// This slot has been selected
         /// </summary>
-        public void OnItemSelected(InventorySlot inventorySlot, InventoryItem item)
+        public void OnSlotSelected(InventorySlot inventorySlot, InventoryItem item)
         {
             Debug.Log("Select item " + item);
             if (_prevSelectedSlot != null)
@@ -119,6 +122,14 @@ namespace Inventory
 
             inventorySlot.OnSelect();
             _prevSelectedSlot = inventorySlot;
+        }
+
+        public void BlockEquipmentSlots(bool b)
+        {
+            foreach (var slot in equipmentSlots)
+            {
+                slot.blockDrag = b;
+            }
         }
 
         /// <summary>
@@ -132,7 +143,10 @@ namespace Inventory
             //get item from local data
             foreach (var itemData in data.GetAllItemsData(GetPlayerType()))
             {
-                SpawnNewItem(ItemSyllabus.Instance.SearchItem(itemData.itemId), inventorySlots[itemData.slotNumber],
+                SpawnNewItem(ItemSyllabus.Instance.SearchItem(itemData.itemId),
+                    itemData.inventoryType == GameData.InventoryType.Inventory
+                        ? inventorySlots[itemData.slotNumber]
+                        : equipmentSlots[itemData.slotNumber],
                     itemData.quantity);
             }
         }
@@ -153,8 +167,18 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    //Debug.Log("AddItemData");
-                    data.AddItemData(GetPlayerType(), itemInSlot.item, i, itemInSlot.count);
+                    data.AddItemData(GetPlayerType(), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
+                }
+            }
+            
+            for (var i = 0; i < equipmentSlots.Length; i++)
+            {
+                var slot = equipmentSlots[i];
+                var itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+
+                if (itemInSlot != null)
+                {
+                    data.AddItemData(GetPlayerType(), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
                 }
             }
         }
@@ -165,6 +189,13 @@ namespace Inventory
         private void CleanupInventory()
         {
             foreach (var slot in inventorySlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if (inventoryItem == null) continue;
+                Destroy(inventoryItem.gameObject);
+            }
+            
+            foreach (var slot in equipmentSlots)
             {
                 var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
                 if (inventoryItem == null) continue;

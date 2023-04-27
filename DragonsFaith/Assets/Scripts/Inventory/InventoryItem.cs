@@ -48,6 +48,7 @@ namespace Inventory
         public void OnDrag(PointerEventData eventData)
         {
             //update item image position according to mouse position
+            if (_parentAfterDrag.GetComponent<InventorySlot>().blockDrag) return;
             transform.position = Input.mousePosition;
         }
 
@@ -60,6 +61,8 @@ namespace Inventory
 
         public void UpdateParent(Transform parentTransform)
         {
+            if (_parentAfterDrag.GetComponent<InventorySlot>().blockDrag) return;
+            
             _parentAfterDrag = parentTransform;
         }
 
