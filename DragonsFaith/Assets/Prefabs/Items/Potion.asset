@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Potion
   m_EditorClassIdentifier: 
   itemName: Potion of healing
+  description: Restores TOT health points.
   id: 190cd2eb-04ba-42df-af91-dbb48316af90
-  tile: {fileID: 0}
-  image: {fileID: 21300000, guid: b124ccd9dca18ec43ab64cc50d9dd8b7, type: 3}
   type: 0
   action: 3
   consumable: 1
-  range: {x: 5, y: 4}
   stackable: 1
+  tile: {fileID: 0}
+  image: {fileID: 21300000, guid: b124ccd9dca18ec43ab64cc50d9dd8b7, type: 3}

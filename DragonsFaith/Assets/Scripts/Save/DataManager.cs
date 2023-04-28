@@ -20,6 +20,8 @@ namespace Save
                 Debug.LogError("More than one DataManager in the scene");
 
             Instance = this;
+            
+            DontDestroyOnLoad(this);
         }
 
         private void Start()

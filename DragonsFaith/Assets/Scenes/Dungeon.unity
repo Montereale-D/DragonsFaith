@@ -258,9 +258,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1665742648862544602, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3302532278
+      objectReference: {fileID: 0}
+    - target: {fileID: 1665742649653635621, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2542860002
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694488327831462969, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2011410462
+      objectReference: {fileID: 0}
     - target: {fileID: 2519558305466894471, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
       propertyPath: m_Name
       value: Dungeon_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3568031645283807914, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1175186197
+      objectReference: {fileID: 0}
+    - target: {fileID: 5367737560384479103, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3554994401
+      objectReference: {fileID: 0}
+    - target: {fileID: 5367737561777448832, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4220893613
+      objectReference: {fileID: 0}
+    - target: {fileID: 7817739980737071596, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4211184849
+      objectReference: {fileID: 0}
+    - target: {fileID: 7817739982265315603, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2061108066
+      objectReference: {fileID: 0}
+    - target: {fileID: 7847470822677085967, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 4206976239
       objectReference: {fileID: 0}
     - target: {fileID: 8247994735406162742, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[4].m_Data

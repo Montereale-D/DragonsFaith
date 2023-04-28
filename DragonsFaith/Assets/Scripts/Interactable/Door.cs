@@ -1,9 +1,12 @@
 using UnityEngine;
+using UnityEngine.Android;
 
 namespace Interactable
 {
     public class Door : Openable
     {
+        //TODO: add animator and animation when opening door
+        
         private SpriteRenderer _spriteRenderer;
 
         private void Awake()
