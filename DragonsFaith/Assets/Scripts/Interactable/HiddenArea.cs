@@ -1,3 +1,5 @@
+using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Android;
 
@@ -9,6 +11,7 @@ namespace Interactable
         
         //private SpriteRenderer _spriteRenderer;
         [SerializeField] private Animator animator;
+        [SerializeField] private NetworkAnimator networkAnimator;
         private static readonly int Reveal = Animator.StringToHash("Reveal");
 
         /*private void Awake()
@@ -19,6 +22,7 @@ namespace Interactable
         public override bool OpenAction()
         {
             animator.SetTrigger(Reveal);
+            networkAnimator.SetTrigger(Reveal);
             gameObject.SetActive(false);
             return true;
         }
@@ -27,5 +31,11 @@ namespace Interactable
         {
             return true;
         }
+
+        /*[ClientRpc]
+        public void OpenActionClientRpc()
+        {
+            if (!IsHost)
+        }*/
     }
 }

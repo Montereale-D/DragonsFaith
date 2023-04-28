@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 4277580845681424814}
   - component: {fileID: 9143536393258176406}
   - component: {fileID: 1056023609156281296}
+  - component: {fileID: 6265625633612737772}
   m_Layer: 0
   m_Name: fakewall
   m_TagString: Untagged
@@ -296,6 +297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1956231248587003685}
+  networkAnimator: {fileID: 4590288596558515878}
 --- !u!19719996 &4277580845681424814
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -369,6 +371,22 @@ CompositeCollider2D:
       - {x: -2.999971, y: -3}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
+--- !u!114 &6265625633612737772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3764851776579192702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &3975924315191226646
 GameObject:
   m_ObjectHideFlags: 0
@@ -2047,6 +2065,8 @@ GameObject:
   - component: {fileID: 1373871840956278998}
   - component: {fileID: 3611621415616315349}
   - component: {fileID: 1956231248587003685}
+  - component: {fileID: 4590288596558515878}
+  - component: {fileID: 7389370888526758111}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -2169,6 +2189,42 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4590288596558515878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4901681510196893063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: -572773157
+    DestinationState: 1739810581
+    TransitionDuration: 0
+    TriggerNameHash: -1711509124
+    TransitionIndex: 0
+  m_Animator: {fileID: 1956231248587003685}
+--- !u!114 &7389370888526758111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4901681510196893063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5664696566094568997
 GameObject:
   m_ObjectHideFlags: 0
