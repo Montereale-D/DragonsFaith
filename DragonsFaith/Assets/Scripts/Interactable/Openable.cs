@@ -9,7 +9,7 @@ namespace Interactable
     public abstract class Openable : MonoBehaviour
     {
         public bool ignoreCloseAction;
-        public bool isOpened;
+        private bool isOpened;
 
         /// <summary>
         /// Return true if CLOSE -> OPEN
