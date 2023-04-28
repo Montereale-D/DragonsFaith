@@ -3,6 +3,9 @@ using UnityEngine.EventSystems;
 
 namespace UI
 {
+    /// <summary>
+    /// This script lets you create a draggable UI element.
+    /// </summary>
     public class DraggableWindow : MonoBehaviour, IDragHandler
     {
         public Canvas canvas;
@@ -16,7 +19,7 @@ namespace UI
         }
 
         // Update is called once per frame
-        void IDragHandler.OnDrag(PointerEventData eventData)
+        public void OnDrag(PointerEventData eventData)
         {
             _rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }

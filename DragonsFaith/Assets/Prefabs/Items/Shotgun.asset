@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   itemName: Shotgun
+  description: 'Short range weapon that deals TOT damage points per hit.
+
+    Can
+    hit multiple targets in a cone area.'
   id: f8a775c3-dd5d-48b0-bd95-a3015d386a5f
   type: 1
   action: 2

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   itemName: Pistol
+  description: Short range weapon that deals TOT damage points per hit.
   id: 3785c742-f8ff-4016-a374-81d62dc75746
   type: 1
   action: 2

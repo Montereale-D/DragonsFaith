@@ -7,6 +7,9 @@ namespace Inventory
     public class Item : ScriptableObject
     {
         public string itemName = "item name";
+        
+        [Multiline]
+        public string description = "item description";
 
         [Tooltip("Readme -> how to generate an id")]
         public string id;
@@ -21,7 +24,7 @@ namespace Inventory
 
         public override string ToString()
         {
-            return itemName + " (" + id + "): [type: " + type + ", action: " + action + ", consumable: " + consumable +
+            return itemName + " (" + id + "): [description: " + description + ", type: " + type + ", action: " + action + ", consumable: " + consumable +
                    ", stackable: " + stackable + "]";
         }
 

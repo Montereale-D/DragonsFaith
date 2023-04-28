@@ -35,7 +35,7 @@ namespace UI
         public Slider backgroundVolumeSlider;
         
         public Text move, dash, interact, potion, spell;
-        public Tooltip toolTip;
+        public PopUpMessage toolTip;
 
         private Resolution[] _resolutions;
         public Dropdown resolutionDropdown;

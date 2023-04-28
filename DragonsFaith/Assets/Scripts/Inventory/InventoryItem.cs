@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,6 +16,7 @@ namespace Inventory
         public Image image;
         public TMP_Text countText;
         public Image frame;
+        public TooltipTrigger tooltip;
 
         [HideInInspector] public Item item;
         [HideInInspector] public int count = 1;
@@ -27,6 +29,8 @@ namespace Inventory
             item = newItem;
             count = quantity;
             image.sprite = newItem.image;
+            tooltip.header = newItem.itemName;
+            tooltip.content = newItem.description;
             UpdateCount();
         }
 
