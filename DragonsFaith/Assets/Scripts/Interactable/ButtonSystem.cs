@@ -41,6 +41,12 @@ namespace Interactable
         public void OnButtonRelease()
         {
             _buttonPressedCounter--;
+            
+            //if both the buttons are active
+            if (_buttonPressedCounter < 2)
+            {
+                ChangeStatusProcedure(false);
+            }
         }
 
         //Procedure to follow when the status change
