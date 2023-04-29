@@ -14,6 +14,7 @@ namespace Interactable
         [SerializeField] private Sprite closeSprite;
         private SpriteRenderer _spriteRenderer;
         private Collider2D _collider;
+        private ShowKeyOnTrigger _showKey;
 
         //synchronize state between host and client
         private readonly NetworkVariable<bool> _isOpen = new(false, NetworkVariableReadPermission.Everyone,
@@ -26,6 +27,9 @@ namespace Interactable
 
             //ensure isTrigger
             _collider.isTrigger = true;
+
+            _showKey = GetComponentInChildren<ShowKeyOnTrigger>();
+            _showKey.KeyPressed += TryAddItem;
         }
 
         public override void OnNetworkSpawn()
@@ -37,13 +41,16 @@ namespace Interactable
 
                 //disable collider, no more needed
                 _collider.enabled = !newValue;
+                
+                if(!newValue) _showKey.TurnOn();
+                else _showKey.TurnOff();
             };
         }
 
-        private void OnTriggerEnter2D(Collider2D col)
+        public void TryAddItem(Collider2D col)
         {
             //check if the player is mine
-            if (!col.gameObject.GetComponent<NetworkObject>().IsOwner) return;
+            //if (!col.gameObject.GetComponent<NetworkObject>().IsOwner) return;
 
             if (!_isOpen.Value)
             {
@@ -55,6 +62,7 @@ namespace Interactable
                 }
 
                 Debug.Log("Get item");
+
                 if (IsHost)
                 {
                     //direct change
