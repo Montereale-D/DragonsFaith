@@ -7,12 +7,10 @@ namespace Interactable
 {
     public class HiddenArea : Openable
     {
-        //TODO: add animator and animation when opening door
-        
         //private SpriteRenderer _spriteRenderer;
-        [SerializeField] private Animator animator;
-        [SerializeField] private NetworkAnimator networkAnimator;
-        private static readonly int Reveal = Animator.StringToHash("Reveal");
+        [SerializeField] private AnimatorNetworkController animator;
+        //[SerializeField] private Animator animator;
+        //private static readonly int Reveal = Animator.StringToHash("Reveal");
 
         /*private void Awake()
         {
@@ -21,21 +19,18 @@ namespace Interactable
 
         public override bool OpenAction()
         {
-            animator.SetTrigger(Reveal);
-            networkAnimator.SetTrigger(Reveal);
+            if (!base.OpenAction()) return false;
+            
+            animator.ActivateAnimatorProcedureClientRpc();
+            //animator.SetTrigger(Reveal);
             gameObject.SetActive(false);
             return true;
         }
 
         public override bool CloseAction()
         {
+            if (!base.CloseAction()) return false;
             return true;
         }
-
-        /*[ClientRpc]
-        public void OpenActionClientRpc()
-        {
-            if (!IsHost)
-        }*/
     }
 }

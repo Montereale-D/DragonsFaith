@@ -63,6 +63,7 @@ namespace Inventory
             //set the new parent according to the new parent
             image.raycastTarget = true;
             transform.SetParent(_parentAfterDrag);
+            transform.position = _parentAfterDrag.position;
         }
 
         public void UpdateParent(Transform parentTransform)

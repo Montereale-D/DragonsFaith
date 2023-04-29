@@ -296,8 +296,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba988e7124b2124786980dbda6729d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1956231248587003685}
-  networkAnimator: {fileID: 4590288596558515878}
+  ignoreCloseAction: 1
+  animator: {fileID: 8608595397196899236}
 --- !u!19719996 &4277580845681424814
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -2065,7 +2065,8 @@ GameObject:
   - component: {fileID: 1373871840956278998}
   - component: {fileID: 3611621415616315349}
   - component: {fileID: 1956231248587003685}
-  - component: {fileID: 4590288596558515878}
+  - component: {fileID: 8608595397196899236}
+  - component: {fileID: 2830152135722706330}
   - component: {fileID: 7389370888526758111}
   m_Layer: 0
   m_Name: Canvas
@@ -2189,7 +2190,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4590288596558515878
+--- !u!114 &8608595397196899236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4901681510196893063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d570ad34e2aec0409603841bdf0b83e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1956231248587003685}
+  networkAnimator: {fileID: 2830152135722706330}
+--- !u!114 &2830152135722706330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
