@@ -29,8 +29,7 @@ namespace Interactable
 
         public override bool CloseAction()
         {
-            if (!base.CloseAction()) return false;
-            return true;
+            return base.CloseAction();
         }
     }
 }
