@@ -14627,6 +14627,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4708405566143791147, guid: 5b1749a74ff12f542ba7cd287ca36ab6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4708405566143791148, guid: 5b1749a74ff12f542ba7cd287ca36ab6, type: 3}
       propertyPath: m_RootOrder
       value: 7

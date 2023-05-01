@@ -65,7 +65,18 @@ namespace UI
             
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                OpenMenu();
+                if (inventoryTab.activeSelf)
+                {
+                    OpenInventory();
+                }
+                else if (skillsTab.activeSelf)
+                {
+                    OpenSkills();
+                }
+                else
+                {
+                    OpenMenu();
+                }
             }
         }
 
