@@ -6,13 +6,13 @@ public class RebindPanelScript : MonoBehaviour
 {
     private void OnEnable()
     {
-        MenuManager.IsChangingKey = true;
+        MenuManager.isChangingKey = true;
         Debug.Log("enabled");
     }
 
     private void OnDisable()
     {
-        MenuManager.IsChangingKey = false;
+        MenuManager.isChangingKey = false;
         Debug.Log("disabled");
     }
 }

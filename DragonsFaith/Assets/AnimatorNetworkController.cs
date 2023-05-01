@@ -6,10 +6,11 @@ using UnityEngine;
 
 public class AnimatorNetworkController : NetworkBehaviour
 {
+    [SerializeField] private GameObject wall;
     [SerializeField] private Animator animator;
     private static readonly int Reveal = Animator.StringToHash("Reveal");
-
-    [SerializeField] private NetworkAnimator networkAnimator;
+    private static LTDescr delay;
+    
     private readonly NetworkVariable<bool> _isActive = new(false, NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
     
@@ -19,7 +20,11 @@ public class AnimatorNetworkController : NetworkBehaviour
         _isActive.OnValueChanged += (_, _) =>
         {
             animator.SetTrigger(Reveal);
-            networkAnimator.SetTrigger(Reveal);
+            wall.SetActive(false);
+            delay = LeanTween.delayedCall(1f, () =>
+            {
+                gameObject.SetActive(false);
+            });
         };
     }
     

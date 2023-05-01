@@ -16,36 +16,44 @@ namespace UI
             Audio,
             Graphics,
             Keybindings,
-            Credits,
-            Gamepad
+            Credits
         };
     
         public Animator animator;
         private static readonly int Quit = Animator.StringToHash("Quit");
     
+        [Header("Menus")]
         public GameObject mainMenu;
         public GameObject playMenu;
         public GameObject optionsMenu;
         public GameObject audioMenu;
         public GameObject graphicsMenu;
         public GameObject keybindingsMenu;
-        public GameObject gamepadMenu;
         public GameObject creditsMenu;
-
+        
+        [Header("Option Sliders")]
         public Slider playerVolumeSlider;
         public Slider enemyVolumeSlider;
         public Slider backgroundVolumeSlider;
+
+        [Header("Key Bind Texts")] 
+        public Text move;
+        public Text dash;
+        public Text interact;
+        public Text potion; 
+        public Text spell;
         
-        public Text move, dash, interact, potion, spell;
+        [Header("Pop Up")]
         public PopUpMessage toolTip;
 
+        [Header("Resolutions")]
         private Resolution[] _resolutions;
         public Dropdown resolutionDropdown;
 
         private GameObject[] _keybindingButtons;
-        public static bool IsChangingKey;
+        public static bool isChangingKey;
     
-        private UnityEngine.InputSystem.PlayerInput _playerInput;
+        //private UnityEngine.InputSystem.PlayerInput _playerInput;
 
 
         //generic function to activate a certain menu screen
@@ -57,7 +65,6 @@ namespace UI
             audioMenu.SetActive(false);
             graphicsMenu.SetActive(false);
             keybindingsMenu.SetActive(false);
-            gamepadMenu.SetActive(false);
             creditsMenu.SetActive(false);
 
             switch (menu)
@@ -80,9 +87,6 @@ namespace UI
                 case Menu.Keybindings:
                     keybindingsMenu.SetActive(true);
                     break;
-                case Menu.Gamepad:
-                    gamepadMenu.SetActive(true);
-                    break;
                 case Menu.Credits:
                     creditsMenu.SetActive(true);
                     break;
@@ -97,7 +101,7 @@ namespace UI
             _playerInput.camera = Camera.main;
             _playerInput.uiInputModule = FindObjectOfType<InputSystemUIInputModule>();*/
         
-            _playerInput.SwitchCurrentActionMap("UI");
+            //_playerInput.SwitchCurrentActionMap("UI");
         
             var resolutions = Screen.resolutions.Select(resolution => new Resolution
             {
@@ -132,17 +136,16 @@ namespace UI
         {
             if ((audioMenu.activeSelf ||
                  graphicsMenu.activeSelf ||
-                 gamepadMenu.activeSelf ||
-                 (keybindingsMenu.activeSelf && !IsChangingKey)) &&
-                _playerInput.actions["Back"].WasPressedThisFrame())   //return to main menu
+                 (keybindingsMenu.activeSelf && !isChangingKey)) && Input.GetKeyDown(KeyCode.Escape)
+                /*_playerInput.actions["Back"].WasPressedThisFrame()*/)   //return to main menu
             {
                 SetMenu(Menu.Options);
                 //InputManager.Instance.ResetIfNotSaved(_playerInput);
             }
-            else if (keybindingsMenu.activeSelf && IsChangingKey)
+            else if (keybindingsMenu.activeSelf && isChangingKey)
             {
             }
-            else if (_playerInput.actions["Back"].WasPressedThisFrame())
+            else if (Input.GetKeyDown(KeyCode.Escape)/*_playerInput.actions["Back"].WasPressedThisFrame()*/)
             {
                 SetMenu(Menu.Main);
             }
@@ -194,11 +197,6 @@ namespace UI
         public void OpenKeybindingsMenu()
         {
             SetMenu(Menu.Keybindings);
-        }
-        
-        public void OpenGamepadMenu()
-        {
-            SetMenu(Menu.Gamepad);
         }
 
         public void OpenCreditsMenu()

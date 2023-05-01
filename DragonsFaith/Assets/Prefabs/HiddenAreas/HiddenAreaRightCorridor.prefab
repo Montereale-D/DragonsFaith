@@ -2066,7 +2066,6 @@ GameObject:
   - component: {fileID: 3611621415616315349}
   - component: {fileID: 1956231248587003685}
   - component: {fileID: 8608595397196899236}
-  - component: {fileID: 2830152135722706330}
   - component: {fileID: 7389370888526758111}
   m_Layer: 0
   m_Name: Canvas
@@ -2202,28 +2201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d570ad34e2aec0409603841bdf0b83e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wall: {fileID: 3764851776579192702}
   animator: {fileID: 1956231248587003685}
-  networkAnimator: {fileID: 2830152135722706330}
---- !u!114 &2830152135722706330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4901681510196893063}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - Layer: 0
-    OriginatingState: -572773157
-    DestinationState: 1739810581
-    TransitionDuration: 0
-    TriggerNameHash: -1711509124
-    TransitionIndex: 0
-  m_Animator: {fileID: 1956231248587003685}
 --- !u!114 &7389370888526758111
 MonoBehaviour:
   m_ObjectHideFlags: 0

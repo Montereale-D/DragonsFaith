@@ -284,7 +284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba988e7124b2124786980dbda6729d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1956231248587003685}
+  ignoreCloseAction: 1
+  animator: {fileID: 4479072264501272975}
 --- !u!19719996 &4277580845681424814
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -1986,7 +1987,8 @@ GameObject:
   - component: {fileID: 1373871840956278998}
   - component: {fileID: 3611621415616315349}
   - component: {fileID: 1956231248587003685}
-  - component: {fileID: 9062864915341545890}
+  - component: {fileID: 4479072264501272975}
+  - component: {fileID: 4080805290166248823}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -2109,7 +2111,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &9062864915341545890
+--- !u!114 &4479072264501272975
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2118,17 +2120,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 4901681510196893063}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d570ad34e2aec0409603841bdf0b83e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - Layer: 0
-    OriginatingState: -572773157
-    DestinationState: 1739810581
-    TransitionDuration: 0
-    TriggerNameHash: -1711509124
-    TransitionIndex: 0
-  m_Animator: {fileID: 1956231248587003685}
+  wall: {fileID: 3764851776579192702}
+  animator: {fileID: 1956231248587003685}
+--- !u!114 &4080805290166248823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4901681510196893063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5664696566094568997
 GameObject:
   m_ObjectHideFlags: 0

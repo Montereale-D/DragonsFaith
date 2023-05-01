@@ -31,5 +31,11 @@ namespace UI
             LeanTween.cancel(delay.uniqueId);
             TooltipSystem.Hide();
         }
+        
+        private void OnDisable()
+        {
+            LeanTween.cancel(delay.uniqueId);
+            TooltipSystem.Hide();
+        }
     }
 }
