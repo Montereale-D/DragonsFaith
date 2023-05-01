@@ -1,6 +1,7 @@
 /*
 using System;
 using System.Collections;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -199,7 +200,7 @@ public class UIController : Singleton<UIController>
     public void ShowMessage(string message)
     {
         _toolTipText.text = message;
-        Tooltip.Instance.GetComponent<Tooltip>().StartOpen();
+        PopUpMessage.Instance.GetComponent<PopUpMessage>().StartOpen();
     }
 }
 */

@@ -15,6 +15,7 @@ namespace Inventory
             inventorySlot.onSlotUpdate.AddListener(OnSlotUpdate);
             inventorySlot.onSlotRemoved.AddListener(OnSlotRemove);
             _itemCopy = GetComponentInChildren<InventoryItem>();
+            _itemCopy.gameObject.SetActive(false);
         }
 
         private void OnSlotUpdate(InventoryItem realItem)
@@ -27,6 +28,7 @@ namespace Inventory
                 return;
             }
 
+            _itemCopy.gameObject.SetActive(true);
             CopyItem(realItem);
         }
 
@@ -41,6 +43,7 @@ namespace Inventory
             }
 
             CleanItem();
+            _itemCopy.gameObject.SetActive(false);
         }
 
         public override void OnItemUse(InventoryItem inventoryItem)
@@ -60,6 +63,8 @@ namespace Inventory
         {
             _itemCopy.item = realItem.item;
             _itemCopy.count = realItem.count;
+            _itemCopy.tooltip.header = realItem.item.itemName;
+            _itemCopy.tooltip.content = realItem.item.description;
 
             var tmpColor = _itemCopy.image.color;
             tmpColor.a = 1;
@@ -67,13 +72,15 @@ namespace Inventory
 
             _itemCopy.image.sprite = realItem.image.sprite;
             _itemCopy.countText.text = realItem.countText.text;
-            _itemCopy.countText.gameObject.SetActive(_itemCopy.count > 1);
+            _itemCopy.frame.gameObject.SetActive(_itemCopy.count > 1);
         }
 
         private void CleanItem()
         {
             _itemCopy.item = null;
             _itemCopy.count = 0;
+            _itemCopy.tooltip.header = "";
+            _itemCopy.tooltip.content = "";
 
             var tmpColor = _itemCopy.image.color;
             tmpColor.a = 0;

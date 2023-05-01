@@ -11,6 +11,7 @@ namespace UI
         private enum Menu
         {
             Main,
+            Play,
             Options,
             Audio,
             Graphics,
@@ -23,6 +24,7 @@ namespace UI
         private static readonly int Quit = Animator.StringToHash("Quit");
     
         public GameObject mainMenu;
+        public GameObject playMenu;
         public GameObject optionsMenu;
         public GameObject audioMenu;
         public GameObject graphicsMenu;
@@ -50,6 +52,7 @@ namespace UI
         private void SetMenu(Menu menu)
         {
             mainMenu.SetActive(false);
+            playMenu.SetActive(false);
             optionsMenu.SetActive(false);
             audioMenu.SetActive(false);
             graphicsMenu.SetActive(false);
@@ -61,6 +64,9 @@ namespace UI
             {
                 case Menu.Main:
                     mainMenu.SetActive(true);
+                    break;
+                case Menu.Play:
+                    playMenu.SetActive(true);
                     break;
                 case Menu.Options:
                     optionsMenu.SetActive(true);
@@ -163,6 +169,11 @@ namespace UI
         public void OpenMainMenu()
         {
             SetMenu(Menu.Main);
+        }
+        
+        public void OpenPlayMenu()
+        {
+            SetMenu(Menu.Play);
         }
     
         public void OpenOptionsMenu()
