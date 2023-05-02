@@ -152,14 +152,17 @@ namespace UI
 
         public void OpenMenu()
         {
+            if (!_faithChoiceDone) return;
             SetMenu(Tab.Menu);
         }
         public void OpenInventory()
         {
+            if (!_faithChoiceDone) return;
             SetMenu(Tab.Inventory);
         }
         public void OpenSkills()
         {
+            if (!_faithChoiceDone) return;
             SetMenu(Tab.Skills);
         }
 

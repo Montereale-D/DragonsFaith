@@ -11,31 +11,49 @@ namespace UI
         
         [Multiline]
         public string content;
+
+        private bool _completed;
         
         public void OnPointerEnter(PointerEventData eventData)
         {
             delay = LeanTween.delayedCall(0.5f, () =>
             {
                 TooltipSystem.Show(content, header);
+                _completed = true;
             });
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            LeanTween.cancel(delay.uniqueId);
-            TooltipSystem.Hide();
+            if (delay == null) return;
+            if (_completed)
+            {
+                TooltipSystem.Hide();
+                _completed = false;
+            }
+            else LeanTween.cancel(delay.uniqueId);
         }
 
         private void OnDestroy()
         {
-            LeanTween.cancel(delay.uniqueId);
-            TooltipSystem.Hide();
+            if (delay == null) return;
+            if (_completed)
+            {
+                TooltipSystem.Hide();
+                _completed = false;
+            }
+            else LeanTween.cancel(delay.uniqueId);
         }
         
         private void OnDisable()
         {
-            LeanTween.cancel(delay.uniqueId);
-            TooltipSystem.Hide();
+            if (delay == null) return;
+            if (_completed)
+            {
+                TooltipSystem.Hide();
+                _completed = false;
+            }
+            else LeanTween.cancel(delay.uniqueId);
         }
     }
 }
