@@ -1,6 +1,8 @@
 using Save;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Inventory
 {
@@ -107,11 +109,17 @@ namespace Inventory
             slot.onSlotUpdate.Invoke(inventoryItem);
         }
 
+        //tmp
+        public UnityEvent<InventoryItem> onSlotUseEvent;
         /// <summary>
         /// Use this slot
         /// </summary>
         public void OnSlotUse(InventorySlot slot, InventoryItem item)
         {
+            if (ItemSyllabus.Instance.SearchItem("190cd2eb-04ba-42df-af91-dbb48316af90"))
+            {
+                onSlotUseEvent.Invoke(item);
+            }
         }
 
         /// <summary>

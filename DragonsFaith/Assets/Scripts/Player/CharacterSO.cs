@@ -1,60 +1,70 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AttributeType
+namespace Player
 {
-    Strength = 0,
-    Dexterity = 1,
-    Stamina = 2,
-    Charisma = 3,
-    Manipulation = 4,
-    Composure = 5,
-    Intelligence = 6,
-    Wits = 7,
-    Resolve = 8
-}
-
-public enum AttributeScore
-{
-    Poor = 1,
-    Average = 2,
-    Good = 3,
-    Excellent = 4,
-    Superhuman = 5
-}
-
-[Serializable]
-public struct Attribute
-{
-    public AttributeType attribute;
-    public AttributeScore score;
-
-    public Attribute(AttributeType attribute, AttributeScore score)
+    public enum AttributeType
     {
-        this.attribute = attribute;
-        this.score = score;
+        Strength = 1,
+        Dexterity = 2,
+        Constitution = 3,
+        Intelligence = 4,
+        Wisdom = 5, 
+        Charisma = 6,
     }
-}
 
-[CreateAssetMenu(fileName = "NewCharacter", menuName = "ScriptableObjects/Character")]
-public class CharacterSO : ScriptableObject
-{
-    public string characterName;
-    public RuntimeAnimatorController animatorController;
-    public List<Attribute> attributes;
-
-    // Called to reset default values
-    private void Reset()
+    public enum AttributeScore
     {
-        characterName = "New Character";
+        Poor = 1,
+        Average = 2,
+        Good = 3,
+        Excellent = 4,
+        Superhuman = 5
+    }
 
-        attributes.Clear();
-        for (int i = 0; i < 9; i++)
+    [Serializable]
+    public struct Attribute
+    {
+        public AttributeType attribute;
+        public AttributeScore score;
+
+        public Attribute(AttributeType attribute, AttributeScore score)
         {
-            Attribute attribute = new Attribute((AttributeType)i, AttributeScore.Average);
-            attributes.Add(attribute);
+            this.attribute = attribute;
+            this.score = score;
+        }
+    }
+
+    [CreateAssetMenu(fileName = "NewCharacter", menuName = "ScriptableObjects/Character")]
+    public class CharacterSO : ScriptableObject
+    {
+        public string characterName;
+        public RuntimeAnimatorController animatorController;
+        public List<Attribute> attributes;
+
+        // Called to reset default values
+        private void Reset()
+        {
+            characterName = "New Character";
+
+            attributes.Clear();
+            for (int i = 0; i < 9; i++)
+            {
+                Attribute attribute = new Attribute((AttributeType)i, AttributeScore.Average);
+                attributes.Add(attribute);
+            }
+        }
+
+        public AttributeScore GetAttributeScore(AttributeType attributeType)
+        {
+            foreach (var attribute in attributes)
+            {
+                if (attribute.attribute == attributeType)
+                    return attribute.score;
+            }
+
+            return AttributeScore.Poor;
         }
     }
 }

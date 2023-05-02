@@ -71,6 +71,7 @@ Transform:
   m_Children:
   - {fileID: 8771785999339961892}
   - {fileID: 8170855602551692860}
+  - {fileID: 7798020334844773117}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -581,6 +582,57 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 6621419671877599026}
+--- !u!1 &7152596651283882465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7798020334844773117}
+  - component: {fileID: 3629558704544043945}
+  m_Layer: 0
+  m_Name: CharacterHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7798020334844773117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7152596651283882465}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.1256857, y: 0.038242027, z: -0.0016672652}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2957025528055389442}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3629558704544043945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7152596651283882465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17144e469efa0cb4fb6a24fc762784cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterSo: {fileID: 11400000, guid: ed90e3a13b318564d9a59e7538a49be8, type: 2}
+  playerGameObject: {fileID: 2957025528055389465}
+  nameText: {fileID: 0}
+  healthSlider: {fileID: 0}
+  healthText: {fileID: 0}
+  manaSlider: {fileID: 0}
+  manaText: {fileID: 0}
 --- !u!1001 &2522498889760030571
 PrefabInstance:
   m_ObjectHideFlags: 0
