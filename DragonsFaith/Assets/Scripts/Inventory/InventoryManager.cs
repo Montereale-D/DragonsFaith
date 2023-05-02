@@ -170,7 +170,7 @@ namespace Inventory
             CleanupInventory();
 
             //get item from local data
-            foreach (var itemData in data.GetAllItemsData(GetPlayerType()))
+            foreach (var itemData in data.GetAllItemsData(GameData.GetPlayerType(IsHost)))
             {
                 SpawnNewItem(ItemSyllabus.Instance.SearchItem(itemData.itemId),
                     itemData.inventoryType == GameData.InventoryType.Inventory
@@ -186,7 +186,7 @@ namespace Inventory
         public void SaveData(ref GameData data)
         {
             //clean the previous local data
-            data.CleanupItemData(GetPlayerType());
+            data.CleanupItemData(GameData.GetPlayerType(IsHost));
 
             //add item to local data
             for (var i = 0; i < inventorySlots.Length; i++)
@@ -196,7 +196,7 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GetPlayerType(), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(IsHost), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
                 }
             }
             
@@ -207,7 +207,7 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GetPlayerType(), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(IsHost), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
                 }
             }
         }
@@ -230,11 +230,6 @@ namespace Inventory
                 if (inventoryItem == null) continue;
                 Destroy(inventoryItem.gameObject);
             }
-        }
-
-        private GameData.PlayerType GetPlayerType()
-        {
-            return IsHost ? GameData.PlayerType.Host : GameData.PlayerType.Client;
         }
     }
 }

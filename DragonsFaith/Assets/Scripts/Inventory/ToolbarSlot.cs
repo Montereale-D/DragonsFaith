@@ -15,7 +15,13 @@ namespace Inventory
             inventorySlot.onSlotUpdate.AddListener(OnSlotUpdate);
             inventorySlot.onSlotRemoved.AddListener(OnSlotRemove);
             _itemCopy = GetComponentInChildren<InventoryItem>();
-            _itemCopy.gameObject.SetActive(false);
+
+            if (_itemCopy)
+            {
+                _itemCopy.gameObject.SetActive(false);
+            }
+
+            
         }
 
         private void OnSlotUpdate(InventoryItem realItem)

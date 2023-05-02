@@ -1,3 +1,4 @@
+using System;
 using Inventory;
 using Save;
 using UI;
@@ -24,11 +25,11 @@ namespace Player
         {
             _inventoryManager = InventoryManager.Instance;
             _inventoryManager.onSlotUseEvent.AddListener(Heal);
-            
+
             _playerUI = PlayerUI.Instance;
-            
+
             characterSo.Reset();
-            
+
             _health = _maxHealth;
             _mana = _maxMana;
 
@@ -49,6 +50,7 @@ namespace Player
         {
             UpdateMaxHealth(_maxHealth + 20);
         }
+
         public void UpdateMaxHealth(int value)
         {
             _maxHealth = value;
@@ -66,7 +68,7 @@ namespace Player
         {
             TakeDamage(20);
         }
-        
+
         public void TakeDamage(int damage)
         {
             _health -= damage;
@@ -122,21 +124,24 @@ namespace Player
         public bool AbilityCheck(Attribute abilityAttribute)
         {
             var playerScore = characterSo.GetAttributeScore(abilityAttribute.attribute);
-            
-            Debug.Log("AbilityCheck " + abilityAttribute.attribute + " : ME = " + playerScore + " REQUIRED = " + abilityAttribute.score);
-            
+
+            Debug.Log("AbilityCheck " + abilityAttribute.attribute + " : ME = " + playerScore + " REQUIRED = " +
+                      abilityAttribute.score);
+
             return playerScore > abilityAttribute.score;
         }
 
 
         public void LoadData(GameData data)
         {
-            throw new System.NotImplementedException();
+            data.GetBarsData(GameData.GetPlayerType(IsHost), out _health, out _maxHealth, out _mana, out _maxMana);
+            _playerUI.UpdateHealthBar(_health, _maxHealth);
+            _playerUI.UpdateManaBar(_mana, _maxMana);
         }
 
         public void SaveData(ref GameData data)
         {
-            throw new System.NotImplementedException();
+            data.UpdateBarsData(GameData.GetPlayerType(IsHost), _health, _maxHealth, _mana, _maxMana);
         }
     }
 }

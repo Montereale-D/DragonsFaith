@@ -24,8 +24,9 @@ namespace Save
             DontDestroyOnLoad(this);
         }
 
-        private void Start()
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
             _dataObjects = FindDataObjects();
             _fileData = new FileData(Application.persistentDataPath, FileName);
         }
@@ -35,7 +36,11 @@ namespace Save
         /// </summary>
         private static List<IGameData> FindDataObjects()
         {
-            var dataGameObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameData>();
+            var dataGameObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameData>().ToList();
+
+            var s = dataGameObjects.Aggregate("", (current, dataGameObject) => current + (dataGameObject + " "));
+            Debug.Log("IGameDataList " + s);
+            
             return new List<IGameData>(dataGameObjects);
         }
 

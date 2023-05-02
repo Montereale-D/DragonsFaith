@@ -33,11 +33,17 @@ namespace Save
         {
             [SerializeField] public PlayerType playerType;
             [SerializeField] public List<ItemData> itemDataList;
+            [SerializeField] public int health;
+            [SerializeField] public int maxHealth;
+            [SerializeField] public int mana;
+            [SerializeField] public int maxMana;
 
             public PlayerData(PlayerType playerType, List<ItemData> itemDataList)
             {
                 this.playerType = playerType;
                 this.itemDataList = itemDataList == null ? new List<ItemData>() : new List<ItemData>(itemDataList);
+                health = maxHealth = 100;
+                mana = maxMana = 100;
             }
 
             public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -70,11 +76,18 @@ namespace Save
                 {
                     itemDataList = array.ToList();
                 }
+
+                //bars
+                serializer.SerializeValue(ref health);
+                serializer.SerializeValue(ref maxHealth);
+                serializer.SerializeValue(ref mana);
+                serializer.SerializeValue(ref maxMana);
             }
 
             public override string ToString()
             {
-                return "Type: " + playerType + " Items: " + PrintItemList(itemDataList);
+                return "Type: " + playerType + " Health: " + health + "/" + maxHealth + " Mana: " + mana + "/" + maxMana
+                       + "\n Items: " + PrintItemList(itemDataList);
             }
 
             private string PrintItemList(IEnumerable<ItemData> list)
@@ -164,6 +177,46 @@ namespace Save
             return player == PlayerType.Host ? hostData.itemDataList : clientData.itemDataList;
         }
 
+        public void UpdateBarsData(PlayerType player, int health, int maxHealth, int mana, int maxMana)
+        {
+            Debug.Log("UpdateBarsData " + player);
+            
+            if (player == PlayerType.Host)
+            {
+                hostData.health = health;
+                hostData.maxHealth = maxHealth;
+                hostData.mana = mana;
+                hostData.maxMana = maxMana;
+                
+                Debug.Log(hostData.ToString());
+            }
+            else
+            {
+                clientData.health = health;
+                clientData.maxHealth = maxHealth;
+                clientData.mana = mana;
+                clientData.maxMana = maxMana;
+            }
+        }
+
+        public void GetBarsData(PlayerType player, out int health, out int maxHealth, out int mana, out int maxMana)
+        {
+            if (player == PlayerType.Host)
+            {
+                health = hostData.health;
+                maxHealth = hostData.maxHealth;
+                mana = hostData.mana;
+                maxMana = hostData.maxMana;
+            }
+            else
+            {
+                health = clientData.health;
+                maxHealth = clientData.maxHealth;
+                mana = clientData.mana;
+                maxMana = clientData.maxMana;
+            }
+        }
+
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             hostData.NetworkSerialize(serializer);
@@ -173,6 +226,11 @@ namespace Save
         public override string ToString()
         {
             return "Host data: " + hostData + "\nClient data: " + clientData;
+        }
+
+        public static PlayerType GetPlayerType(bool isHost)
+        {
+            return isHost ? PlayerType.Host : PlayerType.Client;
         }
     }
 }
