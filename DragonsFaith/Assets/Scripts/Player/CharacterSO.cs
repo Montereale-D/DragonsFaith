@@ -44,7 +44,7 @@ namespace Player
         public List<Attribute> attributes;
 
         // Called to reset default values
-        private void Reset()
+        public void Reset()
         {
             characterName = "New Character";
 
@@ -64,6 +64,7 @@ namespace Player
                     return attribute.score;
             }
 
+            Debug.LogError("Attribute not found");
             return AttributeScore.Poor;
         }
     }

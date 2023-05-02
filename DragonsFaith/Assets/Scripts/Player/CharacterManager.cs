@@ -27,6 +27,8 @@ namespace Player
             
             _playerUI = PlayerUI.Instance;
             
+            characterSo.Reset();
+            
             _health = _maxHealth;
             _mana = _maxMana;
 
@@ -120,6 +122,9 @@ namespace Player
         public bool AbilityCheck(Attribute abilityAttribute)
         {
             var playerScore = characterSo.GetAttributeScore(abilityAttribute.attribute);
+            
+            Debug.Log("AbilityCheck " + abilityAttribute.attribute + " : ME = " + playerScore + " REQUIRED = " + abilityAttribute.score);
+            
             return playerScore > abilityAttribute.score;
         }
 
