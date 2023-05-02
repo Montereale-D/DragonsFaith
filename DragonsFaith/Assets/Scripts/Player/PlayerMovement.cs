@@ -1,6 +1,4 @@
-﻿using System;
-using Save;
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine;
 
 namespace Player
@@ -8,6 +6,14 @@ namespace Player
     public class PlayerMovement : NetworkBehaviour
     {
         [SerializeField] private float speed = 3f;
+        [SerializeField] private float fastSpeed = 6f;
+
+        private float _speed;
+
+        private void Awake()
+        {
+            _speed = speed;
+        }
 
         public void ForcePosition(Vector3 position)
         {
@@ -36,8 +42,10 @@ namespace Player
             if (Input.GetKey(KeyCode.S)) moveDir.y = -1f;
             if (Input.GetKey(KeyCode.A)) moveDir.x = -1f;
             if (Input.GetKey(KeyCode.D)) moveDir.x = +1f;
+            
+            _speed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : speed;
 
-            transform.position += moveDir * (speed * Time.deltaTime);
+            transform.position += moveDir * (_speed * Time.deltaTime);
         }
     }
 }
