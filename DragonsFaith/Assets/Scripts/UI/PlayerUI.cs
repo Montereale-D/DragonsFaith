@@ -1,6 +1,7 @@
-using Unity.VisualScripting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI
@@ -13,9 +14,11 @@ namespace UI
             Inventory,
             Skills,
             Faith,
+            Main,
             Options,
             Audio,
             Graphics,
+            KeyBindings
         };
 
         public enum Element
@@ -31,6 +34,20 @@ namespace UI
         public GameObject inventoryTab;
         public GameObject skillsTab;
         public GameObject faithTab;
+        
+        [Header("Option Screens")]
+        public GameObject mainScreen;
+        public GameObject optionsScreen;
+        public GameObject audioScreen;
+        public GameObject graphicsScreen;
+        public GameObject keybindingsScreen;
+        
+        [Header("Graphics and Audio")]
+        private Resolution[] _resolutions;
+        public Dropdown resolutionDropdown;
+        public Slider playerVolumeSlider;
+        public Slider enemyVolumeSlider;
+        public Slider backgroundVolumeSlider;
 
         [Header("Pop Up")]
         [SerializeField] private Text popUpMessage;
@@ -64,6 +81,11 @@ namespace UI
             {
                 case Tab.Menu:
                     menuTab.SetActive(!menuTab.activeSelf);
+                    mainScreen.SetActive(true);
+                    optionsScreen.SetActive(false);
+                    audioScreen.SetActive(false);
+                    graphicsScreen.SetActive(false);
+                    keybindingsScreen.SetActive(false);
                     inventoryTab.SetActive(false);
                     skillsTab.SetActive(false);
                     break;
@@ -85,6 +107,31 @@ namespace UI
                     });
                     _faithChoiceDone = true;
                     break;
+                case Tab.Main:
+                    mainScreen.SetActive(true);
+                    optionsScreen.SetActive(false);
+                    break;
+                case Tab.Options:
+                    mainScreen.SetActive(false);
+                    optionsScreen.SetActive(true);
+                    audioScreen.SetActive(false);
+                    graphicsScreen.SetActive(false);
+                    keybindingsScreen.SetActive(false);
+                    break;
+                case Tab.Audio:
+                    optionsScreen.SetActive(false);
+                    audioScreen.SetActive(true);
+                    break;
+                case Tab.Graphics:
+                    optionsScreen.SetActive(false);
+                    graphicsScreen.SetActive(true);
+                    break;
+                case Tab.KeyBindings:
+                    optionsScreen.SetActive(false);
+                    keybindingsScreen.SetActive(true);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(menu), menu, null);
             }
         }
         
@@ -108,6 +155,30 @@ namespace UI
             inventoryTab.SetActive(false);
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
+            
+            var resolutions = Screen.resolutions.Select(resolution => new Resolution
+            {
+                width = resolution.width, height = resolution.height
+            }).Distinct();
+            _resolutions = resolutions as Resolution[] ?? resolutions.ToArray();
+        
+            resolutionDropdown.ClearOptions();
+            var options = new List<string>();
+            var currentResolutionIndex = 0;
+            for (var i = 0; i < _resolutions.Length; i++)
+            {
+                var option = _resolutions[i].width + "x" + _resolutions[i].height;
+                options.Add(option);
+    
+                if (_resolutions[i].width == Screen.currentResolution.width &&
+                    _resolutions[i].height == Screen.currentResolution.height)
+                {
+                    currentResolutionIndex = i;
+                }
+            }
+            resolutionDropdown.AddOptions(options);
+            resolutionDropdown.value = currentResolutionIndex;
+            resolutionDropdown.RefreshShownValue();
             
             _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
             
@@ -138,6 +209,15 @@ namespace UI
                 {
                     OpenSkills();
                 }
+                else if (audioScreen.activeSelf || graphicsScreen.activeSelf ||
+                         keybindingsScreen.activeSelf)
+                {
+                    OpenOptions();
+                }
+                else if (optionsScreen.activeSelf)
+                {
+                    OpenMain();
+                }
                 else
                 {
                     OpenMenu();
@@ -155,6 +235,27 @@ namespace UI
             if (!_faithChoiceDone) return;
             SetMenu(Tab.Menu);
         }
+        public void OpenMain()
+        {
+            SetMenu(Tab.Main);
+        }
+        public void OpenOptions()
+        {
+            SetMenu(Tab.Options);
+        }
+        public void OpenAudio()
+        {
+            SetMenu(Tab.Audio);
+        }
+        public void OpenGraphics()
+        {
+            SetMenu(Tab.Graphics);
+        }
+        public void OpenKeyBindings()
+        {
+            SetMenu(Tab.KeyBindings);
+        }
+
         public void OpenInventory()
         {
             if (!_faithChoiceDone) return;
@@ -207,6 +308,22 @@ namespace UI
         private void FadeOutElement(RectTransform rectTransform)
         {
             LeanTween.alpha(rectTransform, 0f, fadeOutTime).setEase(LeanTweenType.linear);
+        }
+        
+        public void SetQuality(int qualityIndex)
+        {
+            QualitySettings.SetQualityLevel(qualityIndex);
+        }
+        
+        public void SetFullscreen(bool isFullscreen)
+        {
+            Screen.fullScreen = isFullscreen;
+        }
+        
+        public void SetResolution(int resolutionIndex)
+        {
+            var resolution = _resolutions[resolutionIndex];
+            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
         }
     }
 }
