@@ -30,6 +30,12 @@ namespace UI
         public GameObject graphicsMenu;
         public GameObject keybindingsMenu;
         public GameObject creditsMenu;
+
+        [Header("Play Screens")] 
+        public GameObject playAs;
+        public GameObject hostOrClient;
+        public GameObject host;
+        public GameObject client;
         
         [Header("Option Sliders")]
         public Slider playerVolumeSlider;
@@ -74,6 +80,8 @@ namespace UI
                     break;
                 case Menu.Play:
                     playMenu.SetActive(true);
+                    playAs.SetActive(true);
+                    hostOrClient.SetActive(false);
                     break;
                 case Menu.Options:
                     optionsMenu.SetActive(true);
@@ -136,15 +144,15 @@ namespace UI
         {
             if ((audioMenu.activeSelf ||
                  graphicsMenu.activeSelf ||
-                 (keybindingsMenu.activeSelf && !isChangingKey)) && Input.GetKeyDown(KeyCode.Escape)
+                 (keybindingsMenu.activeSelf /*&& !isChangingKey*/)) && Input.GetKeyDown(KeyCode.Escape)
                 /*_playerInput.actions["Back"].WasPressedThisFrame()*/)   //return to main menu
             {
                 SetMenu(Menu.Options);
                 //InputManager.Instance.ResetIfNotSaved(_playerInput);
             }
-            else if (keybindingsMenu.activeSelf && isChangingKey)
+            /*else if (keybindingsMenu.activeSelf && isChangingKey)
             {
-            }
+            }*/
             else if (Input.GetKeyDown(KeyCode.Escape)/*_playerInput.actions["Back"].WasPressedThisFrame()*/)
             {
                 SetMenu(Menu.Main);
@@ -202,6 +210,28 @@ namespace UI
         public void OpenCreditsMenu()
         {
             SetMenu(Menu.Credits);
+        }
+
+        public void OpenHostScreen()
+        {
+            playAs.SetActive(false);
+            hostOrClient.SetActive(true);
+            host.SetActive(true);
+            client.SetActive(false);
+        }
+
+        public void OpenClientScreen()
+        {
+            playAs.SetActive(false);
+            hostOrClient.SetActive(true);
+            host.SetActive(false);
+            client.SetActive(true);
+        }
+
+        public void BackToPlayAsScreen()
+        {
+            playAs.SetActive(true);
+            hostOrClient.SetActive(false);
         }
 
         public void PlayGame()

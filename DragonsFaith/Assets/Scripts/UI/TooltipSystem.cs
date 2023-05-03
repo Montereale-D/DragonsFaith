@@ -21,6 +21,7 @@ namespace UI
 
         public static void Hide()
         {
+            if (!current.tooltip.enabled) return;
             current.tooltip.FadeFinished();
             LeanTween.delayedCall(0.1f, () =>
             {
