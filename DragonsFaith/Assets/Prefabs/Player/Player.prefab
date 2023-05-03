@@ -163,7 +163,7 @@ CapsuleCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -628,11 +628,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterSo: {fileID: 11400000, guid: ed90e3a13b318564d9a59e7538a49be8, type: 2}
   playerGameObject: {fileID: 2957025528055389465}
-  nameText: {fileID: 0}
-  healthSlider: {fileID: 0}
-  healthText: {fileID: 0}
-  manaSlider: {fileID: 0}
-  manaText: {fileID: 0}
 --- !u!1001 &2522498889760030571
 PrefabInstance:
   m_ObjectHideFlags: 0
