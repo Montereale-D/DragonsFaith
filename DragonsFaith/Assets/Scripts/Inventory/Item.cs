@@ -39,7 +39,9 @@ namespace Inventory
     {
         Items,
         Weapons,
-        Armory,
+        Head,
+        Chest,
+        Legs,
         Skills,
         All
     }

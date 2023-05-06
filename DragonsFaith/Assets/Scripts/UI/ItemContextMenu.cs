@@ -1,46 +1,21 @@
-using System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
-    [ExecuteInEditMode]
-    public class Tooltip : MonoBehaviour
+    public class ItemContextMenu : MonoBehaviour
     {
-        public TextMeshProUGUI headerField;
-        public TextMeshProUGUI contentField;
-        public LayoutElement layoutElement;
         private RectTransform _rectTransform;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            gameObject.SetActive(false);
         }
-        
-        public void SetText(string content, string header = "")
-        {
-            if (string.IsNullOrEmpty(header))
-            {
-                headerField.gameObject.SetActive(false);
-            }
-            else
-            {
-                headerField.gameObject.SetActive(true);
-                headerField.text = header;
-            }
 
-            contentField.text = content;
-            
-            layoutElement.enabled = Math.Max(headerField.preferredWidth, contentField.preferredWidth) >= layoutElement.preferredWidth;
-        }
-        
-        private void Update()
+        public void Open()
         {
-            if (Application.isEditor)
-            {
-                layoutElement.enabled = Math.Max(headerField.preferredWidth, contentField.preferredWidth) >= layoutElement.preferredWidth;
-            }
+            gameObject.SetActive(true);
+
             Vector2 position = Input.mousePosition;
 
             var pivotX = position.x / Screen.width;
@@ -66,8 +41,16 @@ namespace UI
             }
             _rectTransform.pivot = new Vector2(finalPivotX, finalPivotY);
             transform.position = position;
+            
+            FadeStart();
         }
 
+        public void Close()
+        {
+            FadeFinished();
+            gameObject.SetActive(false);
+        }
+        
         public void FadeStart()
         {
             LeanTween.alpha(_rectTransform, 1f, 0.2f).setEase(LeanTweenType.linear);

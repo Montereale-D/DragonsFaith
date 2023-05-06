@@ -1,4 +1,3 @@
-using System;
 using Inventory;
 using Save;
 using UI;
@@ -23,8 +22,10 @@ namespace Player
 
         private void Awake()
         {
-            _inventoryManager = InventoryManager.Instance;
+            _inventoryManager = GetComponentInChildren<InventoryManager>();
+            //_inventoryManager = InventoryManager.Instance;
             _inventoryManager.onSlotUseEvent.AddListener(Heal);
+            //TODO: CharacterManager is awoken before playerUI, so no inventoryManager is available at this stage
 
             _playerUI = PlayerUI.Instance;
 
@@ -37,12 +38,6 @@ namespace Player
             _playerUI.manaSlider.maxValue = _maxMana;
             _playerUI.UpdateHealthBar(_maxHealth, _maxHealth);
             _playerUI.UpdateManaBar(_maxMana, _maxMana);
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-            _playerUI.nameText.text = IsHost ? "Host" : "Client";
         }
 
         [ContextMenu("Increase Max Health")]

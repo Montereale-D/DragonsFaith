@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class AudioManager : Singleton<AudioManager>
 {
-    /*[SerializeField] private SoundBank _soundBank;
+    //[SerializeField] private SoundBank _soundBank;
 
     [SerializeField] private AudioSource _backgroundMusic;
     [SerializeField] private AudioSource _UISound;
@@ -154,7 +155,7 @@ public class AudioManager : Singleton<AudioManager>
     {
         _enemySound.PlayOneShot(_soundBank.MutantRatDie);
     }
-    public void SetEnemyVolume(float value) //TODO 'skeleton' change into 'enemy'
+    public void SetEnemyVolume(float value)
     {
         _enemySound.volume = value;
     }
@@ -201,5 +202,6 @@ public class AudioManager : Singleton<AudioManager>
     public void PlayEnterDoorSound()
     {
         _backgroundMusic.PlayOneShot(_soundBank.EnterDoor);
-    }*/
+    }
 }
+*/

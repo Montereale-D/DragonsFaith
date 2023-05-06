@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class SceneManager : NetworkBehaviour
 {
     private Scene _loadedScene;
+    
     public override void OnNetworkSpawn()
     {
         DontDestroyOnLoad(this);

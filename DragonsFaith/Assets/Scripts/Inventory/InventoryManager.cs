@@ -141,7 +141,7 @@ namespace Inventory
         {
             foreach (var slot in equipmentSlots)
             {
-                if (slot.slotType is ItemType.Armory or ItemType.Skills or ItemType.Weapons)
+                if (slot.slotType is ItemType.Head or ItemType.Chest or ItemType.Legs or ItemType.Skills or ItemType.Weapons)
                 {
                     slot.blockDrag = b;
                 }

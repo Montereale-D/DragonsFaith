@@ -53,11 +53,12 @@ namespace UI
         public PopUpMessage toolTip;
 
         [Header("Resolutions")]
-        private Resolution[] _resolutions;
         public Dropdown resolutionDropdown;
 
         private GameObject[] _keybindingButtons;
         public static bool isChangingKey;
+
+        private OptionsManager _optionsManager;
     
         //private UnityEngine.InputSystem.PlayerInput _playerInput;
 
@@ -110,34 +111,14 @@ namespace UI
             _playerInput.uiInputModule = FindObjectOfType<InputSystemUIInputModule>();*/
         
             //_playerInput.SwitchCurrentActionMap("UI");
+
+            _optionsManager = OptionsManager.Instance;
+            
+            _optionsManager.SetDropdown(resolutionDropdown);
         
-            var resolutions = Screen.resolutions.Select(resolution => new Resolution
-            {
-                width = resolution.width, height = resolution.height
-            }).Distinct();
-            _resolutions = resolutions as Resolution[] ?? resolutions.ToArray();
-        
-            resolutionDropdown.ClearOptions();
-            var options = new List<string>();
-            var currentResolutionIndex = 0;
-            for (var i = 0; i < _resolutions.Length; i++)
-            {
-                var option = _resolutions[i].width + "x" + _resolutions[i].height;
-                options.Add(option);
-    
-                if (_resolutions[i].width == Screen.currentResolution.width &&
-                    _resolutions[i].height == Screen.currentResolution.height)
-                {
-                    currentResolutionIndex = i;
-                }
-            }
-            resolutionDropdown.AddOptions(options);
-            resolutionDropdown.value = currentResolutionIndex;
-            resolutionDropdown.RefreshShownValue();
-        
-            /*playerVolumeSlider.value = AudioManager.Instance.GetPlayerVolumeSound();
-            enemyVolumeSlider.value = AudioManager.Instance.GetEnemyVolumeSound();
-            backgroundVolumeSlider.value = AudioManager.Instance.GetBackgroundVolumeSound();*/
+            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
         }
 
         private void Update()
@@ -275,32 +256,30 @@ namespace UI
         //OPTION SETTINGS
         public void SetBackgroundVolume(float value)
         {
-            //AudioManager.Instance.SetBackgroundVolume(value);
+            _optionsManager.SetBackgroundVolume(value);
         }
         public void SetPlayerVolume(float value)
         {
-            //AudioManager.Instance.SetPlayerVolume(value);
+            _optionsManager.SetPlayerVolume(value);
         }
         public void SetEnemyVolume(float value)
         {
-            //AudioManager.Instance.SetEnemyVolume(value);
+            _optionsManager.SetEnemyVolume(value);
         }
 
         public void SetQuality(int qualityIndex)
         {
-            QualitySettings.SetQualityLevel(qualityIndex);
+            OptionsManager.SetQuality(qualityIndex);
         }
-
+        
         public void SetFullscreen(bool isFullscreen)
         {
-            Screen.fullScreen = isFullscreen;
+            OptionsManager.SetFullscreen(isFullscreen);
         }
-
+        
         public void SetResolution(int resolutionIndex)
         {
-            var resolution = _resolutions[resolutionIndex];
-            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+            _optionsManager.SetResolution(resolutionIndex);
         }
-
     }
 }

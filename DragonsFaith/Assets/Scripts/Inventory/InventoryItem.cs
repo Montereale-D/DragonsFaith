@@ -48,7 +48,8 @@ namespace Inventory
             //save reference to parent and set parent to the topmost transform
             image.raycastTarget = false;
             _parentAfterDrag = transform.parent;
-            transform.SetParent(transform.root);
+            // transform.SetParent(transform.root);
+            transform.SetParent(transform.root.GetComponentInChildren<PlayerUI>().transform);
         }
 
         public void OnDrag(PointerEventData eventData)

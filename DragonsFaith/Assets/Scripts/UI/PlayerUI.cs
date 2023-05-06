@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,19 +45,20 @@ namespace UI
         public GameObject keybindingsScreen;
         
         [Header("Graphics and Audio")]
-        private Resolution[] _resolutions;
         public Dropdown resolutionDropdown;
         public Slider playerVolumeSlider;
         public Slider enemyVolumeSlider;
         public Slider backgroundVolumeSlider;
 
-        [Header("Character Info")] public TextMeshProUGUI nameText;
+        [Header("Character Info")] 
+        public TextMeshProUGUI nameText;
         public Slider healthSlider;
         public TextMeshProUGUI healthText;
         public Slider manaSlider;
         public TextMeshProUGUI manaText;
 
-        [Header("Pop Up")] [SerializeField] private Text popUpMessage;
+        [Header("Pop Up")] [SerializeField] 
+        private PopUpMessage popUpMessage;
 
         [Header("Faiths")] public Image faith;
         public Sprite fire;
@@ -73,13 +75,15 @@ namespace UI
         private float fadeInTime = 0.5f;
         [SerializeField] [Tooltip("Time for the Faith tab to dissolve.")] 
         private float fadeOutTime = 0.5f;
+        
+        private OptionsManager _optionsManager;
 
         public static PlayerUI Instance { get; private set; }
 
         public void ShowMessage(string message)
         {
-            popUpMessage.text = message;
-            PopUpMessage.Instance.GetComponent<PopUpMessage>().StartOpen();
+            popUpMessage.uiSettings.text.text = message;
+            popUpMessage.StartOpen();
         }
 
         private void SetMenu(Tab menu)
@@ -172,32 +176,19 @@ namespace UI
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
             
-            var resolutions = Screen.resolutions.Select(resolution => new Resolution
-            {
-                width = resolution.width, height = resolution.height
-            }).Distinct();
-            _resolutions = resolutions as Resolution[] ?? resolutions.ToArray();
+            _optionsManager = OptionsManager.Instance;
+            
+            _optionsManager.SetDropdown(resolutionDropdown);
+
+            nameText.text = _optionsManager.RetrievePlayerName();
         
-            resolutionDropdown.ClearOptions();
-            var options = new List<string>();
-            var currentResolutionIndex = 0;
-            for (var i = 0; i < _resolutions.Length; i++)
-            {
-                var option = _resolutions[i].width + "x" + _resolutions[i].height;
-                options.Add(option);
-    
-                if (_resolutions[i].width == Screen.currentResolution.width &&
-                    _resolutions[i].height == Screen.currentResolution.height)
-                {
-                    currentResolutionIndex = i;
-                }
-            }
-            resolutionDropdown.AddOptions(options);
-            resolutionDropdown.value = currentResolutionIndex;
-            resolutionDropdown.RefreshShownValue();
+            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
+            
+            //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
             
             _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
-            
             FadeInElement(_rectTransformFaithTab);
         }
 
@@ -343,27 +334,37 @@ namespace UI
             healthSlider.value = value;
             healthText.text = "Life: " + value + "/" + maxValue;
         }
-        
-        public void SetQuality(int qualityIndex)
-        {
-            QualitySettings.SetQualityLevel(qualityIndex);
-        }
-        
-        public void SetFullscreen(bool isFullscreen)
-        {
-            Screen.fullScreen = isFullscreen;
-        }
-        
-        public void SetResolution(int resolutionIndex)
-        {
-            var resolution = _resolutions[resolutionIndex];
-            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        }
-        
         public void UpdateManaBar(int value, int maxValue)
         {
             manaSlider.value = value;
             manaText.text = "Mana: " + value + "/" + maxValue;
+        }
+        public void SetBackgroundVolume(float value)
+        {
+            _optionsManager.SetBackgroundVolume(value);
+        }
+        public void SetPlayerVolume(float value)
+        {
+            _optionsManager.SetPlayerVolume(value);
+        }
+        public void SetEnemyVolume(float value)
+        {
+            _optionsManager.SetEnemyVolume(value);
+        }
+        
+        public void SetQuality(int qualityIndex)
+        {
+            OptionsManager.SetQuality(qualityIndex);
+        }
+        
+        public void SetFullscreen(bool isFullscreen)
+        {
+            OptionsManager.SetFullscreen(isFullscreen);
+        }
+        
+        public void SetResolution(int resolutionIndex)
+        {
+            _optionsManager.SetResolution(resolutionIndex);
         }
     }
 }

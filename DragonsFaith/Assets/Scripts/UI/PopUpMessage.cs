@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class PopUpMessage: Singleton<MonoBehaviour>
+    public class PopUpMessage: MonoBehaviour
     {
         [System.Serializable]
         public class AnimationSettings
