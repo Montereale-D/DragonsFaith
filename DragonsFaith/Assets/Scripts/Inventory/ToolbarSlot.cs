@@ -20,8 +20,6 @@ namespace Inventory
             {
                 _itemCopy.gameObject.SetActive(false);
             }
-
-            
         }
 
         private void OnSlotUpdate(InventoryItem realItem)

@@ -24,6 +24,7 @@ namespace UI
             KeyBindings
         };
 
+        [Serializable]
         public enum Element
         {
             Fire,
@@ -51,6 +52,10 @@ namespace UI
         public Slider enemyVolumeSlider;
         public Slider backgroundVolumeSlider;
 
+        [Header("Player UI")] 
+        public GameObject playerUI;
+        public Image portrait;
+
         [Header("Character Info")] 
         public TextMeshProUGUI nameText;
         public Slider healthSlider;
@@ -74,7 +79,7 @@ namespace UI
         public Sprite water;
 
         private bool _faithChoiceDone;
-        public static Element chosenFaith;
+        public Element chosenFaith;
 
         private RectTransform _rectTransformFaithTab;
         private static LTDescr delay;
@@ -241,7 +246,7 @@ namespace UI
         
         private void SetFaithImage(Element element)
         {
-            faith.sprite = element switch
+            faith.sprite = portrait.sprite = element switch
             {
                 Element.Fire => fire,
                 Element.Air => air,
@@ -291,6 +296,7 @@ namespace UI
         private void CloseFaithTab()
         {
             SetMenu(Tab.Faith);
+            playerUI.SetActive(true);
         }
 
         public void SetFire()

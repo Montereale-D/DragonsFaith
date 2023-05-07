@@ -120,6 +120,7 @@ public class NetworkUI : NetworkBehaviour
         {
             _isReady = true;
             hostReadyButton.image.color = onButtonColor;
+            PlayerPrefs.SetString("playerName", "host");
             HostReadyClientRpc();
 
             if (!_isClientReady) return;
@@ -140,6 +141,8 @@ public class NetworkUI : NetworkBehaviour
         {
             _isReady = true;
             clientReadyButton.image.color = onButtonColor;
+            //NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().gameObject.name = "Client";
+            PlayerPrefs.SetString("playerName", "client");
             ClientReadyServerRpc();
         }
     }

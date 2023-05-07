@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Enemy
@@ -30,6 +31,7 @@ namespace Enemy
             //Init
             _positionIndex = 0;
             _nextPosition = _patrolPositions[0].position;
+            
         }
 
         private void Update()
@@ -39,7 +41,7 @@ namespace Enemy
             //Need to be updated for the correct mesh rendering
             fieldOfView.SetOrigin(charPos);
             fieldOfView.SetAimDirection((_nextPosition - charPos).normalized);
-            fieldOfView.transform.position = transform.localPosition; //offset for the correct mesh positioning
+            //fieldOfView.transform.position = transform.localPosition; //offset for the correct mesh positioning
 
             if (!_patrol) return;
 

@@ -78,9 +78,21 @@ namespace Inventory
             {
                 var itemInSlot = slot.GetComponentInChildren<InventoryItem>();
 
-                if (itemInSlot == null)
+                if (itemInSlot == null && (newItem.type == slot.slotType || slot.slotType == ItemType.All))
                 {
                     SpawnNewItem(newItem, slot, 1);
+                    return true;
+                }
+            }
+            
+            foreach (var slot in equipmentSlots)
+            {
+                var itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+
+                if (itemInSlot == null && newItem.type == slot.slotType)
+                {
+                    SpawnNewItem(newItem, slot, 1);
+                    slot.onSlotUpdate.Invoke(itemInSlot);
                     return true;
                 }
             }
@@ -170,7 +182,7 @@ namespace Inventory
             CleanupInventory();
 
             //get item from local data
-            foreach (var itemData in data.GetAllItemsData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost)))
+            foreach (var itemData in data.GetAllItemsData(GameData.GetPlayerType()))
             {
                 SpawnNewItem(ItemSyllabus.Instance.SearchItem(itemData.itemId),
                     itemData.inventoryType == GameData.InventoryType.Inventory
@@ -186,7 +198,7 @@ namespace Inventory
         public void SaveData(ref GameData data)
         {
             //clean the previous local data
-            data.CleanupItemData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost));
+            data.CleanupItemData(GameData.GetPlayerType());
 
             //add item to local data
             for (var i = 0; i < inventorySlots.Length; i++)
@@ -196,7 +208,7 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
                 }
             }
             
@@ -207,7 +219,7 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
                 }
             }
         }
@@ -222,6 +234,7 @@ namespace Inventory
                 var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
                 if (inventoryItem == null) continue;
                 Destroy(inventoryItem.gameObject);
+                slot.onSlotRemoved.Invoke(inventoryItem);
             }
             
             foreach (var slot in equipmentSlots)
@@ -229,6 +242,7 @@ namespace Inventory
                 var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
                 if (inventoryItem == null) continue;
                 Destroy(inventoryItem.gameObject);
+                slot.onSlotRemoved.Invoke(inventoryItem);
             }
         }
 

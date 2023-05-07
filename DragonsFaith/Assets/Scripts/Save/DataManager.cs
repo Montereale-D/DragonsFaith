@@ -16,18 +16,21 @@ namespace Save
 
         private void Awake()
         {
-            if (Instance != null)
-                Debug.LogError("More than one DataManager in the scene");
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
 
             Instance = this;
-            
             DontDestroyOnLoad(this);
         }
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            _dataObjects = FindDataObjects();
+            Debug.Log("DataManager OnNetworkSpawn");
+            //_dataObjects = FindDataObjects();
             _fileData = new FileData(Application.persistentDataPath, FileName);
         }
 
@@ -36,12 +39,13 @@ namespace Save
         /// </summary>
         private static List<IGameData> FindDataObjects()
         {
-            var dataGameObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameData>().ToList();
+            var dataGameObjectsMono = FindObjectsOfType<MonoBehaviour>().OfType<IGameData>().ToList();
 
-            var s = dataGameObjects.Aggregate("", (current, dataGameObject) => current + (dataGameObject + " "));
+
+            var s = dataGameObjectsMono.Aggregate("", (current, dataGameObject) => current + (dataGameObject + " "));
             Debug.Log("IGameDataList " + s);
-            
-            return new List<IGameData>(dataGameObjects);
+
+            return new List<IGameData>(dataGameObjectsMono);
         }
 
         public void NewGameRequest()
@@ -55,9 +59,9 @@ namespace Save
         {
             if (!IsHost && !IsClient)
             {
-                Debug.LogWarning("NO AUTHENTICATION - some functions may not working correctly");    
+                Debug.LogWarning("NO AUTHENTICATION - some functions may not working correctly");
             }
-            
+
             if (!IsHost) return;
             Debug.Log("Save Game request");
             SaveGame();
@@ -67,9 +71,9 @@ namespace Save
         {
             if (!IsHost && !IsClient)
             {
-                Debug.LogWarning("NO AUTHENTICATION - some functions may not working correctly");    
+                Debug.LogWarning("NO AUTHENTICATION - some functions may not working correctly");
             }
-            
+
             if (!IsHost) return;
             Debug.Log("Load Game request");
             LoadGame();
@@ -88,6 +92,7 @@ namespace Save
             if (_gameData == null)
                 _gameData = new GameData();
 
+            _dataObjects = FindDataObjects();
             //save data for each object
             foreach (var dataObject in _dataObjects)
             {
@@ -98,7 +103,7 @@ namespace Save
             {
                 //write save on local file
                 _fileData.Save(_gameData);
-                
+
                 //notify client
                 SaveDataClientRpc();
             }
@@ -124,7 +129,7 @@ namespace Save
 
             //send game data to client
             LoadDataClientRpc(_gameData);
-            
+
             //load data for each object
             foreach (var dataObject in _dataObjects)
             {
@@ -141,7 +146,7 @@ namespace Save
                 SaveGame();
             }
         }
-        
+
         [ClientRpc]
         private void LoadDataClientRpc(GameData gameData)
         {
@@ -149,7 +154,7 @@ namespace Save
             {
                 Debug.Log("[CLIENT RPC] Load data request from server");
                 _gameData = gameData;
-                
+
                 //load data for each object
                 foreach (var dataObject in _dataObjects)
                 {
@@ -162,11 +167,19 @@ namespace Save
         private void SavePlayerDataServerRpc(GameData clientData)
         {
             if (!IsHost) return;
-            
+
             Debug.Log("[SERVER RPC] Save data request from client: \n" + clientData.ClientData);
-            
+
             _gameData.UpdateInventoryData(GameData.PlayerType.Client,
                 clientData.GetAllItemsData(GameData.PlayerType.Client));
+
+            clientData.GetBarsData(GameData.PlayerType.Client, out int health, out int maxHealth, out int mana,
+                out int maxMana);
+            _gameData.UpdateBarsData(GameData.PlayerType.Client, health, maxHealth, mana, maxMana);
+            
+            _gameData.SetFaith(GameData.PlayerType.Client, clientData.GetFaith(GameData.PlayerType.Client));
+            _gameData.SetPlayerName(GameData.PlayerType.Client, clientData.GetPlayerName(GameData.PlayerType.Client));
+
             _fileData.Save(_gameData);
         }
     }

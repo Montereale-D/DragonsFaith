@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public class CharacterManager : NetworkBehaviour, IGameData
+    public class CharacterManager : MonoBehaviour, IGameData
     {
         [SerializeField] private CharacterSO characterSo;
 
@@ -31,23 +31,27 @@ namespace Player
 
             Instance = this;
             DontDestroyOnLoad(this);
-            
+
             characterSo.Reset();
 
             _health = _maxHealth;
             _mana = _maxMana;
+
+            //GetComponent<NetworkObject>().Spawn();
         }
+
 
         private void Start()
         {
             _inventoryManager = InventoryManager.Instance;
             _inventoryManager.onSlotUseEvent.AddListener(Heal);
-            
+
             _playerUI = PlayerUI.Instance;
             _playerUI.healthSlider.maxValue = _maxHealth;
             _playerUI.manaSlider.maxValue = _maxMana;
             _playerUI.UpdateHealthBar(_maxHealth, _maxHealth);
             _playerUI.UpdateManaBar(_maxMana, _maxMana);
+            _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
         }
 
         [ContextMenu("Increase Max Health")]
@@ -139,14 +143,26 @@ namespace Player
 
         public void LoadData(GameData data)
         {
-            data.GetBarsData(GameData.GetPlayerType(IsHost), out _health, out _maxHealth, out _mana, out _maxMana);
+            var playerType = GameData.GetPlayerType();
+
+            Debug.Log("CharacterManager load data " + playerType);
+
+            data.GetBarsData(playerType, out _health, out _maxHealth, out _mana, out _maxMana);
             _playerUI.UpdateHealthBar(_health, _maxHealth);
             _playerUI.UpdateManaBar(_mana, _maxMana);
+
+            _playerUI.nameText.text = data.GetPlayerName(playerType);
+            _playerUI.chosenFaith = data.GetFaith(playerType);
         }
 
         public void SaveData(ref GameData data)
         {
-            data.UpdateBarsData(GameData.GetPlayerType(IsHost), _health, _maxHealth, _mana, _maxMana);
+            var playerType = GameData.GetPlayerType();
+            
+            data.UpdateBarsData(playerType, _health, _maxHealth, _mana, _maxMana);
+
+            data.SetPlayerName(playerType, _playerUI.nameText.text);
+            data.SetFaith(playerType, _playerUI.chosenFaith);
         }
     }
 }

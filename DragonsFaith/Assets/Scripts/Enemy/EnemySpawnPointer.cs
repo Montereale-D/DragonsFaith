@@ -1,16 +1,20 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class EnemySpawnPointer : MonoBehaviour
+public class EnemySpawnPointer : NetworkBehaviour
 {
     [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private List<GameObject> spawnPoints;
     [SerializeField] private bool useAllPoints = true;
     [SerializeField] private int usePoints;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+        if (!IsHost) return;
+
         if (useAllPoints || usePoints == spawnPoints.Count)
             SpawnAllPoints();
         else
@@ -22,7 +26,8 @@ public class EnemySpawnPointer : MonoBehaviour
         foreach (var spawnPoint in spawnPoints)
         {
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
-            Instantiate(randomPrefab, spawnPoint.transform.position, Quaternion.identity, spawnPoint.transform);
+            var go = Instantiate(randomPrefab, spawnPoint.transform.position, Quaternion.identity, spawnPoint.transform);
+            go.GetComponent<NetworkObject>().Spawn();
         }
     }
 
@@ -37,7 +42,9 @@ public class EnemySpawnPointer : MonoBehaviour
             spawnPointsCopy.RemoveAt(randomIndex);
 
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
-            Instantiate(randomPrefab, randomSpawnPoint.transform.position, Quaternion.identity, randomSpawnPoint.transform);
+            var go = Instantiate(randomPrefab, randomSpawnPoint.transform.position, Quaternion.identity,
+                randomSpawnPoint.transform);
+            go.GetComponent<NetworkObject>().Spawn();
         }
     }
 }

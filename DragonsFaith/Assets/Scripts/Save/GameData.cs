@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -32,15 +33,19 @@ namespace Save
         public struct PlayerData : INetworkSerializable
         {
             [SerializeField] public PlayerType playerType;
+            [SerializeField] public string playerName;
+            [SerializeField] public PlayerUI.Element faith;
             [SerializeField] public List<ItemData> itemDataList;
             [SerializeField] public int health;
             [SerializeField] public int maxHealth;
             [SerializeField] public int mana;
             [SerializeField] public int maxMana;
 
-            public PlayerData(PlayerType playerType, List<ItemData> itemDataList)
+            public PlayerData(PlayerType playerType, string name, List<ItemData> itemDataList)
             {
                 this.playerType = playerType;
+                this.playerName = name;
+                this.faith = PlayerUI.Element.Fire;
                 this.itemDataList = itemDataList == null ? new List<ItemData>() : new List<ItemData>(itemDataList);
                 health = maxHealth = 100;
                 mana = maxMana = 100;
@@ -49,6 +54,8 @@ namespace Save
             public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
             {
                 serializer.SerializeValue(ref playerType);
+                serializer.SerializeValue(ref playerName);
+                serializer.SerializeValue(ref faith);
 
                 // List
                 var length = 0;
@@ -132,8 +139,8 @@ namespace Save
 
         public GameData()
         {
-            hostData = new PlayerData(PlayerType.Host, new List<ItemData>());
-            clientData = new PlayerData(PlayerType.Client, new List<ItemData>());
+            hostData = new PlayerData(PlayerType.Host, "host", new List<ItemData>());
+            clientData = new PlayerData(PlayerType.Client, "client", new List<ItemData>());
         }
 
         /// <summary>
@@ -175,6 +182,54 @@ namespace Save
         public List<ItemData> GetAllItemsData(PlayerType player)
         {
             return player == PlayerType.Host ? hostData.itemDataList : clientData.itemDataList;
+        }
+
+        public void SetPlayerName(PlayerType playerType, string name)
+        {
+            if (playerType == PlayerType.Host)
+            {
+                hostData.playerName = name;
+            }
+            else
+            {
+                clientData.playerName = name;
+            }
+        }
+        
+        public string GetPlayerName(PlayerType playerType)
+        {
+            if (playerType == PlayerType.Host)
+            {
+                return hostData.playerName;
+            }
+            else
+            {
+                return clientData.playerName;
+            }
+        }
+        
+        public void SetFaith(PlayerType playerType, PlayerUI.Element faith)
+        {
+            if (playerType == PlayerType.Host)
+            {
+                hostData.faith = faith;
+            }
+            else
+            {
+                clientData.faith = faith;
+            }
+        }
+        
+        public PlayerUI.Element GetFaith(PlayerType playerType)
+        {
+            if (playerType == PlayerType.Host)
+            {
+                return hostData.faith;
+            }
+            else
+            {
+                return clientData.faith;
+            }
         }
 
         public void UpdateBarsData(PlayerType player, int health, int maxHealth, int mana, int maxMana)
@@ -228,9 +283,19 @@ namespace Save
             return "Host data: " + hostData + "\nClient data: " + clientData;
         }
 
-        public static PlayerType GetPlayerType(bool isHost)
+        public static PlayerType GetPlayerType()
         {
-            return isHost ? PlayerType.Host : PlayerType.Client;
+            if (NetworkManager.Singleton.IsHost)
+            {
+                return PlayerType.Host;
+            }
+            
+            if (NetworkManager.Singleton.IsClient)
+            {
+                return PlayerType.Client;
+            }
+
+            throw new Exception("IS NEITHER HOST NOR CLIENT");
         }
     }
 }
