@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using Inventory;
 using Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,6 +57,12 @@ namespace UI
         public TextMeshProUGUI healthText;
         public Slider manaSlider;
         public TextMeshProUGUI manaText;
+        
+        [Header("Slots")]
+        [Tooltip("Insert (in order) all the inventory slots, ...")]
+        public InventorySlot[] inventorySlots;
+        [Tooltip("Insert (in order) all the equipment slots, ...")]
+        public InventorySlot[] equipmentSlots;
 
         [Header("Pop Up")] [SerializeField] 
         private PopUpMessage popUpMessage;
@@ -80,6 +87,92 @@ namespace UI
 
         public static PlayerUI Instance { get; private set; }
 
+        
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(this);
+            }
+
+            
+            
+            menuTab.SetActive(false);
+            inventoryTab.SetActive(false);
+            skillsTab.SetActive(false);
+            faithTab.SetActive(true);
+            
+            _optionsManager = OptionsManager.Instance;
+            
+            _optionsManager.SetDropdown(resolutionDropdown);
+
+            nameText.text = _optionsManager.RetrievePlayerName();
+        
+            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
+            
+            //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
+            
+            _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
+            FadeInElement(_rectTransformFaithTab);
+        }
+
+        private void Start()
+        {
+            InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots);
+        }
+
+        private void Update()
+        {
+            if (!_faithChoiceDone) return;
+            
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                OpenInventory();
+            }
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                OpenSkills();
+            }
+            
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (inventoryTab.activeSelf)
+                {
+                    OpenInventory();
+                }
+                else if (skillsTab.activeSelf)
+                {
+                    OpenSkills();
+                }
+                else if (audioScreen.activeSelf || graphicsScreen.activeSelf ||
+                         keybindingsScreen.activeSelf)
+                {
+                    OpenOptions();
+                }
+                else if (optionsScreen.activeSelf)
+                {
+                    OpenMain();
+                }
+                else
+                {
+                    OpenMenu();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                ShowMessage("Testing...");
+            }
+        }
+        
         public void ShowMessage(string message)
         {
             popUpMessage.uiSettings.text.text = message;
@@ -156,85 +249,6 @@ namespace UI
                 Element.Water => water,
                 _ => faith.sprite
             };
-        }
-        
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                Instance = this;
-            }
-
-            DontDestroyOnLoad(this);
-            
-            menuTab.SetActive(false);
-            inventoryTab.SetActive(false);
-            skillsTab.SetActive(false);
-            faithTab.SetActive(true);
-            
-            _optionsManager = OptionsManager.Instance;
-            
-            _optionsManager.SetDropdown(resolutionDropdown);
-
-            nameText.text = _optionsManager.RetrievePlayerName();
-        
-            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
-            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
-            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
-            
-            //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
-            
-            _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
-            FadeInElement(_rectTransformFaithTab);
-        }
-
-        private void Update()
-        {
-            if (!_faithChoiceDone) return;
-            
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                OpenInventory();
-            }
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                OpenSkills();
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (inventoryTab.activeSelf)
-                {
-                    OpenInventory();
-                }
-                else if (skillsTab.activeSelf)
-                {
-                    OpenSkills();
-                }
-                else if (audioScreen.activeSelf || graphicsScreen.activeSelf ||
-                         keybindingsScreen.activeSelf)
-                {
-                    OpenOptions();
-                }
-                else if (optionsScreen.activeSelf)
-                {
-                    OpenMain();
-                }
-                else
-                {
-                    OpenMenu();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                ShowMessage("Testing...");
-            }
         }
 
         public void OpenMenu()
@@ -365,6 +379,11 @@ namespace UI
         public void SetResolution(int resolutionIndex)
         {
             _optionsManager.SetResolution(resolutionIndex);
+        }
+
+        public void ShowUI(bool b)
+        {
+            GetComponent<Canvas>().enabled = b;
         }
     }
 }

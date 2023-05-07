@@ -1,3 +1,4 @@
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -5,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class SceneManager : NetworkBehaviour
 {
     private Scene _loadedScene;
-    
+
     public override void OnNetworkSpawn()
     {
         DontDestroyOnLoad(this);
@@ -22,7 +23,7 @@ public class SceneManager : NetworkBehaviour
     public void LoadSceneSingle(string sceneName)
     {
         if (!IsHost) return;
-        
+
         var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         CheckStatus(status);
     }
@@ -59,10 +60,12 @@ public class SceneManager : NetworkBehaviour
                     // *** IMPORTANT ***
                     // Keep track of the loaded scene, you need this to unload it
                     _loadedScene = sceneEvent.Scene;
+                    
                 }
 
                 Debug.Log($"Loaded the {sceneEvent.SceneName} scene on " +
                           $"{clientOrServer}-({sceneEvent.ClientId}).");
+
                 break;
             }
             case SceneEventType.UnloadComplete:
@@ -96,7 +99,7 @@ public class SceneManager : NetworkBehaviour
         {
             return;
         }
-        
+
         var status = NetworkManager.SceneManager.UnloadScene(_loadedScene);
         CheckStatus(status, false);
     }

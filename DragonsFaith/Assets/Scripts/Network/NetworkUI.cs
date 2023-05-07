@@ -1,4 +1,5 @@
 ﻿using TMPro;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -158,8 +159,29 @@ public class NetworkUI : NetworkBehaviour
         GetComponent<NetworkObject>().Despawn();
         logText.text = "Log: NEXT SCENE";
         sceneManager.LoadSceneSingle(sceneName);
+
+        if (IsHost)
+        {
+            ShowUI();
+            ShowUIClientRpc();
+        }
     }
 
+    private void ShowUI()
+    {
+        var playerUI = PlayerUI.Instance;
+        if (playerUI)
+        {
+            playerUI.ShowUI(true);
+        }
+    }
+
+    [ClientRpc]
+    private void ShowUIClientRpc()
+    {
+        ShowUI();
+    }
+    
     [ClientRpc]
     private void HostDisconnectedClientRpc()
     {

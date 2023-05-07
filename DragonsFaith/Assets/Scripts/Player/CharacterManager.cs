@@ -1,3 +1,4 @@
+using System;
 using Inventory;
 using Save;
 using UI;
@@ -9,7 +10,6 @@ namespace Player
     public class CharacterManager : NetworkBehaviour, IGameData
     {
         [SerializeField] private CharacterSO characterSo;
-        [SerializeField] private GameObject playerGameObject;
 
         private InventoryManager _inventoryManager;
         private PlayerUI _playerUI;
@@ -19,21 +19,31 @@ namespace Player
         private int _maxMana = 100;
         private int _mana = 100;
 
+        public static CharacterManager Instance { get; private set; }
 
         private void Awake()
         {
-            _inventoryManager = GetComponentInChildren<InventoryManager>();
-            //_inventoryManager = InventoryManager.Instance;
-            _inventoryManager.onSlotUseEvent.AddListener(Heal);
-            //TODO: CharacterManager is awoken before playerUI, so no inventoryManager is available at this stage
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
 
-            _playerUI = PlayerUI.Instance;
-
+            Instance = this;
+            DontDestroyOnLoad(this);
+            
             characterSo.Reset();
 
             _health = _maxHealth;
             _mana = _maxMana;
+        }
 
+        private void Start()
+        {
+            _inventoryManager = InventoryManager.Instance;
+            _inventoryManager.onSlotUseEvent.AddListener(Heal);
+            
+            _playerUI = PlayerUI.Instance;
             _playerUI.healthSlider.maxValue = _maxHealth;
             _playerUI.manaSlider.maxValue = _maxMana;
             _playerUI.UpdateHealthBar(_maxHealth, _maxHealth);

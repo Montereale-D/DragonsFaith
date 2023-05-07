@@ -21,6 +21,7 @@ namespace Inventory
             else 
             { 
                 Instance = this; 
+                DontDestroyOnLoad(this);
             } 
         }
         

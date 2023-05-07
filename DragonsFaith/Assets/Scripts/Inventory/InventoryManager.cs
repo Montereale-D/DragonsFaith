@@ -2,14 +2,13 @@ using Save;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace Inventory
 {
     /// <summary>
     /// Represent the inventory. It manage slot, items and network synchronization.
     /// </summary>
-    public class InventoryManager : NetworkBehaviour, IGameData
+    public class InventoryManager : MonoBehaviour, IGameData
     {
         [SerializeField] [Tooltip("Insert (in order) all the inventory slots, ...")]
         private InventorySlot[] inventorySlots;
@@ -36,6 +35,7 @@ namespace Inventory
             else
             {
                 Instance = this;
+                DontDestroyOnLoad(this);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Inventory
             CleanupInventory();
 
             //get item from local data
-            foreach (var itemData in data.GetAllItemsData(GameData.GetPlayerType(IsHost)))
+            foreach (var itemData in data.GetAllItemsData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost)))
             {
                 SpawnNewItem(ItemSyllabus.Instance.SearchItem(itemData.itemId),
                     itemData.inventoryType == GameData.InventoryType.Inventory
@@ -186,7 +186,7 @@ namespace Inventory
         public void SaveData(ref GameData data)
         {
             //clean the previous local data
-            data.CleanupItemData(GameData.GetPlayerType(IsHost));
+            data.CleanupItemData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost));
 
             //add item to local data
             for (var i = 0; i < inventorySlots.Length; i++)
@@ -196,7 +196,7 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GameData.GetPlayerType(IsHost), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
                 }
             }
             
@@ -207,7 +207,7 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GameData.GetPlayerType(IsHost), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(NetworkManager.Singleton.IsHost), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
                 }
             }
         }
@@ -230,6 +230,19 @@ namespace Inventory
                 if (inventoryItem == null) continue;
                 Destroy(inventoryItem.gameObject);
             }
+        }
+
+        public void SetUpSlots(InventorySlot[] inventorySlots1, InventorySlot[] equipmentSlots1)
+        {
+            inventorySlots = inventorySlots1;
+            equipmentSlots = equipmentSlots1;
+        }
+
+        [ContextMenu("Add Potion")]
+        public void AddPotionContextMenu()
+        {
+            var potion = ItemSyllabus.Instance.SearchItem("190cd2eb-04ba-42df-af91-dbb48316af90");
+            Debug.Log("AddItem request " + AddItem(potion));
         }
     }
 }
