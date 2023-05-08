@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &13186871 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3975030410288444839, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
-  m_PrefabInstance: {fileID: 3975030410283778704}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &13186872 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3975030410288444840, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
@@ -205,6 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 545332500}
   - component: {fileID: 545332501}
+  - component: {fileID: 545332502}
   m_Layer: 2
   m_Name: 2
   m_TagString: Untagged
@@ -246,6 +242,22 @@ MonoBehaviour:
   patrolPositions:
   - {fileID: 1476395001}
   - {fileID: 973053236}
+--- !u!114 &545332502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545332499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 4145083066
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &596593714
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,6 +946,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1655502438}
   - component: {fileID: 1655502439}
+  - component: {fileID: 1655502440}
   m_Layer: 2
   m_Name: 2 (2)
   m_TagString: Untagged
@@ -975,6 +988,22 @@ MonoBehaviour:
   patrolPositions:
   - {fileID: 489999387}
   - {fileID: 110426055}
+--- !u!114 &1655502440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1655502437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 609609499
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1716556445
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,6 +1014,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1716556446}
   - component: {fileID: 1716556447}
+  - component: {fileID: 1716556448}
   m_Layer: 2
   m_Name: 2 (1)
   m_TagString: Untagged
@@ -1026,6 +1056,22 @@ MonoBehaviour:
   patrolPositions:
   - {fileID: 1572847917}
   - {fileID: 2083791788}
+--- !u!114 &1716556448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716556445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3401241496
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &2082661061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,8 +1221,23 @@ PrefabInstance:
       propertyPath: patrolPositions.Array.data[1]
       value: 
       objectReference: {fileID: 1431012011}
+    - target: {fileID: 9195100207726041517, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 484189875
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
+--- !u!114 &3975030410283778705 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3975030410288444841, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
+  m_PrefabInstance: {fileID: 3975030410283778704}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7b1e21eb33ed1f4fbbd1329444cd470, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8796173437680406226
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1195,19 +1256,19 @@ PrefabInstance:
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[0]
       value: 
-      objectReference: {fileID: 13186871}
+      objectReference: {fileID: 3975030410283778705}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[1]
       value: 
-      objectReference: {fileID: 545332499}
+      objectReference: {fileID: 545332501}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[2]
       value: 
-      objectReference: {fileID: 1716556445}
+      objectReference: {fileID: 1716556447}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[3]
       value: 
-      objectReference: {fileID: 1655502437}
+      objectReference: {fileID: 1655502439}
     - target: {fileID: 8796173438544212245, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: m_RootOrder
       value: 3

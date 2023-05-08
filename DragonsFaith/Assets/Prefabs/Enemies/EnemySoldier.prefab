@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 562601070528347330}
   - component: {fileID: 9024135889034166188}
   - component: {fileID: 8735649658286024878}
+  - component: {fileID: 6424978987437982279}
   m_Layer: 0
   m_Name: Fov
   m_TagString: Untagged
@@ -271,7 +272,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8153550609629111729}
+  m_Father: {fileID: 878015275276868563}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &562601070528347330
@@ -342,6 +343,32 @@ MonoBehaviour:
   meshFilter: {fileID: 562601070528347330}
   fov: 90
   viewDistance: 10
+--- !u!114 &6424978987437982279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2344482205520109421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &2637068116118667597
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,7 +509,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1526621573861925070}
-  - {fileID: 3563329916478091169}
   m_Father: {fileID: 878015275276868563}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -537,7 +563,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 1
+  m_SpriteSortPoint: 0
 --- !u!61 &1101299703611993363
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -599,10 +625,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SyncPositionX: 1
   SyncPositionY: 1
-  SyncPositionZ: 0
-  SyncRotAngleX: 0
-  SyncRotAngleY: 0
-  SyncRotAngleZ: 0
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
@@ -1203,6 +1229,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8153550609629111729}
+  - {fileID: 3563329916478091169}
   - {fileID: 5376613700494613993}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1269,7 +1296,7 @@ Transform:
   - {fileID: 4258582847734579606}
   - {fileID: 8124884126767418031}
   m_Father: {fileID: 878015275276868563}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9064670096654296177
 GameObject:

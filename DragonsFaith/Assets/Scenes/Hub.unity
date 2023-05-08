@@ -6558,6 +6558,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 741245173864279795, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
+      propertyPath: activateOnFirstTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1818459629273881038, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3323549676
@@ -18700,6 +18704,7 @@ MonoBehaviour:
   air: {fileID: 1158037730, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
   earth: {fileID: 115032384, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
   water: {fileID: 1201451246, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
+  chosenFaith: 0
   fadeInTime: 1
   fadeOutTime: 0.5
 --- !u!114 &1406377081

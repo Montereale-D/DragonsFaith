@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Enemy;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -6,7 +7,7 @@ using Random = UnityEngine.Random;
 public class EnemySpawnPointer : NetworkBehaviour
 {
     [SerializeField] private List<GameObject> enemyPrefabs;
-    [SerializeField] private List<GameObject> spawnPoints;
+    [SerializeField] private List<EnemySpawnPoint> spawnPoints;
     [SerializeField] private bool useAllPoints = true;
     [SerializeField] private int usePoints;
 
@@ -23,17 +24,37 @@ public class EnemySpawnPointer : NetworkBehaviour
 
     private void SpawnAllPoints()
     {
-        foreach (var spawnPoint in spawnPoints)
+        for (int i = 0; i < spawnPoints.Count; i++)
         {
+            var spawnPoint = spawnPoints[i];
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
-            var go = Instantiate(randomPrefab, spawnPoint.transform.position, Quaternion.identity, spawnPoint.transform);
-            go.GetComponent<NetworkObject>().Spawn();
+            var go = Instantiate(randomPrefab, Vector3.zero, Quaternion.identity, spawnPoint.transform);
+            go.GetComponent<EnemyBehaviour>().SetUp(spawnPoint);
+            var networkObject = go.GetComponent<NetworkObject>();
+            networkObject.Spawn();
+            SetUpEnemyClientRpc(networkObject.NetworkObjectId, i);
         }
+    }
+
+    [ClientRpc]
+    public void SetUpEnemyClientRpc(ulong objectIdToSet, int spawnPointIndex)
+    {
+        if(IsHost) return;
+        
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objectIdToSet, out var objToSet);
+        if (objToSet == null)
+        {
+            Debug.LogError("Network object not found");
+            return;
+        }
+        
+        objToSet.GetComponent<EnemyBehaviour>().SetUp(spawnPoints[spawnPointIndex]);
+        
     }
 
     private void SpawnSomePoints()
     {
-        var spawnPointsCopy = new List<GameObject>(spawnPoints);
+        var spawnPointsCopy = new List<EnemySpawnPoint>(spawnPoints);
 
         for (var i = 0; i < usePoints; i++)
         {
@@ -44,6 +65,7 @@ public class EnemySpawnPointer : NetworkBehaviour
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
             var go = Instantiate(randomPrefab, randomSpawnPoint.transform.position, Quaternion.identity,
                 randomSpawnPoint.transform);
+            go.GetComponent<EnemyBehaviour>().SetUp(randomSpawnPoint);
             go.GetComponent<NetworkObject>().Spawn();
         }
     }

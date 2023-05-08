@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Collider2D))]
 public class NextAreaLoader : MonoBehaviour
 {
+    [Header("Debug")] [SerializeField] private bool activateOnFirstTrigger;
+    
     private SceneManager _sceneManager;
     [SerializeField] private string sceneName;
     private int _playersReady;
@@ -16,6 +19,12 @@ public class NextAreaLoader : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D col)
     {
         Debug.Log("TriggerEnter");
+
+        if (activateOnFirstTrigger)
+        {
+            OnPlayersReady();
+        }
+        
         _playersReady++;
         if (_playersReady > 2) _playersReady = 2;
         if (_playersReady == 2) OnPlayersReady();

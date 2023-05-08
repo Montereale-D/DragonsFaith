@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace Enemy
 {
-    public class EnemyBehaviour : MonoBehaviour
+    public class EnemyBehaviour : NetworkBehaviour
     {
         private EnemySpawnPoint _spawnPoint;
         private bool _patrol = true;
-        private float _waitOnPatrolPosition = 2f;
+        public float _waitOnPatrolPosition = 2f;
         private List<Transform> _patrolPositions;
         public FieldOfView fieldOfView;
 
@@ -20,10 +20,12 @@ namespace Enemy
         private int _positionIndex;
         private bool _keepMoving = true;
 
-        private void Awake()
+        public void SetUp(EnemySpawnPoint spawnPoint)
         {
+            Debug.Log("Enemy spawned setup");
+            
             //Instantiated as a child of a EnemySpawnPoint, get params
-            _spawnPoint = GetComponentInParent<EnemySpawnPoint>();
+            _spawnPoint = spawnPoint;
             _patrol = _spawnPoint.patrol;
             _waitOnPatrolPosition = _spawnPoint.waitOnPatrolPosition;
             _patrolPositions = _spawnPoint.patrolPositions;
@@ -31,7 +33,14 @@ namespace Enemy
             //Init
             _positionIndex = 0;
             _nextPosition = _patrolPositions[0].position;
+            characterTransform.position = _nextPosition;
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
             
+            Debug.Log("Enemy spawned ");
         }
 
         private void Update()
@@ -41,7 +50,8 @@ namespace Enemy
             //Need to be updated for the correct mesh rendering
             fieldOfView.SetOrigin(charPos);
             fieldOfView.SetAimDirection((_nextPosition - charPos).normalized);
-            //fieldOfView.transform.position = transform.localPosition; //offset for the correct mesh positioning
+            
+            //fieldOfView.transform.localPosition = characterTransform.localPosition; //offset for the correct mesh positioning
 
             if (!_patrol) return;
 
