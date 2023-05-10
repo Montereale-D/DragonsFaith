@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Enemy;
 using Unity.Netcode;
@@ -24,15 +25,21 @@ public class EnemySpawnPointer : NetworkBehaviour
 
     private void SpawnAllPoints()
     {
-        for (int i = 0; i < spawnPoints.Count; i++)
+        var networkObjects = new List<NetworkObject>();
+        for (var i = 0; i < spawnPoints.Count; i++)
         {
             var spawnPoint = spawnPoints[i];
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
             var go = Instantiate(randomPrefab, Vector3.zero, Quaternion.identity, spawnPoint.transform);
             go.GetComponent<EnemyBehaviour>().SetUp(spawnPoint);
             var networkObject = go.GetComponent<NetworkObject>();
-            networkObject.Spawn();
-            SetUpEnemyClientRpc(networkObject.NetworkObjectId, i);
+            networkObjects.Add(networkObject);
+        }
+
+        for (var i = 0; i < networkObjects.Count; i++)
+        {
+            networkObjects[i].Spawn();
+            SetUpEnemyClientRpc(networkObjects[i].NetworkObjectId, i);
         }
     }
 
@@ -55,6 +62,7 @@ public class EnemySpawnPointer : NetworkBehaviour
     private void SpawnSomePoints()
     {
         var spawnPointsCopy = new List<EnemySpawnPoint>(spawnPoints);
+        var networkObjects = new List<NetworkObject>();
 
         for (var i = 0; i < usePoints; i++)
         {
@@ -66,7 +74,14 @@ public class EnemySpawnPointer : NetworkBehaviour
             var go = Instantiate(randomPrefab, randomSpawnPoint.transform.position, Quaternion.identity,
                 randomSpawnPoint.transform);
             go.GetComponent<EnemyBehaviour>().SetUp(randomSpawnPoint);
-            go.GetComponent<NetworkObject>().Spawn();
+            var networkObject = go.GetComponent<NetworkObject>();
+            networkObjects.Add(networkObject);
+        }
+
+        for (var i = 0; i < networkObjects.Count; i++)
+        {
+            networkObjects[i].Spawn();
+            SetUpEnemyClientRpc(networkObjects[i].NetworkObjectId, i);
         }
     }
 }

@@ -207,7 +207,7 @@ GameObject:
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &545332500
 Transform:
   m_ObjectHideFlags: 0
@@ -953,7 +953,7 @@ GameObject:
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1655502438
 Transform:
   m_ObjectHideFlags: 0
@@ -1163,7 +1163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3975030410288444839, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3975030410288444840, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
       propertyPath: m_RootOrder
@@ -1227,17 +1227,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
---- !u!114 &3975030410283778705 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3975030410288444841, guid: 1909087a1eb57db47ae9de06dbcee4fa, type: 3}
-  m_PrefabInstance: {fileID: 3975030410283778704}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7b1e21eb33ed1f4fbbd1329444cd470, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8796173437680406226
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1251,20 +1240,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.size
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[0]
       value: 
-      objectReference: {fileID: 3975030410283778705}
+      objectReference: {fileID: 1716556447}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[1]
       value: 
-      objectReference: {fileID: 545332501}
+      objectReference: {fileID: 1655502439}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[2]
       value: 
-      objectReference: {fileID: 1716556447}
+      objectReference: {fileID: 1655502439}
     - target: {fileID: 8796173438544212244, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
       propertyPath: spawnPoints.Array.data[3]
       value: 

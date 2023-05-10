@@ -350,7 +350,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2344482205520109421}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
@@ -633,7 +633,7 @@ MonoBehaviour:
   SyncScaleY: 0
   SyncScaleZ: 0
   PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
+  RotAngleThreshold: 0.001
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4338867388159989653}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
@@ -1262,8 +1262,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed532d266d32f8428fa7012d644f577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _waitOnPatrolPosition: 2
   fieldOfView: {fileID: 8735649658286024878}
-  speed: 4
+  speed: 5
   characterTransform: {fileID: 8153550609629111729}
 --- !u!1 &8940253505657554272
 GameObject:

@@ -19,11 +19,13 @@ namespace Enemy
         private Vector3 _nextPosition;
         private int _positionIndex;
         private bool _keepMoving = true;
+        
+        //private readonly NetworkVariable<bool> _setUpDone = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public void SetUp(EnemySpawnPoint spawnPoint)
         {
             Debug.Log("Enemy spawned setup");
-            
+
             //Instantiated as a child of a EnemySpawnPoint, get params
             _spawnPoint = spawnPoint;
             _patrol = _spawnPoint.patrol;
@@ -31,16 +33,9 @@ namespace Enemy
             _patrolPositions = _spawnPoint.patrolPositions;
 
             //Init
-            _positionIndex = 0;
-            _nextPosition = _patrolPositions[0].position;
-            characterTransform.position = _nextPosition;
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-            
-            Debug.Log("Enemy spawned ");
+            _positionIndex = 1;
+            _nextPosition = _patrolPositions[1].position;
+            characterTransform.position = _patrolPositions[0].position;
         }
 
         private void Update()
@@ -50,14 +45,15 @@ namespace Enemy
             //Need to be updated for the correct mesh rendering
             fieldOfView.SetOrigin(charPos);
             fieldOfView.SetAimDirection((_nextPosition - charPos).normalized);
-            
-            //fieldOfView.transform.localPosition = characterTransform.localPosition; //offset for the correct mesh positioning
 
             if (!_patrol) return;
 
             if (!_keepMoving) return;
 
-            characterTransform.position = Vector3.MoveTowards(charPos, _nextPosition, speed * Time.deltaTime);
+            if (!IsHost) return;
+            
+            characterTransform.position = Vector3.MoveTowards(charPos, _nextPosition,
+                speed * 0.003f /*Time.deltaTime*/ );
 
             if (IsPositionReached())
             {
@@ -66,14 +62,42 @@ namespace Enemy
             }
         }
 
+        private void PrintDebug(string s)
+        {
+            if (IsHost)
+            {
+                Debug.Log("[HOST] " + s);
+            }
+            else
+            {
+                DebugServerRpc(s);
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void DebugServerRpc(string s)
+        {
+            Debug.Log("[CLIENT] " + s);
+        }
+
         private IEnumerator WaitOnPosition()
         {
+            //LoadNextPositionClientRpc(LoadNextPosition());
             yield return new WaitForSeconds(_waitOnPatrolPosition);
-            LoadNextPosition();
+            LoadNextPositionClientRpc(LoadNextPosition());
             _keepMoving = true;
         }
 
-        private void LoadNextPosition()
+        [ClientRpc]
+        private void LoadNextPositionClientRpc(Vector3 position)
+        {
+            if (!IsHost)
+            {
+                _nextPosition = position;
+            }
+        }
+
+        private Vector3 LoadNextPosition()
         {
             _positionIndex++;
             if (_positionIndex >= _patrolPositions.Count)
@@ -82,6 +106,7 @@ namespace Enemy
             }
 
             _nextPosition = _patrolPositions[_positionIndex].position;
+            return _nextPosition;
         }
 
         private bool IsPositionReached()
