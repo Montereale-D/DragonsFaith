@@ -1,3 +1,5 @@
+using System;
+using Player;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -18,6 +20,13 @@ namespace Inventory
         public ActionType action;
         public bool consumable = true;
         public bool stackable = true;
+
+        [Header("Equipment section")] 
+        public float xStr;
+        public float xDex;
+        public float xInt;
+        public float xConst;
+        public float xAgi;
 
         public TileBase tile;
         public Sprite image;

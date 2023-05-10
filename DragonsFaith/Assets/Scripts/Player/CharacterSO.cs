@@ -10,8 +10,7 @@ namespace Player
         Dexterity = 2,
         Constitution = 3,
         Intelligence = 4,
-        Wisdom = 5, 
-        Charisma = 6,
+        Agility = 5
     }
 
     public enum AttributeScore
@@ -64,8 +63,7 @@ namespace Player
                     return attribute.score;
             }
 
-            Debug.LogError("Attribute not found");
-            return AttributeScore.Poor;
+            throw new Exception("Attribute not found");
         }
     }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using Player;
 using Save;
 using Unity.Netcode;
 using UnityEngine;
@@ -160,6 +163,51 @@ namespace Inventory
             }
         }
 
+        public Item GetEquipmentItem(ItemType type)
+        {
+            if (type != ItemType.Chest && type != ItemType.Head && type != ItemType.Legs && type != ItemType.Weapons)
+            {
+                throw new Exception("Not equipment request");
+            }
+            
+            foreach (var slot in equipmentSlots)
+            {
+                if(slot.slotType == type)
+                    return slot.GetComponentInChildren<InventoryItem>().item;
+            }
+
+            return null;
+        }
+
+        public float GetEquipmentModifiers(AttributeType type)
+        {
+            var output = 0f;
+            
+            foreach (var slot in equipmentSlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if(inventoryItem == null) continue;
+
+                var item = inventoryItem.item;
+                output += GetModifiers(item, type);
+            }
+            
+            return output < 1 ? 1 : output;
+        }
+
+        public static float GetModifiers(Item item, AttributeType type)
+        {
+            return type switch
+            {
+                AttributeType.Strength => item.xStr,
+                AttributeType.Intelligence => item.xInt,
+                AttributeType.Agility => item.xAgi,
+                AttributeType.Constitution => item.xConst,
+                AttributeType.Dexterity => item.xDex,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+        }
+
         [ContextMenu("Lock Equipment")]
         private void LockEquipmentFromMenu()
         {
@@ -257,6 +305,13 @@ namespace Inventory
         {
             var potion = ItemSyllabus.Instance.SearchItem("190cd2eb-04ba-42df-af91-dbb48316af90");
             Debug.Log("AddItem request " + AddItem(potion));
+        }
+        
+        [ContextMenu("Add Armor")]
+        public void AddArmorContextMenu()
+        {
+            var armor = ItemSyllabus.Instance.SearchItem("5bcae7d9-cda4-4a30-a251-bdbb84552015");
+            Debug.Log("AddItem request " + AddItem(armor));
         }
     }
 }

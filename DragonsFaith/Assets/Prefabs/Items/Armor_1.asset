@@ -13,10 +13,16 @@ MonoBehaviour:
   m_Name: Armor_1
   m_EditorClassIdentifier: 
   itemName: Armor_1
+  description: item description
   id: 5bcae7d9-cda4-4a30-a251-bdbb84552015
   type: 2
   action: 0
   consumable: 0
   stackable: 0
+  xStr: 0
+  xDex: 0
+  xInt: 0
+  xConst: 1000
+  xAgi: 0
   tile: {fileID: 0}
   image: {fileID: 0}

@@ -132,12 +132,57 @@ namespace Player
 
         public bool AbilityCheck(Attribute abilityAttribute)
         {
-            var playerScore = characterSo.GetAttributeScore(abilityAttribute.attribute);
-            
-            Debug.Log("AbilityCheck " + abilityAttribute.attribute + " : ME = " + playerScore + " REQUIRED = " +
-                      abilityAttribute.score);
+            var playerScore = abilityAttribute.attribute switch
+            {
+                AttributeType.Strength => GetTotalStr(),
+                AttributeType.Intelligence => GetTotalInt(),
+                AttributeType.Agility => GetTotalAgi(),
+                AttributeType.Constitution => GetTotalConst(),
+                AttributeType.Dexterity => GetTotalDex(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
-            return playerScore > abilityAttribute.score;
+            return playerScore > (int)abilityAttribute.score;
+        }
+
+        public float GetTotalStr()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Strength);
+            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Strength);
+            Debug.Log("Strength " + score + " x " + modifiers);
+            return score * modifiers;
+        }
+
+        public float GetTotalDex()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Dexterity);
+            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Dexterity);
+            Debug.Log("Dexterity " + score + " x " + modifiers);
+            return score * modifiers;
+        }
+
+        public float GetTotalInt()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Intelligence);
+            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Intelligence);
+            Debug.Log("Intelligence " + score + " x " + modifiers);
+            return score * modifiers;
+        }
+
+        public float GetTotalConst()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Constitution);
+            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Constitution);
+            Debug.Log("Constitution " + score + " x " + modifiers);
+            return score * modifiers;
+        }
+
+        public float GetTotalAgi()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Agility);
+            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Agility);
+            Debug.Log("Agility " + score + " x " + modifiers);
+            return score * modifiers;
         }
 
 
@@ -158,7 +203,7 @@ namespace Player
         public void SaveData(ref GameData data)
         {
             var playerType = GameData.GetPlayerType();
-            
+
             data.UpdateBarsData(playerType, _health, _maxHealth, _mana, _maxMana);
 
             data.SetPlayerName(playerType, _playerUI.nameText.text);
