@@ -133,7 +133,7 @@ namespace Player
         public bool AbilityCheck(Attribute abilityAttribute)
         {
             var playerScore = characterSo.GetAttributeScore(abilityAttribute.attribute);
-
+            
             Debug.Log("AbilityCheck " + abilityAttribute.attribute + " : ME = " + playerScore + " REQUIRED = " +
                       abilityAttribute.score);
 

@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Interactable
@@ -46,6 +47,8 @@ namespace Interactable
 
         private void OnTriggerEnter2D(Collider2D col)
         {
+            if (!col.gameObject.GetComponent<NetworkObject>().IsOwner) return;
+            
             _triggerCount++;
 
             if (_isVisible) return;
@@ -56,8 +59,10 @@ namespace Interactable
             _collider = col;
         }
 
-        private void OnTriggerExit2D(Collider2D other)
+        private void OnTriggerExit2D(Collider2D col)
         {
+            if (!col.gameObject.GetComponent<NetworkObject>().IsOwner) return;
+            
             _triggerCount--;
 
             if (!_isVisible) return;
