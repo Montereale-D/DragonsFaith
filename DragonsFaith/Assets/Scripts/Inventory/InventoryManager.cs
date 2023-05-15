@@ -128,7 +128,34 @@ namespace Inventory
         /// </summary>
         public void OnSlotUse(InventorySlot slot, InventoryItem item)
         {
-            //todo
+            switch (item.item.type)
+            {
+                case ItemType.Consumable:
+                    OnConsumableUse(item);
+                    break;
+                case ItemType.Weapon:
+                    break;
+                case ItemType.Head:
+                    break;
+                case ItemType.Legs:
+                    break;
+                case ItemType.Skill:
+                    break;
+            }
+        }
+
+        private void OnConsumableUse(InventoryItem item)
+        {
+            var consumable = item.item as Consumable;
+            if (consumable == null) throw new Exception("Not valid casting");
+            switch (consumable.consumableType)
+            {
+                case Consumable.ConsumableType.PotionHealing:
+                    CharacterManager.Instance.Heal(20);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private InventorySlot _sendSlot;
@@ -215,8 +242,7 @@ namespace Inventory
                     output += GetModifiers(armor, type);
                 }
             }
-
-            //todo risistemare i link e type e controllare che funzioni
+            
             return output < 1 ? 1 : output;
         }
 
