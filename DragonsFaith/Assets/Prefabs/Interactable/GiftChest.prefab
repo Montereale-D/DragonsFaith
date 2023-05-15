@@ -367,9 +367,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19fb088c16ac93946b6bc1c4d4c94ae1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: 56ad352549195e04386881cc3e451fc5, type: 2}
-  openSprite: {fileID: 651660845, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
-  closeSprite: {fileID: -387247453, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
+  usedSprite: {fileID: 651660845, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
+  unusedSprite: {fileID: -387247453, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
+  item: {fileID: 11400000, guid: 8532129d957d8e547869c06bca8c50bd, type: 2}
 --- !u!114 &6822241147109976008
 MonoBehaviour:
   m_ObjectHideFlags: 0

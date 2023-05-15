@@ -1,8 +1,8 @@
 using System;
+using Inventory.Items;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Inventory
@@ -15,9 +15,8 @@ namespace Inventory
         public bool blockDrag;
         public Image image;
         public Color onSelectColor, onDeselectColor;
-        public InventoryManager inventoryManager;
 
-        public ItemType slotType = ItemType.Items;
+        public ItemType slotType = ItemType.All;
         /*public delegate void SlotUpdate();
         public SlotUpdate onSlotUpdate;*/
 
@@ -42,6 +41,7 @@ namespace Inventory
             if (transform.childCount != 0) return;
             var inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
 
+            Debug.Log("OnDrop: slot type " + slotType + " item type " + inventoryItem.item.type);
             if (slotType == ItemType.All || inventoryItem.item.type == slotType)
             {
                 inventoryItem.UpdateParent(transform);
@@ -70,7 +70,7 @@ namespace Inventory
         /// </summary>
         public void OnItemClick(InventoryItem inventoryItem)
         {
-            inventoryManager.OnSlotSelected(this, inventoryItem);
+            InventoryManager.Instance.OnSlotSelected(this, inventoryItem);
         }
 
         /// <summary>
@@ -81,24 +81,56 @@ namespace Inventory
             Debug.Log("Use item " + item);
             if (item.item.consumable)
             {
-                item.count--;
-                if (item.count <= 0)
-                {
-                    Destroy(item.gameObject);
-                    onSlotRemoved.Invoke(item);
-                }
-                else
-                {
-                    item.UpdateCount();
-                    onSlotUpdate.Invoke(item);
-                }
+                UpdateItemQuantity(item);
             }
             else
             {
                 //active item
             }
             
-            inventoryManager.OnSlotUse(this, item);
+            InventoryManager.Instance.OnSlotUse(this, item);
+        }
+
+        public void OnItemSend(InventoryItem inventoryItem)
+        {
+            if (this is ToolbarSlot)
+            {
+                Debug.Log("We don't do that here");
+                return;
+            }
+
+            if (slotType == ItemType.Skill)
+            {
+                Debug.Log("You can not send a skill");
+                return;
+            }
+            
+            InventoryManager.Instance.OnItemSend(this, inventoryItem);
+        }
+        
+        public void OnItemSendResponse(InventoryItem inventoryItem)
+        {
+            UpdateItemQuantity(inventoryItem);
+        }
+        
+        private void UpdateItemQuantity(InventoryItem item, int i = -1)
+        {
+            if(i == 0) throw new Exception("Make no sense");
+            
+            item.count += i;
+            
+            if (item.count < 0) throw new Exception("Negative quantity");
+            
+            if (item.count == 0)
+            {
+                Destroy(item.gameObject);
+                onSlotRemoved.Invoke(item);
+            }
+            else
+            {
+                item.UpdateCount();
+                onSlotUpdate.Invoke(item);
+            }
         }
     }
 }

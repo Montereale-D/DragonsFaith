@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
+using Inventory.Items;
 using Player;
 using Save;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,10 +12,10 @@ namespace Inventory
     /// </summary>
     public class InventoryManager : MonoBehaviour, IGameData
     {
-        [SerializeField] [Tooltip("Insert (in order) all the inventory slots, ...")]
+        [SerializeField] [Tooltip("Insert (in order) all the inventory slots, ...")] [HideInInspector]
         private InventorySlot[] inventorySlots;
-        
-        [SerializeField] [Tooltip("Insert (in order) all the equipment slots, ...")]
+
+        [SerializeField] [Tooltip("Insert (in order) all the equipment slots, ...")] [HideInInspector]
         private InventorySlot[] equipmentSlots;
 
         [SerializeField] [Tooltip("Insert reference to the inventory item prefab")]
@@ -60,13 +59,13 @@ namespace Inventory
                     return true;
                 }
             }
-            
+
             foreach (var slot in equipmentSlots)
             {
                 var itemInSlot = slot.GetComponentInChildren<InventoryItem>();
 
                 if (itemInSlot != null && itemInSlot.item == newItem && itemInSlot.item.stackable &&
-                    itemInSlot.count < maxStackable && itemInSlot.item.type == ItemType.Items)
+                    itemInSlot.count < maxStackable && itemInSlot.item.type == ItemType.Consumable)
                 {
                     itemInSlot.count++;
                     itemInSlot.UpdateCount();
@@ -74,7 +73,7 @@ namespace Inventory
                     return true;
                 }
             }
-            
+
 
             //if there is an empty slot, add this item in the slot
             foreach (var slot in inventorySlots)
@@ -87,7 +86,7 @@ namespace Inventory
                     return true;
                 }
             }
-            
+
             foreach (var slot in equipmentSlots)
             {
                 var itemInSlot = slot.GetComponentInChildren<InventoryItem>();
@@ -110,7 +109,7 @@ namespace Inventory
         public void AddItem(string newItemIdOrName)
         {
             //return commented in order to test it with a button
-            AddItem(ItemSyllabus.Instance.SearchItem(newItemIdOrName));
+            AddItem(ExchangeManager.Instance.CreateItem(newItemIdOrName));
         }
 
         /// <summary>
@@ -124,16 +123,39 @@ namespace Inventory
             slot.onSlotUpdate.Invoke(inventoryItem);
         }
 
-        //tmp
-        public UnityEvent<InventoryItem> onSlotUseEvent;
         /// <summary>
         /// Use this slot
         /// </summary>
         public void OnSlotUse(InventorySlot slot, InventoryItem item)
         {
-            if (ItemSyllabus.Instance.SearchItem("190cd2eb-04ba-42df-af91-dbb48316af90"))
+            //todo
+        }
+
+        private InventorySlot _sendSlot;
+        private InventoryItem _sendItem;
+
+        public void OnItemSend(InventorySlot slot, InventoryItem item)
+        {
+            if (item == null) return;
+
+            ExchangeManager.Instance.SendItemToFriend(item.item.id);
+            _sendSlot = slot;
+            _sendItem = item;
+        }
+
+        public void OnItemSendResponse(bool isSuccess)
+        {
+            if (isSuccess)
             {
-                onSlotUseEvent.Invoke(item);
+                _sendSlot.OnItemSendResponse(_sendItem);
+                _sendSlot = null;
+                _sendItem = null;
+            }
+            else
+            {
+                //do nothing
+                _sendSlot = null;
+                _sendItem = null;
             }
         }
 
@@ -156,23 +178,22 @@ namespace Inventory
         {
             foreach (var slot in equipmentSlots)
             {
-                if (slot.slotType is ItemType.Head or ItemType.Chest or ItemType.Legs or ItemType.Skills or ItemType.Weapons)
-                {
-                    slot.blockDrag = b;
-                }
+                if (slot.slotType is ItemType.Consumable) continue;
+                
+                slot.blockDrag = b;
             }
         }
 
         public Item GetEquipmentItem(ItemType type)
         {
-            if (type != ItemType.Chest && type != ItemType.Head && type != ItemType.Legs && type != ItemType.Weapons)
+            if (type is ItemType.Consumable or ItemType.Skill)
             {
                 throw new Exception("Not equipment request");
             }
-            
+
             foreach (var slot in equipmentSlots)
             {
-                if(slot.slotType == type)
+                if (slot.slotType == type)
                     return slot.GetComponentInChildren<InventoryItem>().item;
             }
 
@@ -182,28 +203,32 @@ namespace Inventory
         public float GetEquipmentModifiers(AttributeType type)
         {
             var output = 0f;
-            
+
             foreach (var slot in equipmentSlots)
             {
                 var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
-                if(inventoryItem == null) continue;
+                if (inventoryItem == null) continue;
 
-                var item = inventoryItem.item;
-                output += GetModifiers(item, type);
+                var armor = inventoryItem.item as Armor;
+                if (armor != null)
+                {
+                    output += GetModifiers(armor, type);
+                }
             }
-            
+
+            //todo risistemare i link e type e controllare che funzioni
             return output < 1 ? 1 : output;
         }
 
-        public static float GetModifiers(Item item, AttributeType type)
+        public static float GetModifiers(Armor item, AttributeType type)
         {
             return type switch
             {
-                AttributeType.Strength => item.xStr,
-                AttributeType.Intelligence => item.xInt,
-                AttributeType.Agility => item.xAgi,
-                AttributeType.Constitution => item.xConst,
-                AttributeType.Dexterity => item.xDex,
+                AttributeType.Strength => item.Str,
+                AttributeType.Intelligence => item.Int,
+                AttributeType.Agility => item.Agi,
+                AttributeType.Constitution => item.Const,
+                AttributeType.Dexterity => item.Dex,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
@@ -213,13 +238,13 @@ namespace Inventory
         {
             BlockEquipmentSlots(true);
         }
-        
+
         [ContextMenu("Unlock Equipment")]
         private void UnlockEquipmentFromMenu()
         {
             BlockEquipmentSlots(false);
         }
-        
+
 
         /// <summary>
         /// Load inventory item from local files
@@ -232,7 +257,7 @@ namespace Inventory
             //get item from local data
             foreach (var itemData in data.GetAllItemsData(GameData.GetPlayerType()))
             {
-                SpawnNewItem(ItemSyllabus.Instance.SearchItem(itemData.itemId),
+                SpawnNewItem(ExchangeManager.Instance.CreateItem(itemData.itemId),
                     itemData.inventoryType == GameData.InventoryType.Inventory
                         ? inventorySlots[itemData.slotNumber]
                         : equipmentSlots[itemData.slotNumber],
@@ -256,10 +281,11 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GameData.GetPlayerType(), itemInSlot.item, GameData.InventoryType.Inventory, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(), itemInSlot.item, GameData.InventoryType.Inventory, i,
+                        itemInSlot.count);
                 }
             }
-            
+
             for (var i = 0; i < equipmentSlots.Length; i++)
             {
                 var slot = equipmentSlots[i];
@@ -267,7 +293,8 @@ namespace Inventory
 
                 if (itemInSlot != null)
                 {
-                    data.AddItemData(GameData.GetPlayerType(), itemInSlot.item, GameData.InventoryType.Equipment, i, itemInSlot.count);
+                    data.AddItemData(GameData.GetPlayerType(), itemInSlot.item, GameData.InventoryType.Equipment, i,
+                        itemInSlot.count);
                 }
             }
         }
@@ -284,7 +311,7 @@ namespace Inventory
                 Destroy(inventoryItem.gameObject);
                 slot.onSlotRemoved.Invoke(inventoryItem);
             }
-            
+
             foreach (var slot in equipmentSlots)
             {
                 var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
@@ -303,14 +330,30 @@ namespace Inventory
         [ContextMenu("Add Potion")]
         public void AddPotionContextMenu()
         {
-            var potion = ItemSyllabus.Instance.SearchItem("190cd2eb-04ba-42df-af91-dbb48316af90");
+            var potion = ExchangeManager.Instance.CreateItem("190cd2eb-04ba-42df-af91-dbb48316af90");
             Debug.Log("AddItem request " + AddItem(potion));
         }
-        
+
+        [ContextMenu("Add Potion Full Inventory")]
+        public void AddPotionFullInventoryContextMenu()
+        {
+            var potion = ExchangeManager.Instance.CreateItem("190cd2eb-04ba-42df-af91-dbb48316af90");
+            while (AddItem(potion))
+            {
+            }
+        }
+
         [ContextMenu("Add Armor")]
         public void AddArmorContextMenu()
         {
-            var armor = ItemSyllabus.Instance.SearchItem("5bcae7d9-cda4-4a30-a251-bdbb84552015");
+            var armor = ExchangeManager.Instance.CreateItem("831b9af8-b1b4-4583-bdb9-7b56761693b9");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
+        
+        [ContextMenu("Add Weapon")]
+        public void AddWeaponContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("73b84174-a862-4816-9c57-4c96d8ed2036");
             Debug.Log("AddItem request " + AddItem(armor));
         }
     }

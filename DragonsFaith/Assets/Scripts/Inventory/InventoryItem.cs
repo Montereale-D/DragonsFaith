@@ -1,4 +1,5 @@
 using System.Collections;
+using Inventory.Items;
 using TMPro;
 using UI;
 using UnityEngine;
@@ -106,6 +107,7 @@ namespace Inventory
         private void DoubleClickAction()
         {
             GetComponentInParent<InventorySlot>().OnItemUse(this);
+            //GetComponentInParent<InventorySlot>().OnItemSend(this);
         }
 
         public override string ToString()

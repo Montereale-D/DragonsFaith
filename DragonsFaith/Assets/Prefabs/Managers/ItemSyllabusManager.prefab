@@ -1055,6 +1055,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5684009725700859745}
   - component: {fileID: 5684009725700859744}
+  - component: {fileID: 5205224339732572588}
   m_Layer: 0
   m_Name: ItemSyllabusManager
   m_TagString: Untagged
@@ -1091,10 +1092,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemList:
-  - {fileID: 11400000, guid: 56ad352549195e04386881cc3e451fc5, type: 2}
-  - {fileID: 11400000, guid: cfc9797d1c11d73499704aeb56f6d1ae, type: 2}
-  - {fileID: 11400000, guid: 0ff657c738a5589419d91fd8c939dfc3, type: 2}
-  - {fileID: 11400000, guid: 7e8fd2dfa6784284f94a5c4bc9dca487, type: 2}
+  - {fileID: 11400000, guid: 0fab81dff0d9e374587a793034a2fa87, type: 2}
+  - {fileID: 11400000, guid: 891459cee61f4dd40a6c3aac2b47dac0, type: 2}
+  - {fileID: 11400000, guid: 3c1c59dc2c829f04184dfc249a255854, type: 2}
+  - {fileID: 11400000, guid: c2b08683713399747a51dd26472c4691, type: 2}
+  - {fileID: 11400000, guid: 8532129d957d8e547869c06bca8c50bd, type: 2}
+--- !u!114 &5205224339732572588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5684009725700859751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5684009725753266224
 GameObject:
   m_ObjectHideFlags: 0

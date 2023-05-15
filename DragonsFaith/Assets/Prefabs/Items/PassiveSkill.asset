@@ -9,14 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: faf30e6a9cdb2404283d17ec1c008bdb, type: 3}
-  m_Name: Weapon_1
+  m_Script: {fileID: 11500000, guid: 2d791264f82e4ccb86047417fa9903d5, type: 3}
+  m_Name: PassiveSkill
   m_EditorClassIdentifier: 
-  itemName: Weapon_1
-  id: e5cb1d3d-22e0-4f35-80dc-a157793b6f06
-  type: 1
-  action: 1
-  consumable: 0
-  stackable: 0
+  itemName: PassiveSkill
+  description: item description
+  id: 012a87c2-65c9-4f94-b6e3-a23461f8faa2
   tile: {fileID: 0}
   image: {fileID: 0}
+  Str: 1
+  Dex: 1
+  Int: 1
+  Const: 1
+  Agi: 1

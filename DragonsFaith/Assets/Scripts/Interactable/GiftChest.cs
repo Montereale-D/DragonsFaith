@@ -1,4 +1,5 @@
 using Inventory;
+using Inventory.Items;
 using UnityEngine;
 
 namespace Interactable

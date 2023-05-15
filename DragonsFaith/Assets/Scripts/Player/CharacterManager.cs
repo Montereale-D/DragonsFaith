@@ -2,7 +2,6 @@ using System;
 using Inventory;
 using Save;
 using UI;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace Player
@@ -44,7 +43,6 @@ namespace Player
         private void Start()
         {
             _inventoryManager = InventoryManager.Instance;
-            _inventoryManager.onSlotUseEvent.AddListener(Heal);
 
             _playerUI = PlayerUI.Instance;
             _playerUI.healthSlider.maxValue = _maxHealth;

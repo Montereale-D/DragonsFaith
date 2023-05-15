@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9db5253304db4267902c1690a5c44d79, type: 3}
-  m_Name: Potion
+  m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
+  m_Name: MeleeWeapon
   m_EditorClassIdentifier: 
-  itemName: Potion of Healing
+  itemName: Melee weapon
   description: item description
-  id: 190cd2eb-04ba-42df-af91-dbb48316af90
+  id: 73b84174-a862-4816-9c57-4c96d8ed2036
   tile: {fileID: 0}
-  image: {fileID: 21300000, guid: b124ccd9dca18ec43ab64cc50d9dd8b7, type: 3}
-  consumableType: 0
+  image: {fileID: 0}
+  weaponType: 0
+  range: 1
