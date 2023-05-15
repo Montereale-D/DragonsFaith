@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf30e6a9cdb2404283d17ec1c008bdb, type: 3}
+  m_Name: Pants
+  m_EditorClassIdentifier: 
+  itemName: Combat Pants
+  description: item description
+  id: 777225e7-ea15-4ea2-bb10-40a5d2dbac4a
+  type: 4
+  action: 0
+  consumable: 0
+  stackable: 0
+  tile: {fileID: 0}
+  image: {fileID: -2018716907, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}

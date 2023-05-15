@@ -8489,7 +8489,7 @@ MonoBehaviour:
   healthText: {fileID: 443366454}
   manaSlider: {fileID: 1111982430}
   manaText: {fileID: 513243646}
-  popUpMessage: {fileID: 1892814716}
+  popUpMessage: {fileID: 0}
   faith: {fileID: 529393120}
   fire: {fileID: 127357463, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
   air: {fileID: 1158037730, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
@@ -30928,6 +30928,10 @@ PrefabInstance:
     - target: {fileID: 281749502885289818, guid: 0ee2ea5b62e783748b3a1676d61fab54, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3909353099
+      objectReference: {fileID: 0}
+    - target: {fileID: 281749502885289823, guid: 0ee2ea5b62e783748b3a1676d61fab54, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.17
       objectReference: {fileID: 0}
     - target: {fileID: 8652189566287149827, guid: 0ee2ea5b62e783748b3a1676d61fab54, type: 3}
       propertyPath: m_Name
