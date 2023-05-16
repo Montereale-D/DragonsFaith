@@ -38,6 +38,12 @@ namespace Enemy
             characterTransform.position = _patrolPositions[0].position;
         }
 
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            GetComponent<NetworkObject>().DestroyWithScene = true;
+        }
+
         private void Update()
         {
             var charPos = characterTransform.position;
@@ -112,6 +118,20 @@ namespace Enemy
         private bool IsPositionReached()
         {
             return (_nextPosition - characterTransform.position).magnitude < 0.1;
+        }
+
+        public override void OnDestroy()
+        {
+            Debug.Log("Enemy OnDestroy");
+            base.OnDestroy();
+            
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            Debug.Log("Enemy OnNetworkDespawn");
+            base.OnNetworkDespawn();
+            
         }
     }
 }

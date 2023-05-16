@@ -39,6 +39,8 @@ namespace Interactable
                 else
                     openable.CloseAction();
             };
+            
+            GetComponent<NetworkObject>().DestroyWithScene = true;
         }
 
         private void ChangeSprite(bool newValue)

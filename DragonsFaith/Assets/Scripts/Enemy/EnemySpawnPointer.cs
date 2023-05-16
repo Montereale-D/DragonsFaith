@@ -10,6 +10,8 @@ public class EnemySpawnPointer : NetworkBehaviour
     [SerializeField] private List<EnemySpawnPoint> spawnPoints;
     [SerializeField] private bool useAllPoints = true;
     [SerializeField] private int usePoints;
+    
+    private List<NetworkObject> networkObjects = new List<NetworkObject>();
 
     public override void OnNetworkSpawn()
     {
@@ -20,11 +22,13 @@ public class EnemySpawnPointer : NetworkBehaviour
             SpawnAllPoints();
         else
             SpawnSomePoints();
+
+        GetComponent<NetworkObject>().DestroyWithScene = true;
     }
 
     private void SpawnAllPoints()
     {
-        var networkObjects = new List<NetworkObject>();
+        
         for (var i = 0; i < spawnPoints.Count; i++)
         {
             var spawnPoint = spawnPoints[i];
@@ -42,26 +46,9 @@ public class EnemySpawnPointer : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void SetUpEnemyClientRpc(ulong objectIdToSet, int spawnPointIndex)
-    {
-        if(IsHost) return;
-        
-        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objectIdToSet, out var objToSet);
-        if (objToSet == null)
-        {
-            Debug.LogError("Network object not found");
-            return;
-        }
-        
-        objToSet.GetComponent<EnemyBehaviour>().SetUp(spawnPoints[spawnPointIndex]);
-        
-    }
-
     private void SpawnSomePoints()
     {
         var spawnPointsCopy = new List<EnemySpawnPoint>(spawnPoints);
-        var networkObjects = new List<NetworkObject>();
 
         for (var i = 0; i < usePoints; i++)
         {
@@ -82,5 +69,35 @@ public class EnemySpawnPointer : NetworkBehaviour
             networkObjects[i].Spawn();
             SetUpEnemyClientRpc(networkObjects[i].NetworkObjectId, i);
         }
+    }
+    
+    [ClientRpc]
+    public void SetUpEnemyClientRpc(ulong objectIdToSet, int spawnPointIndex)
+    {
+        if(IsHost) return;
+        
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objectIdToSet, out var objToSet);
+        if (objToSet == null)
+        {
+            Debug.LogError("Network object not found");
+            return;
+        }
+        
+        objToSet.GetComponent<EnemyBehaviour>().SetUp(spawnPoints[spawnPointIndex]);
+        
+    }
+    
+    public override void OnDestroy()
+    {
+        Debug.Log("SpawnPointer OnDestroy");
+        base.OnDestroy();
+            
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        Debug.Log("SpawnPointer OnNetworkDespawn");
+        base.OnNetworkDespawn();
+            
     }
 }

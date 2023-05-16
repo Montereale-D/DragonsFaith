@@ -1,5 +1,6 @@
 using Inventory;
 using Inventory.Items;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Interactable
@@ -13,6 +14,13 @@ namespace Interactable
         {
             onKeyPressedEvent = TryAddItem;
             base.Awake();
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            GetComponent<NetworkObject>().DestroyWithScene = true;
+            
         }
 
         public void TryAddItem(Collider2D col)
@@ -38,6 +46,13 @@ namespace Interactable
                 //ask host to change
                 UpdateStatusServerRpc(true);
             }
+        }
+
+        public override void OnDestroy()
+        {
+            Debug.Log("GiftChest onDestroy " + name);
+            base.OnDestroy();
+            
         }
     }
 }

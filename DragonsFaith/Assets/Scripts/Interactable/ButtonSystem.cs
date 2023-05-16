@@ -25,6 +25,8 @@ namespace Interactable
                 else
                     openable.CloseAction();
             };
+            
+            GetComponent<NetworkObject>().DestroyWithScene = true;
         }
 
         public void OnButtonPressed()

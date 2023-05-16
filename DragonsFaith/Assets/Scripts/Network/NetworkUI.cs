@@ -11,6 +11,7 @@ using UnityEngine.UI;
 /// </summary>
 public class NetworkUI : NetworkBehaviour
 {
+    [Header("Debug")] public bool dontWaitClient;
     [SerializeField] private Button hostButton;
     [SerializeField] private Button clientButton;
     [SerializeField] private Button cancelButton;
@@ -35,6 +36,11 @@ public class NetworkUI : NetworkBehaviour
         cancelButton.onClick.AddListener(OnCancelButtonClick);
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        GetComponent<NetworkObject>().DestroyWithScene = true;
+    }
 
     private void OnClientButtonClick()
     {
@@ -110,6 +116,13 @@ public class NetworkUI : NetworkBehaviour
 
     private void OnHostReadyButtonClick()
     {
+        if (dontWaitClient)
+        {
+            PlayerPrefs.SetString("playerName", "host");
+            OnBothPlayersReady();
+            return;
+        }
+        
         if (_isReady)
         {
             _isReady = false;

@@ -22253,6 +22253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95467abcb5b0cf45b504932486c4be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontWaitClient: 1
   hostButton: {fileID: 27594954}
   clientButton: {fileID: 633726383}
   cancelButton: {fileID: 1960329157}

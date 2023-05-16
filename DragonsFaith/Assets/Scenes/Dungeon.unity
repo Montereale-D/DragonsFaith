@@ -564,6 +564,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1570123975
       objectReference: {fileID: 0}
+    - target: {fileID: 3476960677352164518, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: activateOnFirstTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3568031645283807914, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1175186197
@@ -795,6 +799,10 @@ PrefabInstance:
     - target: {fileID: 8986929996655271018, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 241152376
+      objectReference: {fileID: 0}
+    - target: {fileID: 9073904990790407548, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07b140074aa4b3e4a88c82c74b9f211e, type: 3}

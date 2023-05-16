@@ -107,7 +107,11 @@ namespace Inventory
         private void DoubleClickAction()
         {
             GetComponentInParent<InventorySlot>().OnItemUse(this);
-            //GetComponentInParent<InventorySlot>().OnItemSend(this);
+        }
+
+        private void SendItemAction()
+        {
+            GetComponentInParent<InventorySlot>().OnItemSend(this);
         }
 
         public override string ToString()
