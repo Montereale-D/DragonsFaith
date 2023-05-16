@@ -369,7 +369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usedSprite: {fileID: 651660845, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
   unusedSprite: {fileID: -387247453, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
-  item: {fileID: 11400000, guid: 8532129d957d8e547869c06bca8c50bd, type: 2}
+  item: {fileID: 11400000, guid: 8e762ee08a92f064886f84b7bee44634, type: 2}
 --- !u!114 &6822241147109976008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -675,6 +675,10 @@ PrefabInstance:
       propertyPath: objectCollider
       value: 
       objectReference: {fileID: 5437188011573272945}
+    - target: {fileID: 4826330658006689845, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
+      propertyPath: turnOffOnKeyPress
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4826330658006689845, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: onKeyPressed.m_PersistentCalls.m_Calls.Array.size
       value: 1

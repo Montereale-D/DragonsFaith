@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 101
-  turnOffOnKeyPress: 1
+  turnOffOnKeyPress: 0
 --- !u!222 &4826330658006689844
 CanvasRenderer:
   m_ObjectHideFlags: 0

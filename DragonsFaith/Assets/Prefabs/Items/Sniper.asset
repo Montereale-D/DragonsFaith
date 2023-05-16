@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
+  m_Name: Sniper
+  m_EditorClassIdentifier: 
+  itemName: Sniper
+  description: Long range weapon that deals TOT damage per hit.
+  id: 73cc3261-00ae-4a96-bc79-fe4f9d1ff07c
+  tile: {fileID: 0}
+  image: {fileID: 1650429942, guid: 20a4743ba83391d49b7c54f25ba4c507, type: 3}
+  weaponType: 1
+  range: 5
