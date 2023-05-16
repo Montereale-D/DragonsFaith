@@ -1,4 +1,5 @@
 using System;
+using Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,10 +19,10 @@ namespace UI
             background.enabled = false;
         }
         
-        public static void Show()
+        public static void Show(InventoryItem item)
         {
             background.enabled = true;
-            current.contextMenu.Open();
+            current.contextMenu.Open(item);
         }
 
         public static void Hide()
