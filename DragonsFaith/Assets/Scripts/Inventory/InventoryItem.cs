@@ -106,17 +106,23 @@ namespace Inventory
 
         private void DoubleClickAction()
         {
-            GetComponentInParent<InventorySlot>().OnItemUse(this);
-        }
-
-        private void SendItemAction()
-        {
-            GetComponentInParent<InventorySlot>().OnItemSend(this);
+            UseItemAction();
+            //GetComponentInParent<InventorySlot>().OnItemSend(this);
         }
 
         public override string ToString()
         {
             return count + " X " + item;
+        }
+        
+        public void SendItemAction()
+        {
+            GetComponentInParent<InventorySlot>().OnItemSend(this);
+        }
+
+        public void UseItemAction()
+        {
+            GetComponentInParent<InventorySlot>().OnItemUse(this);
         }
     }
 }

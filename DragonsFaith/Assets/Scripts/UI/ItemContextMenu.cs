@@ -1,10 +1,16 @@
+using Inventory;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
     public class ItemContextMenu : MonoBehaviour
     {
         private RectTransform _rectTransform;
+        private InventoryItem _currentItem;
+
+        [SerializeField] private Button useButton;
+        [SerializeField] private Button sendButton;
 
         private void Awake()
         {
@@ -12,7 +18,7 @@ namespace UI
             gameObject.SetActive(false);
         }
 
-        public void Open()
+        public void Open(InventoryItem item)
         {
             gameObject.SetActive(true);
 
@@ -41,6 +47,10 @@ namespace UI
             }
             _rectTransform.pivot = new Vector2(finalPivotX, finalPivotY);
             transform.position = position;
+
+            _currentItem = item;
+            useButton.onClick.AddListener(_currentItem.UseItemAction);
+            sendButton.onClick.AddListener(_currentItem.SendItemAction);
             
             FadeStart();
         }
@@ -49,6 +59,8 @@ namespace UI
         {
             FadeFinished();
             gameObject.SetActive(false);
+            useButton.onClick.RemoveListener(_currentItem.UseItemAction);
+            sendButton.onClick.RemoveListener(_currentItem.SendItemAction);
         }
         
         public void FadeStart()
