@@ -5,21 +5,37 @@ using System.Linq;
 
 public class Character : MonoBehaviour
 {
-    public static Character instance { get; private set; }
+    //public static Character instance { get; private set; }
+    private GameObject selectedGameObject;
     public Tile onTile { get; private set; }
     public int movement { get; private set; }
     public bool isMoving = false;
     [SerializeField] private float movementSpeed = 5f;
     private CharacterSO characterSheet;
     private Dictionary<AttributeType, AttributeScore> attributes = new Dictionary<AttributeType, AttributeScore>();
+    [SerializeField] private Team team;
+    public State state { get; private set; }
+
+    public enum Team
+    {
+        Blue,
+        Red
+    }
+
+    public enum State
+    {
+        Normal,
+        Moving,
+        Attacking
+    }
 
     private void Awake()
     {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
+        
+        //instance = this;
         movement = 3; //placeholder for testing, it will depend from character stats and equipment
+        state = State.Normal;
+        
     }
 
     private void Start()
@@ -31,39 +47,19 @@ public class Character : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        Dictionary<Vector2Int, Tile> map = MapHandler.instance.GetMap();
-
-        MapHandler.instance.HideAllTiles();
-        if (!isMoving)
-        {
-            if (GameHandler.instance.state == GameState.Battle) MapHandler.instance.ShowNavigableTiles();
-        }
-        RaycastHit2D? hit = GetHoveredTile();
-        if (hit.HasValue)
-        {
-            Tile tile = hit.Value.collider.GetComponent<Tile>();
-            tile.ShowTile();
-
-            if (Input.GetKeyDown(KeyCode.Mouse0) && !isMoving)
-            {
-                MoveToTile(tile);
-            }
-        }
-    }
+    
 
     private IEnumerator InterpToTile(Tile tile)
     {
         Vector3 destination = tile.transform.position;
-        isMoving = true;
+        this.state=State.Moving;
 
         while (Vector3.Distance(destination, transform.position) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * movementSpeed);
             yield return null; 
         }
-        isMoving = false;
+        this.state=State.Moving;
         SetTile(tile);
         StartCoroutine(UpdateMovementAnimation());
     }
@@ -72,32 +68,16 @@ public class Character : MonoBehaviour
     private IEnumerator UpdateMovementAnimation()
     {
         yield return null;
-        if (!isMoving)
+       /* if (!isMoving)
         {
             isMoving = false;
-        }
+        } Should not be necessary anymore*/
     }
-    private RaycastHit2D? GetHoveredTile()
-    {
-        Camera mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-            Debug.LogError("mainCamera not found: ASSIGN IT!");
-            return null;
-        }
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 mousePosition2d = new Vector2(mousePosition.x, mousePosition.y);
-        RaycastHit2D[] hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero);
-        if (hitResult.Length > 0)
-        {
-            return hitResult.OrderByDescending(i => i.collider.transform.position.z).First();
-        }
-        return null;
-    }
+   
 
     public void SetTile(Tile tile)
     {
-        onTile = tile;
+        this.onTile = tile;
         transform.position = tile.transform.position;
 
     }
@@ -235,11 +215,30 @@ public class Character : MonoBehaviour
     {
         if (characterSheet == null)
         {
-            Debug.LogError(gameObject.name + " does not has a character sheet assigned");
+            Debug.LogError(gameObject.name + " does not have a character sheet assigned");
             return 0;
         }
 
-        int movement = (int)characterSheet.attributes[1].score; //atrributes[1] takes Dex as the attribute deciding movement, this is merely for testing and non an actual in-game rule
+        int movement = (int)characterSheet.attributes[1].score; //attributes[1] takes Dex as the attribute deciding movement, this is merely for testing and non an actual in-game rule
         return movement;
     }
+
+    public Team GetTeam()
+    {
+        return team;
+    }
+
+    public bool IsEnemy(Character c)
+    {
+        return c.GetTeam() != team;
+    }
+
+    public bool CanAttackUnit(Character c)
+    {
+        return Vector2Int.Distance(this.onTile.mapPosition, c.onTile.mapPosition) < 50f;
+    }
+
+    public void Attack(Character c) { }
+
+ 
 }

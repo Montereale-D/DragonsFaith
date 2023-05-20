@@ -36,5 +36,18 @@ public class Tile : MonoBehaviour
         return navigable || (charaterOnTile != null && charaterOnTile != c);
     }
 
+    public void SetCharacterOnTile(Character c)
+    {
+        charaterOnTile = c;
+    }
+
+    public void ClearTile()
+    {
+        SetCharacterOnTile(null);
+    }
+    public Character GetCharacterOnTile()
+    {
+        return charaterOnTile;
+    }
 
 }

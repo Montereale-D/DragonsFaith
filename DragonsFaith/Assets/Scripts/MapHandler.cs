@@ -52,6 +52,26 @@ public class MapHandler : MonoBehaviour
         }
     }
 
+
+
+    public RaycastHit2D? GetHoveredTile()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogError("mainCamera not found: ASSIGN IT!");
+            return null;
+        }
+        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePosition2d = new Vector2(mousePosition.x, mousePosition.y);
+        RaycastHit2D[] hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero);
+        if (hitResult.Length > 0)
+        {
+            return hitResult.OrderByDescending(i => i.collider.transform.position.z).First();
+        }
+        return null;
+    }
+
     //return a list of neighbour tile to one given as input (serching in a tile list if passed or in all map if not)
     public List<Tile> GetNeighbourTiles(Tile current, List<Tile> toExamine)
     {
@@ -135,7 +155,7 @@ public class MapHandler : MonoBehaviour
     //shows all tiles player can move to
     public void ShowNavigableTiles()
     {
-        Character character = Character.instance;
+        Character character = CombatSystem.instance.GetUnitGridCombat();
         List<Tile> tiles = GetTilesInRange(character.onTile, character.movement);
         foreach (Tile tile in tiles) tile.ShowTile();
     }
