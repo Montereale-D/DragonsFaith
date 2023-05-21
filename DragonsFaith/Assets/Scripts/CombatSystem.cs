@@ -26,6 +26,7 @@ public class CombatSystem : MonoBehaviour
     private void Awake()
     {
         state = State.Normal;
+        instance = this;
     }
 
     private void Start()
@@ -74,7 +75,7 @@ public class CombatSystem : MonoBehaviour
 
         //GameHandler.instance.SetCameraFollowPosition(unitGridCombat.onTile);
         canMoveThisTurn = true;
-        canAttackThisTurn = false;
+        canAttackThisTurn = true;
     }
 
     private Character GetNextActiveUnit(Character.Team team)
@@ -111,10 +112,8 @@ public class CombatSystem : MonoBehaviour
     private void Update()
     {
         MapHandler.instance.HideAllTiles();
-        if (unitGridCombat.state == Character.State.Normal)
-        {
-            if (GameHandler.instance.state == GameState.Battle) MapHandler.instance.ShowNavigableTiles();
-        }
+        
+        if (GameHandler.instance.state == GameState.Battle) MapHandler.instance.ShowNavigableTiles();
         switch (state)
         {
             case State.Normal:
@@ -186,6 +185,8 @@ public class CombatSystem : MonoBehaviour
                         }
                     }
                 }
+
+                TestTurnOver();
 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {

@@ -186,7 +186,7 @@ public class Character : MonoBehaviour
         switch (state)
         {
             case GameState.FreeRoaming:
-                movement = 100;
+                movement = 3;
                 break;
             case GameState.Battle:
                 movement = 3;
@@ -238,7 +238,9 @@ public class Character : MonoBehaviour
         return Vector2Int.Distance(this.onTile.mapPosition, c.onTile.mapPosition) < 50f;
     }
 
-    public void Attack(Character c) { }
+    public void Attack(Character c) {
+        Debug.Log("Attacco riuscito");
+    }
 
  
 }

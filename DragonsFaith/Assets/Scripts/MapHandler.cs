@@ -52,8 +52,6 @@ public class MapHandler : MonoBehaviour
         }
     }
 
-
-
     public RaycastHit2D? GetHoveredTile()
     {
         Camera mainCamera = Camera.main;
@@ -155,6 +153,11 @@ public class MapHandler : MonoBehaviour
     //shows all tiles player can move to
     public void ShowNavigableTiles()
     {
+        if (CombatSystem.instance.GetUnitGridCombat() == null)
+        {
+            Debug.Log("no active unit");
+            return;
+        }
         Character character = CombatSystem.instance.GetUnitGridCombat();
         List<Tile> tiles = GetTilesInRange(character.onTile, character.movement);
         foreach (Tile tile in tiles) tile.ShowTile();
