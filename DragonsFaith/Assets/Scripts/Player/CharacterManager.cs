@@ -2,6 +2,7 @@ using System;
 using Inventory;
 using Save;
 using UI;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Player
@@ -35,8 +36,6 @@ namespace Player
 
             _health = _maxHealth;
             _mana = _maxMana;
-
-            //GetComponent<NetworkObject>().Spawn();
         }
 
 
@@ -206,6 +205,23 @@ namespace Player
 
             data.SetPlayerName(playerType, _playerUI.nameText.text);
             data.SetFaith(playerType, _playerUI.chosenFaith);
+        }
+        
+        public void SetPlayerGridMode()
+        {
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().enabled = false;
+            localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
+            localPlayer.GetComponent<BoxCollider2D>().enabled = false;
+            localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
+        }
+        public void SetPlayerFreeMode()
+        {
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().enabled = true;
+            localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
+            localPlayer.GetComponent<BoxCollider2D>().enabled = true;
+            localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
         }
     }
 }

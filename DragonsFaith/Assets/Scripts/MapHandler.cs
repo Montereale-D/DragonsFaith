@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -158,8 +158,8 @@ public class MapHandler : MonoBehaviour
             Debug.Log("no active unit");
             return;
         }
-        Character character = CombatSystem.instance.GetUnitGridCombat();
-        List<Tile> tiles = GetTilesInRange(character.onTile, character.movement);
+        PlayerGridMovement playerGridMovement = CombatSystem.instance.GetUnitGridCombat();
+        List<Tile> tiles = GetTilesInRange(playerGridMovement.onTile, playerGridMovement.movement);
         foreach (Tile tile in tiles) tile.ShowTile();
     }
 

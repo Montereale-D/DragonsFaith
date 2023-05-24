@@ -1,26 +1,23 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Player;
 
-public class Character : MonoBehaviour
+public class PlayerGridMovement : MonoBehaviour
 {
-    //public static Character instance { get; private set; }
-    private GameObject selectedGameObject;
+    [SerializeField] private float movementSpeed = 5f;
     public Tile onTile { get; private set; }
     public int movement { get; private set; }
-    public bool isMoving = false;
-    [SerializeField] private float movementSpeed = 5f;
-    private CharacterSO characterSheet;
-    private Dictionary<AttributeType, AttributeScore> attributes = new Dictionary<AttributeType, AttributeScore>();
+    public bool isMoving;
+
     [SerializeField] private Team team;
     public State state { get; private set; }
 
     public enum Team
     {
-        Blue,
-        Red
+        Players,
+        Enemies
     }
 
     public enum State
@@ -32,35 +29,37 @@ public class Character : MonoBehaviour
 
     private void Awake()
     {
-        
         //instance = this;
         movement = 3; //placeholder for testing, it will depend from character stats and equipment
         state = State.Normal;
-        
     }
 
-    private void Start()
+    public void SetGridPosition()
     {
-        Vector2Int playerStartPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+        var playerStartPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         Dictionary<Vector2Int, Tile> map = MapHandler.instance.GetMap();
+        
+        /*Debug.Log("playerStartPosition " + playerStartPosition);
+        var keysString = map.Keys.Aggregate("", (current, item) => current + (item + ", "));
+        Debug.Log("map keys " + keysString);*/
+        
         SetTile(map[playerStartPosition]);
         GameHandler.instance.onChangeGameState.AddListener(OnChangeGameState);
-
     }
 
-    
 
     private IEnumerator InterpToTile(Tile tile)
     {
         Vector3 destination = tile.transform.position;
-        this.state=State.Moving;
+        this.state = State.Moving;
 
         while (Vector3.Distance(destination, transform.position) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * movementSpeed);
-            yield return null; 
+            yield return null;
         }
-        this.state=State.Moving;
+
+        this.state = State.Moving;
         SetTile(tile);
         StartCoroutine(UpdateMovementAnimation());
     }
@@ -69,18 +68,17 @@ public class Character : MonoBehaviour
     private IEnumerator UpdateMovementAnimation()
     {
         yield return null;
-       /* if (!isMoving)
-        {
-            isMoving = false;
-        } Should not be necessary anymore*/
+        /* if (!isMoving)
+         {
+             isMoving = false;
+         } Should not be necessary anymore*/
     }
-   
+
 
     public void SetTile(Tile tile)
     {
-        this.onTile = tile;
+        onTile = tile;
         transform.position = tile.transform.position;
-
     }
 
     public void FreeRoaming(Vector2Int direction)
@@ -105,7 +103,7 @@ public class Character : MonoBehaviour
         StartCoroutine(MoveAlongPath(path));
     }
 
-    
+
     private IEnumerator MoveAlongPath(List<Tile> path)
     {
         if (path.Count < 1) Debug.LogWarning("Path has 0 elements");
@@ -162,7 +160,8 @@ public class Character : MonoBehaviour
     // Return manhattan distance between two tiles
     private int GetManhattanDistance(Tile start, Tile tile)
     {
-        return Mathf.Abs(start.mapPosition.x - tile.mapPosition.x) + Mathf.Abs(start.mapPosition.y - tile.mapPosition.y);
+        return Mathf.Abs(start.mapPosition.x - tile.mapPosition.x) +
+               Mathf.Abs(start.mapPosition.y - tile.mapPosition.y);
     }
 
     // Return the list of tiles to reach destination
@@ -180,6 +179,7 @@ public class Character : MonoBehaviour
         finishedList.Reverse();
         return finishedList;
     }
+
     #endregion
 
     private void OnChangeGameState(GameState state)
@@ -201,27 +201,15 @@ public class Character : MonoBehaviour
     // Returns final attribute value (status effects applied)
     public int GetAttributeValue(AttributeType attribute)
     {
-        if (!attributes.ContainsKey(attribute))
-        {
-            Debug.LogError(gameObject.name + " does not has the attribute " + attribute);
-            return 0;
-        }
-
-        int result = (int)attributes[attribute];
-        return Mathf.Max(result, 1);
+        //todo
+        return 3;
     }
 
     // Returns final character movement (status effects applied)
     public int GetMovement()
     {
-        if (characterSheet == null)
-        {
-            Debug.LogError(gameObject.name + " does not have a character sheet assigned");
-            return 0;
-        }
-
-        int movement = (int)characterSheet.attributes[1].score; //attributes[1] takes Dex as the attribute deciding movement, this is merely for testing and non an actual in-game rule
-        return movement;
+        //todo
+        return 4;
     }
 
     public Team GetTeam()
@@ -229,19 +217,18 @@ public class Character : MonoBehaviour
         return team;
     }
 
-    public bool IsEnemy(Character c)
+    public bool IsEnemy(PlayerGridMovement c)
     {
         return c.GetTeam() != team;
     }
 
-    public bool CanAttackUnit(Character c)
+    public bool CanAttackUnit(PlayerGridMovement c)
     {
         return Vector2Int.Distance(this.onTile.mapPosition, c.onTile.mapPosition) < 50f;
     }
 
-    public void Attack(Character c) {
-        Debug.Log("Attacco riuscito");
+    public void Attack(PlayerGridMovement c)
+    {
+        Debug.Log("Attack!");
     }
-
- 
 }

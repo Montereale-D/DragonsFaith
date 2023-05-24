@@ -1,231 +1,172 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CombatSystem : MonoBehaviour
 {
-
     public static CombatSystem instance;
-
-    [SerializeField] private Character[] characterArray;
-    private State state;
-    private Character unitGridCombat; //active unit
-    private List<Character> blueTeamList;
-    private List<Character> redTeamList;
-    private int blueTeamActiveUnitIndex;
-    private int redTeamActiveUnitIndex;
-    private bool canMoveThisTurn;
-    private bool canAttackThisTurn;
-
-    private enum State
-    {
-        Normal,
-        Waiting
-    }
+    public List<PlayerGridMovement> characterList;
+    private int _indexCharacterTurn = -1;
+    
+    private PlayerGridMovement _activeUnit;
+    private bool _canMoveThisTurn;
+    private bool _canAttackThisTurn;
+    private bool _isReady;
 
     private void Awake()
     {
-        state = State.Normal;
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+
         instance = this;
     }
 
-    private void Start()
+    public void SetCharacters(IEnumerable<PlayerGridMovement> characters)
     {
-        blueTeamList = new List<Character>();
-        redTeamList = new List<Character>();
-        blueTeamActiveUnitIndex = -1;
-        redTeamActiveUnitIndex = -1;
-        
-        // Set all UnitGridCombat on their GridPosition
-        foreach (Character c in this.characterArray)
-        {
-           if (c.onTile == null)
-            {
-                Debug.LogError("No c.onTile found");
-                continue;
-            } 
-
-           
-           c.onTile.SetCharacterOnTile(c);
-
-            if (c.GetTeam() == Character.Team.Blue)
-            {
-                blueTeamList.Add(c);
-            }
-            else
-            {
-                redTeamList.Add(c);
-            }
-        }
+        characterList = characters.ToList();
+        //order list by agility
 
         SelectNextActiveUnit();
-        //UpdateValidMovePositions();  We used a different way to calculate this
+
+        _isReady = true;
     }
 
     private void SelectNextActiveUnit()
     {
-        if (unitGridCombat == null || unitGridCombat.GetTeam() == Character.Team.Red)
+        _activeUnit = GetNextActiveUnit();
+
+        if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Players && _activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
         {
-            unitGridCombat = GetNextActiveUnit(Character.Team.Blue);
+            _canMoveThisTurn = true;
+            _canAttackThisTurn = true;
         }
         else
         {
-            unitGridCombat = GetNextActiveUnit(Character.Team.Red);
+            _canMoveThisTurn = false;
+            _canAttackThisTurn = false;
         }
-
-        //GameHandler.instance.SetCameraFollowPosition(unitGridCombat.onTile);
-        canMoveThisTurn = true;
-        canAttackThisTurn = true;
     }
 
-    private Character GetNextActiveUnit(Character.Team team)
+    private PlayerGridMovement GetNextActiveUnit()
     {
-        if (team == Character.Team.Blue)
-        {
-            blueTeamActiveUnitIndex = (blueTeamActiveUnitIndex + 1) % blueTeamList.Count;
-            if (blueTeamList[blueTeamActiveUnitIndex] == null ) //|| blueTeamList[blueTeamActiveUnitIndex].IsDead())
-            {
-                // Unit is Dead, get next one
-                return GetNextActiveUnit(team);
-            }
-            else
-            {
-                return blueTeamList[blueTeamActiveUnitIndex];
-            }
-        }
-        else
-        {
-            redTeamActiveUnitIndex = (redTeamActiveUnitIndex + 1) % redTeamList.Count;
-            if (redTeamList[redTeamActiveUnitIndex] == null ) //|| redTeamList[redTeamActiveUnitIndex].IsDead())
-            {
-                // Unit is Dead, get next one
-                return GetNextActiveUnit(team);
-            }
-            else
-            {
-                return redTeamList[redTeamActiveUnitIndex];
-            }
-        }
+        //todo aggiungere controlli sulla scelta del next
+
+        _indexCharacterTurn++;
+        if (_indexCharacterTurn >= characterList.Count)
+            _indexCharacterTurn = 0;
+
+        return characterList[_indexCharacterTurn];
     }
 
 
     private void Update()
     {
+        //wait for settings
+        if (!_isReady) return;
+
+        MapHandler.instance.HideAllTiles();
+
+        if (GameHandler.instance.state == GameState.Battle)
+            MapHandler.instance.ShowNavigableTiles();
+        
+        //check if mouse is hovering at least one tile, then check player action
+        var tileHit = MapHandler.instance.GetHoveredTile();
+        if (tileHit.HasValue)
+        {
+            var tile = tileHit.Value.collider.GetComponent<Tile>();
+            tile.ShowTile();
+            if (Input.GetMouseButtonDown(0))
+            {
+                CheckAction(tile);
+
+                //No fight try to move
+                CheckMovement(tile);
+            }
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SkipTurn();
+        }
+    }
+
+    private void CheckMovement(Tile tile)
+    {
+        if (!MapHandler.instance.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(tile)) return;
+        
+        if (!_canMoveThisTurn) return;
+        
+        _canMoveThisTurn = false;
+
+        // Set entire Tilemap to Invisible
         MapHandler.instance.HideAllTiles();
         
-        if (GameHandler.instance.state == GameState.Battle) MapHandler.instance.ShowNavigableTiles();
-        switch (state)
-        {
-            case State.Normal:
-                RaycastHit2D? hit = MapHandler.instance.GetHoveredTile();
-                if (hit.HasValue)
-                {
-                    Tile tile = hit.Value.collider.GetComponent<Tile>();
-                    tile.ShowTile();
-                    if (Input.GetMouseButtonDown(0))
-                    {
+        // Remove Unit from tile
+        _activeUnit.onTile.ClearTile();
+        
+        // Set Unit on target Grid Object
+        tile.SetCharacterOnTile(_activeUnit);
 
-                        // Check if clicking on a unit position
-                        if (tile.charaterOnTile != null)
-                        {
-                            // Clicked on top of a Unit
-                            if (unitGridCombat.IsEnemy(tile.charaterOnTile))
-                            {
-                                // Clicked on an Enemy of the current unit
-                                if (unitGridCombat.CanAttackUnit(tile.charaterOnTile))
-                                {
-                                    // Can Attack Enemy
-                                    if (canAttackThisTurn)
-                                    {
-                                        canAttackThisTurn = false;
-                                        // Attack Enemy
-                                        state = State.Waiting;
-                                        unitGridCombat.Attack(tile.charaterOnTile);
-                                        state = State.Normal;
-                                    }
-                                }
-                                else
-                                {
-                                    // Cannot attack enemy
-                                }
-                                break;
-                            }
-                            else
-                            {
-                                // Not an enemy
-                            }
-                        }
-                        else
-                        {
-                            // No unit here
-                        }
-
-                        //No fight try to move
-                        if (MapHandler.instance.GetTilesInRange(unitGridCombat.onTile, unitGridCombat.movement).Contains(tile))
-                        {
-                            if (canMoveThisTurn)
-                            {
-                                canMoveThisTurn = false;
-
-                                state = State.Waiting;
-
-                                // Set entire Tilemap to Invisible
-                                MapHandler.instance.HideAllTiles();
-
-
-                                // Remove Unit from tile
-                                unitGridCombat.onTile.ClearTile();
-                                // Set Unit on target Grid Object
-                                tile.SetCharacterOnTile(unitGridCombat);
-
-                                unitGridCombat.MoveToTile(tile);
-
-                                state = State.Normal;
-                            }
-                        }
-                    }
-                }
-
-                TestTurnOver();
-
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    ForceTurnOver();
-                }
-                break;
-            case State.Waiting:
-                break;
-        }
+        _activeUnit.MoveToTile(tile);
     }
 
-    private void TestTurnOver()
+    private void CheckAction(Tile tile)
     {
-        if (!canMoveThisTurn && !canAttackThisTurn)
+        // Check if clicking on a unit position
+        if (tile.charaterOnTile == null) return;
+
+        // Clicked on top of a Unit
+        if (_activeUnit.IsEnemy(tile.charaterOnTile))
         {
-            // Cannot move or attack, turn over
-            ForceTurnOver();
+            CheckActionOnEnemy(tile);
+        }
+        else
+        {
+            CheckActionOnPlayer(tile);
         }
     }
 
-    private void ForceTurnOver()
+    private void CheckActionOnPlayer(Tile tile)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void CheckActionOnEnemy(Tile tile)
+    {
+        // Clicked on an Enemy of the current unit
+        if (!_activeUnit.CanAttackUnit(tile.charaterOnTile)) return;
+
+        // Can Attack Enemy
+        if (!_canAttackThisTurn) return;
+
+        // Attack Enemy
+        _canAttackThisTurn = false;
+        _activeUnit.Attack(tile.charaterOnTile);
+    }
+
+    private void SkipTurn()
     {
         SelectNextActiveUnit();
-        //UpdateValidMovePositions(); We checked in a different way
     }
 
-        public void SetUnitGridCombat(Character unitGridCombat)
-        {
-            this.unitGridCombat = unitGridCombat;
-        }
+    public void SetUnitGridCombat(PlayerGridMovement unitGridCombat)
+    {
+        _activeUnit = unitGridCombat;
+    }
 
-        public void ClearUnitGridCombat()
-        {
-            SetUnitGridCombat(null);
-        }
+    public void ClearUnitGridCombat()
+    {
+        SetUnitGridCombat(null);
+    }
 
-        public Character GetUnitGridCombat()
-        {
-            return unitGridCombat;
-        }
-
+    public PlayerGridMovement GetUnitGridCombat()
+    {
+        return _activeUnit;
+    }
 }

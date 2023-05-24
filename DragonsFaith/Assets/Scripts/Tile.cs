@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ public class Tile : MonoBehaviour
     public int h;
     public int f { get { return g + h; } }
     public Tile previous;
-    public Character charaterOnTile;
+    public PlayerGridMovement charaterOnTile;
     public Vector2Int mapPosition;
     public bool navigable;
     
@@ -31,12 +31,12 @@ public class Tile : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f);
     }
 
-    public bool ShouldBlockCharacter(Character c)
+    public bool ShouldBlockCharacter(PlayerGridMovement c)
     {
         return navigable || (charaterOnTile != null && charaterOnTile != c);
     }
 
-    public void SetCharacterOnTile(Character c)
+    public void SetCharacterOnTile(PlayerGridMovement c)
     {
         charaterOnTile = c;
     }
@@ -45,7 +45,7 @@ public class Tile : MonoBehaviour
     {
         SetCharacterOnTile(null);
     }
-    public Character GetCharacterOnTile()
+    public PlayerGridMovement GetCharacterOnTile()
     {
         return charaterOnTile;
     }

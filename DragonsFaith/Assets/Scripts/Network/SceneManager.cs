@@ -103,4 +103,10 @@ public class SceneManager : NetworkBehaviour
         var status = NetworkManager.SceneManager.UnloadScene(_loadedScene);
         CheckStatus(status, false);
     }
+
+    [ContextMenu("Change to grid scene")]
+    public void LoadGrid()
+    {
+        LoadSceneSingle("Grid");
+    }
 }

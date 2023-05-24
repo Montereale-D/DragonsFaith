@@ -6559,6 +6559,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 741245173864279795, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
+      propertyPath: sceneName
+      value: Grid
+      objectReference: {fileID: 0}
+    - target: {fileID: 741245173864279795, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: activateOnFirstTrigger
       value: 1
       objectReference: {fileID: 0}
