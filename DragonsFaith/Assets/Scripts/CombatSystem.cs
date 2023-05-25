@@ -68,9 +68,10 @@ public class CombatSystem : NetworkBehaviour
         //wait for settings
         if (!_isReady) return;
 
+        
         MapHandler.instance.HideAllTiles();
 
-        if (GameHandler.instance.state == GameState.Battle)
+        if (_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
             MapHandler.instance.ShowNavigableTiles();
         
         //check if mouse is hovering at least one tile, then check player action
@@ -112,9 +113,45 @@ public class CombatSystem : NetworkBehaviour
         // Set Unit on target Grid Object
         tile.SetCharacterOnTile(_activeUnit);
 
+        if (IsHost)
+        {
+            //NB uso int perché servono primitive per Rpc
+            NotifyMovementClientRpc(tile.mapPosition.x, tile.mapPosition.y, !_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer);
+        }
+        else
+        {
+            //NB uso int perché servono primitive per Rpc
+            NotifyMovementServerRpc(tile.mapPosition.x, tile.mapPosition.y);
+        }
+        
         _activeUnit.MoveToTile(tile);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyMovementServerRpc(int x, int y)
+    {
+        if(!IsHost) return;
+
+        var toPosition = new Vector2Int(x, y);
+        var tile = MapHandler.instance.GetMap()[toPosition];
+        _activeUnit.MoveToTile(tile);
+    }
+    
+    [ClientRpc]
+    private void NotifyMovementClientRpc(int x, int y, bool move)
+    {
+        if(IsHost) return;
+        
+        var toPosition = new Vector2Int(x, y);
+        var tile = MapHandler.instance.GetMap()[toPosition];
+
+        if (move)
+        {
+            _activeUnit.MoveToTile(tile);
+        }
+    }
+    
+    
     private void CheckAction(Tile tile)
     {
         // Check if clicking on a unit position
