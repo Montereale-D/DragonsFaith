@@ -52,7 +52,7 @@ public class GameHandler : MonoBehaviour
             SetTileUnderCharacter(character);
         }
 
-        CombatSystem.instance.SetCharacters(characters);
+        CombatSystem.instance.Setup(characters);
     }
 
     private static void SetTileUnderCharacter(PlayerGridMovement playerGridMovement)

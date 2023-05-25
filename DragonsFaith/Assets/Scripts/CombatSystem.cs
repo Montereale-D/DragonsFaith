@@ -2,9 +2,8 @@
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class CombatSystem : MonoBehaviour
+public class CombatSystem : NetworkBehaviour
 {
     public static CombatSystem instance;
     public List<PlayerGridMovement> characterList;
@@ -26,7 +25,7 @@ public class CombatSystem : MonoBehaviour
         instance = this;
     }
 
-    public void SetCharacters(IEnumerable<PlayerGridMovement> characters)
+    public void Setup(IEnumerable<PlayerGridMovement> characters)
     {
         characterList = characters.ToList();
         //order list by agility
@@ -152,8 +151,37 @@ public class CombatSystem : MonoBehaviour
 
     private void SkipTurn()
     {
+        if(!_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
+            return;
+        
+        if (IsHost)
+        {
+            HostHasSkippedClientRpc();
+            SelectNextActiveUnit();
+        }
+        else
+        {
+            ClientHasSkippedServerRpc();
+            SelectNextActiveUnit();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ClientHasSkippedServerRpc()
+    {
+        if(!IsHost) return;
+        
         SelectNextActiveUnit();
     }
+    
+    [ClientRpc]
+    private void HostHasSkippedClientRpc()
+    {
+        if(IsHost) return;
+        
+        SelectNextActiveUnit();
+    }
+    
 
     public void SetUnitGridCombat(PlayerGridMovement unitGridCombat)
     {
