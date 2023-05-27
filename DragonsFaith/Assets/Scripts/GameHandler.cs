@@ -1,5 +1,4 @@
 ﻿using Player;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,9 +18,8 @@ public class GameHandler : MonoBehaviour
     public Camera mainCamera { get; private set; }
     public GameState state { get; private set; }
     public ChangeGameStateEvent onChangeGameState = new ChangeGameStateEvent();
-
-    //called to change game state 
-    public void SetGameState(GameState inState)
+    
+    private void SetGameState(GameState inState)
     {
         state = inState;
         onChangeGameState?.Invoke(state);
@@ -29,9 +27,16 @@ public class GameHandler : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null) instance = this;
-        else Destroy(gameObject);
-        DontDestroyOnLoad(gameObject);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         //Assign main camera
         mainCamera = Camera.main;
@@ -41,10 +46,9 @@ public class GameHandler : MonoBehaviour
         CharacterManager.Instance.SetPlayerGridMode();
     }
 
+    //Find and setup all characters, then setup the CombatSystem
     public void Setup()
     {
-        //if (!NetworkManager.Singleton.IsHost) return;
-
         var characters = FindObjectsOfType<PlayerGridMovement>();
         foreach (var character in characters)
         {
@@ -64,16 +68,6 @@ public class GameHandler : MonoBehaviour
         }
 
         playerGridMovement.onTile.SetCharacterOnTile(playerGridMovement);
-    }
-
-    private void OnGameFinish()
-    {
-        CharacterManager.Instance.SetPlayerFreeMode();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M)) DebugChangeGameState();
     }
 
     //the following method is just for bugging and testing, not used in the actual game: it allows to switch from FreeRoaming to Battle Mode at will

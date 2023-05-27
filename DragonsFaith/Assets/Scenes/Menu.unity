@@ -4409,6 +4409,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
+      propertyPath: LogLevel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
       propertyPath: NetworkConfig.PlayerPrefab
       value: 
       objectReference: {fileID: 2957025528055389465, guid: 7705d1188bc919846af7e13e87e2ea58, type: 3}
@@ -22289,7 +22293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95467abcb5b0cf45b504932486c4be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontWaitClient: 1
+  dontWaitClient: 0
   hostButton: {fileID: 27594954}
   clientButton: {fileID: 633726383}
   cancelButton: {fileID: 1960329157}

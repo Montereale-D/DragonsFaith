@@ -7,11 +7,12 @@ public class CombatSystem : NetworkBehaviour
 {
     public static CombatSystem instance;
     public List<PlayerGridMovement> characterList;
+
     private int _indexCharacterTurn = -1;
-    
     private PlayerGridMovement _activeUnit;
     private bool _canMoveThisTurn;
     private bool _canAttackThisTurn;
+    private bool _isThisPlayerTurn;
     private bool _isReady;
 
     private void Awake()
@@ -27,8 +28,7 @@ public class CombatSystem : NetworkBehaviour
 
     public void Setup(IEnumerable<PlayerGridMovement> characters)
     {
-        characterList = characters.ToList();
-        //order list by agility
+        characterList = characters.OrderByDescending(x => x.movement).ThenBy(x => x.GetHashCode()).ToList();
 
         SelectNextActiveUnit();
 
@@ -39,15 +39,25 @@ public class CombatSystem : NetworkBehaviour
     {
         _activeUnit = GetNextActiveUnit();
 
-        if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Players && _activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
+        Debug.Log("Turn of " + _activeUnit.name);
+
+        _canMoveThisTurn = true;
+        _canAttackThisTurn = true;
+
+        if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Players &&
+            _activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
         {
-            _canMoveThisTurn = true;
-            _canAttackThisTurn = true;
+            _isThisPlayerTurn = true;
         }
         else
         {
-            _canMoveThisTurn = false;
-            _canAttackThisTurn = false;
+            _isThisPlayerTurn = false;
+
+            //if the active unity is enemy and I am host, I should notify the enemy
+            if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies && NetworkManager.Singleton.IsHost)
+            {
+                _activeUnit.GetComponent<EnemyGridBehaviour>().PlanAction();
+            }
         }
     }
 
@@ -67,19 +77,23 @@ public class CombatSystem : NetworkBehaviour
     {
         //wait for settings
         if (!_isReady) return;
-
         
         MapHandler.instance.HideAllTiles();
 
-        if (_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
-            MapHandler.instance.ShowNavigableTiles();
-        
+        if (!_isThisPlayerTurn) return;
+
+        MapHandler.instance.ShowNavigableTiles(_activeUnit.onTile, _activeUnit.movement);
+
         //check if mouse is hovering at least one tile, then check player action
         var tileHit = MapHandler.instance.GetHoveredTile();
         if (tileHit.HasValue)
         {
             var tile = tileHit.Value.collider.GetComponent<Tile>();
-            tile.ShowTile();
+            if (tile)
+            {
+                tile.ShowTile();
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
                 CheckAction(tile);
@@ -99,49 +113,50 @@ public class CombatSystem : NetworkBehaviour
     private void CheckMovement(Tile tile)
     {
         if (!MapHandler.instance.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(tile)) return;
-        
+
         if (!_canMoveThisTurn) return;
-        
+
         _canMoveThisTurn = false;
 
         // Set entire Tilemap to Invisible
         MapHandler.instance.HideAllTiles();
-        
+
         // Remove Unit from tile
         _activeUnit.onTile.ClearTile();
-        
+
         // Set Unit on target Grid Object
         tile.SetCharacterOnTile(_activeUnit);
 
         if (IsHost)
         {
             //NB uso int perché servono primitive per Rpc
-            NotifyMovementClientRpc(tile.mapPosition.x, tile.mapPosition.y, !_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer);
+            NotifyMovementClientRpc(tile.mapPosition.x, tile.mapPosition.y,
+                !_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer);
         }
         else
         {
             //NB uso int perché servono primitive per Rpc
             NotifyMovementServerRpc(tile.mapPosition.x, tile.mapPosition.y);
         }
-        
+
         _activeUnit.MoveToTile(tile);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void NotifyMovementServerRpc(int x, int y)
     {
-        if(!IsHost) return;
+        if (!IsHost) return;
 
         var toPosition = new Vector2Int(x, y);
         var tile = MapHandler.instance.GetMap()[toPosition];
         _activeUnit.MoveToTile(tile);
     }
-    
+
     [ClientRpc]
     private void NotifyMovementClientRpc(int x, int y, bool move)
     {
-        if(IsHost) return;
-        
+        if (IsHost) return;
+
         var toPosition = new Vector2Int(x, y);
         var tile = MapHandler.instance.GetMap()[toPosition];
 
@@ -150,47 +165,46 @@ public class CombatSystem : NetworkBehaviour
             _activeUnit.MoveToTile(tile);
         }
     }
-    
-    
+
+
     private void CheckAction(Tile tile)
     {
         // Check if clicking on a unit position
-        if (tile.charaterOnTile == null) return;
+        var characterOnTile = tile.GetCharacter();
+        if (!characterOnTile) return;
 
         // Clicked on top of a Unit
-        if (_activeUnit.IsEnemy(tile.charaterOnTile))
+        if (_activeUnit.IsEnemy(characterOnTile))
         {
-            CheckActionOnEnemy(tile);
+            CheckActionOnEnemy(tile, characterOnTile);
         }
         else
         {
-            CheckActionOnPlayer(tile);
+            CheckActionOnPlayer(tile, characterOnTile);
         }
     }
 
-    private void CheckActionOnPlayer(Tile tile)
+    private void CheckActionOnPlayer(Tile tile, PlayerGridMovement characterOnTile)
     {
-        throw new System.NotImplementedException();
+        //todo
     }
 
-    private void CheckActionOnEnemy(Tile tile)
+    private void CheckActionOnEnemy(Tile tile, PlayerGridMovement characterOnTile)
+    
     {
         // Clicked on an Enemy of the current unit
-        if (!_activeUnit.CanAttackUnit(tile.charaterOnTile)) return;
+        if (!_activeUnit.CanAttackUnit(characterOnTile)) return;
 
         // Can Attack Enemy
         if (!_canAttackThisTurn) return;
 
         // Attack Enemy
         _canAttackThisTurn = false;
-        _activeUnit.Attack(tile.charaterOnTile);
+        _activeUnit.Attack(characterOnTile);
     }
 
     private void SkipTurn()
     {
-        if(!_activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
-            return;
-        
         if (IsHost)
         {
             HostHasSkippedClientRpc();
@@ -206,19 +220,19 @@ public class CombatSystem : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ClientHasSkippedServerRpc()
     {
-        if(!IsHost) return;
-        
+        if (!IsHost) return;
+
         SelectNextActiveUnit();
     }
-    
+
     [ClientRpc]
     private void HostHasSkippedClientRpc()
     {
-        if(IsHost) return;
-        
+        if (IsHost) return;
+
         SelectNextActiveUnit();
     }
-    
+
 
     public void SetUnitGridCombat(PlayerGridMovement unitGridCombat)
     {
@@ -233,5 +247,21 @@ public class CombatSystem : NetworkBehaviour
     public PlayerGridMovement GetUnitGridCombat()
     {
         return _activeUnit;
+    }
+
+    [ContextMenu("Force skip")]
+    public void ForceSkipDebug()
+    {
+        Debug.Log("Skip from context menu");
+        if (IsHost)
+        {
+            HostHasSkippedClientRpc();
+            SelectNextActiveUnit();
+        }
+        else
+        {
+            ClientHasSkippedServerRpc();
+            SelectNextActiveUnit();
+        }
     }
 }

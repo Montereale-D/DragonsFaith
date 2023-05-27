@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Linq;
-
 
 
 public class MapHandler : MonoBehaviour
@@ -14,17 +12,24 @@ public class MapHandler : MonoBehaviour
 
     private Dictionary<Vector2Int, Tile> map = new Dictionary<Vector2Int, Tile>();
 
-    public Dictionary<Vector2Int, Tile> GetMap() {
+    public Dictionary<Vector2Int, Tile> GetMap()
+    {
         return map;
     }
 
     private GameObject container;
+
     private void Awake()
     {
         if (instance == null)
+        {
             instance = this;
+        }
         else
-            Destroy(gameObject);
+        {
+            Destroy(this);
+            return;
+        }
     }
 
     private void OnEnable()
@@ -32,9 +37,9 @@ public class MapHandler : MonoBehaviour
         container = new GameObject("OverlayContainer");
         Tilemap tileMap = gameObject.GetComponentInChildren<Tilemap>();
         BoundsInt bounds = tileMap.cellBounds;
-        for (int x=bounds.min.x; x<bounds.max.x; x++)
+        for (int x = bounds.min.x; x < bounds.max.x; x++)
         {
-            for (int y=bounds.min.y; y<bounds.max.y; y++)
+            for (int y = bounds.min.y; y < bounds.max.y; y++)
             {
                 Vector3Int tilePosition = new Vector3Int(x, y, 0);
                 Vector2Int tilePosition2d = new Vector2Int(x, y);
@@ -46,7 +51,6 @@ public class MapHandler : MonoBehaviour
                     tile.transform.position = tileWorldPosition;
 
                     map.Add(tilePosition2d, tile);
-
                 }
             }
         }
@@ -60,6 +64,7 @@ public class MapHandler : MonoBehaviour
             Debug.LogError("mainCamera not found: ASSIGN IT!");
             return null;
         }
+
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 mousePosition2d = new Vector2(mousePosition.x, mousePosition.y);
         RaycastHit2D[] hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero);
@@ -67,6 +72,7 @@ public class MapHandler : MonoBehaviour
         {
             return hitResult.OrderByDescending(i => i.collider.transform.position.z).First();
         }
+
         return null;
     }
 
@@ -115,7 +121,6 @@ public class MapHandler : MonoBehaviour
         }
 
         return neighbours;
-
     }
 
     //return a list of all tiles in range from a starting tile
@@ -139,45 +144,25 @@ public class MapHandler : MonoBehaviour
             previousStep = inRange.Distinct().ToList();
             step++;
         }
+
         return inRange.Distinct().ToList();
     }
 
     public void HideAllTiles()
     {
-        foreach(Tile tile in map.Values)
+        foreach (Tile tile in map.Values)
         {
             tile.HideTile();
         }
-    }   
-    
-    //shows all tiles player can move to
-    public void ShowNavigableTiles()
-    {
-        if (CombatSystem.instance.GetUnitGridCombat() == null)
-        {
-            Debug.Log("no active unit");
-            return;
-        }
-        PlayerGridMovement playerGridMovement = CombatSystem.instance.GetUnitGridCombat();
-        List<Tile> tiles = GetTilesInRange(playerGridMovement.onTile, playerGridMovement.movement);
-        foreach (Tile tile in tiles) tile.ShowTile();
     }
 
-    private void onChangeGameState(GameState state)
+    //shows all tiles player can move to
+    public void ShowNavigableTiles(Tile characterTile, int movement)
     {
-        switch (state)
+        List<Tile> tiles = GetTilesInRange(characterTile, movement);
+        foreach (Tile tile in tiles)
         {
-            case GameState.FreeRoaming:
-                HideAllTiles();
-                break;
-
-            case GameState.Battle:
-                ShowNavigableTiles();
-                break;
-
-            default:
-                Debug.LogError("Game state changed to an invalid one");
-                break;
+            tile.ShowTile();
         }
     }
 }

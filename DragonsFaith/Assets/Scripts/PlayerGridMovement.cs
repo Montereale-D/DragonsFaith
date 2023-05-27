@@ -1,18 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Player;
 
 public class PlayerGridMovement : MonoBehaviour
 {
-    [SerializeField] private float movementSpeed = 5f;
+    [SerializeField] private Team team;
+    [SerializeField] private float pathMovementSpeed = 5f;
+    public State state { get; private set; }
     public Tile onTile { get; private set; }
     public int movement { get; private set; }
-    public bool isMoving;
 
-    [SerializeField] private Team team;
-    public State state { get; private set; }
+    public bool isMoving;
 
     public enum Team
     {
@@ -29,8 +29,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     private void Awake()
     {
-        //instance = this;
-        movement = 3; //placeholder for testing, it will depend from character stats and equipment
+        movement = 3; //testing, todo
         state = State.Normal;
     }
 
@@ -38,11 +37,7 @@ public class PlayerGridMovement : MonoBehaviour
     {
         var playerStartPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         Dictionary<Vector2Int, Tile> map = MapHandler.instance.GetMap();
-        
-        /*Debug.Log("playerStartPosition " + playerStartPosition);
-        var keysString = map.Keys.Aggregate("", (current, item) => current + (item + ", "));
-        Debug.Log("map keys " + keysString);*/
-        
+
         SetTile(map[playerStartPosition]);
         GameHandler.instance.onChangeGameState.AddListener(OnChangeGameState);
     }
@@ -51,34 +46,18 @@ public class PlayerGridMovement : MonoBehaviour
     private IEnumerator InterpToTile(Tile tile)
     {
         Vector3 destination = tile.transform.position;
-        this.state = State.Moving;
+        state = State.Moving;
 
         while (Vector3.Distance(destination, transform.position) > 0.05f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * movementSpeed);
+            transform.position =
+                Vector3.MoveTowards(transform.position, destination, Time.deltaTime * pathMovementSpeed);
             yield return null;
         }
 
-        this.state = State.Moving;
+        state = State.Moving;
         SetTile(tile);
         StartCoroutine(UpdateMovementAnimation());
-    }
-
-    // Called to update movement animation after one frame from movement end
-    private IEnumerator UpdateMovementAnimation()
-    {
-        yield return null;
-        /* if (!isMoving)
-         {
-             isMoving = false;
-         } Should not be necessary anymore*/
-    }
-
-
-    public void SetTile(Tile tile)
-    {
-        onTile = tile;
-        transform.position = tile.transform.position;
     }
 
     public void FreeRoaming(Vector2Int direction)
@@ -96,7 +75,7 @@ public class PlayerGridMovement : MonoBehaviour
     public void MoveToTile(Tile tile)
     {
         if (isMoving) return;
-        Debug.Log("Requestemend movement to tile " + tile.mapPosition);
+        Debug.Log("Request movement to tile " + tile.mapPosition);
         MapHandler.instance.HideAllTiles();
         List<Tile> toExamine = MapHandler.instance.GetTilesInRange(onTile, movement);
         List<Tile> path = FindPath(onTile, tile, toExamine);
@@ -106,15 +85,13 @@ public class PlayerGridMovement : MonoBehaviour
 
     private IEnumerator MoveAlongPath(List<Tile> path)
     {
-        if (path.Count < 1) Debug.LogWarning("Path has 0 elements");
+        if (path.Count < 1) throw new Exception("Path has 0 elements");
 
         while (path.Count > 0)
         {
             yield return StartCoroutine(InterpToTile(path[0]));
             path.RemoveAt(0);
         }
-
-        //MapHandler.instance.ShowNavigableTiles();
     }
 
     #region Pathfinding
@@ -182,9 +159,9 @@ public class PlayerGridMovement : MonoBehaviour
 
     #endregion
 
-    private void OnChangeGameState(GameState state)
+    private void OnChangeGameState(GameState newState)
     {
-        switch (state)
+        switch (newState)
         {
             case GameState.FreeRoaming:
                 movement = 3;
@@ -198,18 +175,10 @@ public class PlayerGridMovement : MonoBehaviour
         }
     }
 
-    // Returns final attribute value (status effects applied)
-    public int GetAttributeValue(AttributeType attribute)
+    public void SetTile(Tile tile)
     {
-        //todo
-        return 3;
-    }
-
-    // Returns final character movement (status effects applied)
-    public int GetMovement()
-    {
-        //todo
-        return 4;
+        onTile = tile;
+        transform.position = tile.transform.position;
     }
 
     public Team GetTeam()
@@ -224,11 +193,17 @@ public class PlayerGridMovement : MonoBehaviour
 
     public bool CanAttackUnit(PlayerGridMovement c)
     {
-        return Vector2Int.Distance(this.onTile.mapPosition, c.onTile.mapPosition) < 50f;
+        return Vector2Int.Distance(onTile.mapPosition, c.onTile.mapPosition) < 50f;
     }
 
     public void Attack(PlayerGridMovement c)
     {
         Debug.Log("Attack!");
+    }
+
+    // Called to update movement animation after one frame from movement end
+    private IEnumerator UpdateMovementAnimation()
+    {
+        yield return null;
     }
 }
