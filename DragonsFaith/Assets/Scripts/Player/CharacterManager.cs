@@ -11,7 +11,6 @@ namespace Player
     {
         [SerializeField] private CharacterSO characterSo;
 
-        private InventoryManager _inventoryManager;
         private PlayerUI _playerUI;
 
         private int _maxHealth = 100;
@@ -41,8 +40,6 @@ namespace Player
 
         private void Start()
         {
-            _inventoryManager = InventoryManager.Instance;
-
             _playerUI = PlayerUI.Instance;
             _playerUI.healthSlider.maxValue = _maxHealth;
             _playerUI.manaSlider.maxValue = _maxMana;
@@ -145,7 +142,7 @@ namespace Player
         public float GetTotalStr()
         {
             var score = (int)characterSo.GetAttributeScore(AttributeType.Strength);
-            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Strength);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Strength);
             Debug.Log("Strength " + score + " x " + modifiers);
             return score * modifiers;
         }
@@ -153,7 +150,7 @@ namespace Player
         public float GetTotalDex()
         {
             var score = (int)characterSo.GetAttributeScore(AttributeType.Dexterity);
-            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Dexterity);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Dexterity);
             Debug.Log("Dexterity " + score + " x " + modifiers);
             return score * modifiers;
         }
@@ -161,7 +158,7 @@ namespace Player
         public float GetTotalInt()
         {
             var score = (int)characterSo.GetAttributeScore(AttributeType.Intelligence);
-            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Intelligence);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Intelligence);
             Debug.Log("Intelligence " + score + " x " + modifiers);
             return score * modifiers;
         }
@@ -169,7 +166,7 @@ namespace Player
         public float GetTotalConst()
         {
             var score = (int)characterSo.GetAttributeScore(AttributeType.Constitution);
-            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Constitution);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Constitution);
             Debug.Log("Constitution " + score + " x " + modifiers);
             return score * modifiers;
         }
@@ -177,7 +174,7 @@ namespace Player
         public float GetTotalAgi()
         {
             var score = (int)characterSo.GetAttributeScore(AttributeType.Agility);
-            var modifiers = _inventoryManager.GetEquipmentModifiers(AttributeType.Agility);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Agility);
             Debug.Log("Agility " + score + " x " + modifiers);
             return score * modifiers;
         }
@@ -206,7 +203,7 @@ namespace Player
             data.SetPlayerName(playerType, _playerUI.nameText.text);
             data.SetFaith(playerType, _playerUI.chosenFaith);
         }
-        
+
         public void SetPlayerGridMode()
         {
             var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
@@ -215,6 +212,7 @@ namespace Player
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
         }
+
         public void SetPlayerFreeMode()
         {
             var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;

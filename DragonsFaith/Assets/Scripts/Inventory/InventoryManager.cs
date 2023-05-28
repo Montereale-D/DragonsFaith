@@ -3,7 +3,6 @@ using Inventory.Items;
 using Player;
 using Save;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Inventory
 {
@@ -229,15 +228,15 @@ namespace Inventory
 
         public float GetEquipmentModifiers(AttributeType type)
         {
-            var output = 0f;
+            var output = 1f;
 
             foreach (var slot in equipmentSlots)
             {
                 var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
-                if (inventoryItem == null) continue;
-
+                if (!inventoryItem) continue;
+                
                 var armor = inventoryItem.item as Armor;
-                if (armor != null)
+                if (armor)
                 {
                     output += GetModifiers(armor, type);
                 }
@@ -353,15 +352,15 @@ namespace Inventory
             equipmentSlots = equipmentSlots1;
         }
 
-        [ContextMenu("Add Potion")]
-        public void AddPotionContextMenu()
+        [ContextMenu("Add Health Kit")]
+        public void AddHealthKitContextMenu()
         {
             var potion = ExchangeManager.Instance.CreateItem("190cd2eb-04ba-42df-af91-dbb48316af90");
             Debug.Log("AddItem request " + AddItem(potion));
         }
 
-        [ContextMenu("Add Potion Full Inventory")]
-        public void AddPotionFullInventoryContextMenu()
+        [ContextMenu("Add Health Kit Full Inventory")]
+        public void AddHealthKitFullInventoryContextMenu()
         {
             var potion = ExchangeManager.Instance.CreateItem("190cd2eb-04ba-42df-af91-dbb48316af90");
             while (AddItem(potion))
@@ -372,14 +371,14 @@ namespace Inventory
         [ContextMenu("Add Armor")]
         public void AddArmorContextMenu()
         {
-            var armor = ExchangeManager.Instance.CreateItem("831b9af8-b1b4-4583-bdb9-7b56761693b9");
+            var armor = ExchangeManager.Instance.CreateItem("777225e7-ea15-4ea2-bb10-40a5d2dbac4a");
             Debug.Log("AddItem request " + AddItem(armor));
         }
         
         [ContextMenu("Add Weapon")]
         public void AddWeaponContextMenu()
         {
-            var armor = ExchangeManager.Instance.CreateItem("73b84174-a862-4816-9c57-4c96d8ed2036");
+            var armor = ExchangeManager.Instance.CreateItem("3785c742-f8ff-4016-a374-81d62dc75746");
             Debug.Log("AddItem request " + AddItem(armor));
         }
     }

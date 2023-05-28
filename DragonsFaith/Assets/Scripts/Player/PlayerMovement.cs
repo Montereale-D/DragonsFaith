@@ -22,16 +22,6 @@ namespace Player
             transform.position = position;
         }
 
-        /*private void Start()
-        {
-            var spawnPointer = FindObjectOfType<SpawnPointer>();
-            if (!spawnPointer) return;
-            
-            var playerType = IsHost ? GameData.PlayerType.Host : GameData.PlayerType.Client;
-            var position = spawnPointer.GetSpawnPoint(playerType);
-            transform.position = position;
-        }*/
-
         private void Update()
         {
             if (!IsLocalPlayer) return;
@@ -46,6 +36,19 @@ namespace Player
             _speed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : speed;
 
             transform.position += moveDir * (_speed * Time.deltaTime);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            if (IsLocalPlayer)
+            {
+                gameObject.name = IsHost ? "Player_Host" : "Player_Client";
+            }
+            else
+            {
+                gameObject.name = IsHost ? "Player_Client" : "Player_Host" ;
+            }
         }
     }
 }

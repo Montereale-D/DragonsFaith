@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class EnemyGridBehaviour : MonoBehaviour
 {
-    [SerializeField] private float agility = 1f;
+    public int agility = 1;
 
     public void PlanAction()
     {
-        //todo
+        //todo aggiungere dei nemici
         Debug.Log("Enemy turn");
     }
 }

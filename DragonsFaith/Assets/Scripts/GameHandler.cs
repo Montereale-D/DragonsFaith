@@ -1,4 +1,8 @@
-﻿using Player;
+﻿using System;
+using System.Collections;
+using System.Linq;
+using Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,13 +16,15 @@ public enum GameState
     Battle
 }
 
-public class GameHandler : MonoBehaviour
+public class GameHandler : NetworkBehaviour
 {
     public static GameHandler instance { get; private set; }
     public Camera mainCamera { get; private set; }
     public GameState state { get; private set; }
     public ChangeGameStateEvent onChangeGameState = new ChangeGameStateEvent();
-    
+
+    private PlayerGridMovement[] characters;
+
     private void SetGameState(GameState inState)
     {
         state = inState;
@@ -30,11 +36,11 @@ public class GameHandler : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
@@ -49,12 +55,86 @@ public class GameHandler : MonoBehaviour
     //Find and setup all characters, then setup the CombatSystem
     public void Setup()
     {
-        var characters = FindObjectsOfType<PlayerGridMovement>();
-        foreach (var character in characters)
+        characters = FindObjectsOfType<PlayerGridMovement>();
+        for (var i = 0; i < characters.Length; i++)
         {
+            var character = characters[i];
             character.SetGridPosition();
+            if (!character.SetMovement())
+            {
+                AskPlayerMovement(i);
+            }
+
             SetTileUnderCharacter(character);
         }
+
+        StartCoroutine(WaitCharacterSetupAndContinue(characters));
+        //CombatSystem.instance.Setup(characters);
+    }
+
+    private void AskPlayerMovement(int askedIndex)
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            AskMovementClientRpc(askedIndex);
+        }
+        else
+        {
+            AskMovementServerRpc(askedIndex);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AskMovementServerRpc(int askedIndex)
+    {
+        if (!NetworkManager.Singleton.IsHost) return;
+
+        var movement = (int)CharacterManager.Instance.GetTotalAgi();
+        ReplyMovementClientRpc(askedIndex, movement);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ReplyMovementServerRpc(int askedIndex, int movement)
+    {
+        if (!NetworkManager.Singleton.IsHost) return;
+        characters[askedIndex].movement = movement;
+        Debug.Log(characters[askedIndex].gameObject.name + " movement is " + movement);
+    }
+
+    [ClientRpc]
+    private void AskMovementClientRpc(int askedIndex)
+    {
+        if (NetworkManager.Singleton.IsHost) return;
+
+        var movement = (int)CharacterManager.Instance.GetTotalAgi();
+        ReplyMovementServerRpc(askedIndex, movement);
+    }
+
+    [ClientRpc]
+    private void ReplyMovementClientRpc(int askedIndex, int movement)
+    {
+        if (NetworkManager.Singleton.IsHost) return;
+        characters[askedIndex].movement = movement;
+        Debug.Log(characters[askedIndex].gameObject.name + " movement is " + movement);
+    }
+
+    private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
+    {
+        yield return null;
+
+        var charactersReady = false;
+        while (!charactersReady)
+        {
+            if (characters.Any(x => x.movement == 0))
+            {
+                yield return new WaitForSecondsRealtime(1f);
+            }
+            else
+            {
+                charactersReady = true;
+            }
+        }
+
 
         CombatSystem.instance.Setup(characters);
     }

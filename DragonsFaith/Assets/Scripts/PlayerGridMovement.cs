@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Player;
+using Unity.Netcode;
 
 public class PlayerGridMovement : MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class PlayerGridMovement : MonoBehaviour
     [SerializeField] private float pathMovementSpeed = 5f;
     public State state { get; private set; }
     public Tile onTile { get; private set; }
-    public int movement { get; private set; }
+    public int movement { get; set; }
 
     public bool isMoving;
 
@@ -29,7 +31,6 @@ public class PlayerGridMovement : MonoBehaviour
 
     private void Awake()
     {
-        movement = 3; //testing, todo
         state = State.Normal;
     }
 
@@ -40,6 +41,28 @@ public class PlayerGridMovement : MonoBehaviour
 
         SetTile(map[playerStartPosition]);
         GameHandler.instance.onChangeGameState.AddListener(OnChangeGameState);
+    }
+
+    public bool SetMovement()
+    {
+        if (team == Team.Players)
+        {
+            if (GetComponent<NetworkObject>().IsLocalPlayer)
+            {
+                movement = (int)CharacterManager.Instance.GetTotalAgi();
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            movement = GetComponent<EnemyGridBehaviour>().agility;
+        }
+        
+        Debug.Log(gameObject.name + " movement is " + movement);
+        return true;
     }
 
 
@@ -164,10 +187,8 @@ public class PlayerGridMovement : MonoBehaviour
         switch (newState)
         {
             case GameState.FreeRoaming:
-                movement = 3;
                 break;
             case GameState.Battle:
-                movement = 3;
                 break;
             default:
                 Debug.LogError("Game state changed to an invalid game state.");

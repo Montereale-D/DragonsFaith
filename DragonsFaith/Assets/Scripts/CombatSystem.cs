@@ -186,7 +186,7 @@ public class CombatSystem : NetworkBehaviour
 
     private void CheckActionOnPlayer(Tile tile, PlayerGridMovement characterOnTile)
     {
-        //todo
+        //todo aggiungere azioni sul player
     }
 
     private void CheckActionOnEnemy(Tile tile, PlayerGridMovement characterOnTile)
