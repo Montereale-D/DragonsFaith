@@ -67,12 +67,12 @@ namespace Player
         }
 
         [ContextMenu("Take Damage")]
-        public void Damage()
+        public void DamageFromContext()
         {
-            TakeDamage(20);
+            Damage(20);
         }
 
-        public void TakeDamage(int damage)
+        public void Damage(int damage)
         {
             _health -= damage;
 

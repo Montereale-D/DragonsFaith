@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Inventory.Items;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyGridBehaviour : MonoBehaviour
 {
@@ -13,13 +15,19 @@ public class EnemyGridBehaviour : MonoBehaviour
     private EnemyPlan _enemyPlan;
     public EnemyBehaviourType behaviourType;
     public Weapon weapon;
+    public Slider healthBar;
+    public TextMeshProUGUI healthNumber;
 
     public int agility = 1;
-    private int _health = 100;
+    public int healthMax = 100;
+    private int _health;
 
     private void Awake()
     {
         _enemyPlan = behaviourType == EnemyBehaviourType.Melee ? MeleePlan : RangedPlan;
+        _health = healthMax;
+        healthBar.maxValue = _health;
+        healthBar.minValue = 0;
     }
 
     public void PlanAction(List<PlayerGridMovement> characterList)
@@ -35,6 +43,14 @@ public class EnemyGridBehaviour : MonoBehaviour
             _health = 0;
             Die();
         }
+        
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar()
+    {
+        healthBar.value = _health;
+        healthNumber.text = "Life: " + _health + "/" + 30;
     }
 
     private void Die()

@@ -182,23 +182,19 @@ public class CombatSystem : NetworkBehaviour
         // Clicked on top of a Unit
         if (_activeUnit.IsEnemy(target))
         {
+            Debug.Log("Target is an enemy of active unit");
             CheckActionOnEnemy(target);
         }
-        else
-        {
-            CheckActionOnPlayer(target);
-        }
-    }
-
-    private void CheckActionOnPlayer(PlayerGridMovement characterOnTile)
-    {
-        //todo aggiungere azioni sul player
     }
 
     private void CheckActionOnEnemy(PlayerGridMovement characterOnTile)
     {
         // Can Attack Enemy
-        if (!_canAttackThisTurn) return;
+        if (!_canAttackThisTurn)
+        {
+            Debug.Log("Already attack in this turn");
+            return;
+        }
 
         // Clicked on an Enemy of the current unit
         var weapon = _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
@@ -212,11 +208,15 @@ public class CombatSystem : NetworkBehaviour
             weapon.damage = 1;
         }
 
-        if (CanAttackUnit(characterOnTile, weapon)) return;
+        if (!CanAttackUnit(characterOnTile, weapon))
+        {
+            Debug.Log("Target outside range with this weapon");
+            return;
+        }
 
         // Attack Enemy
         _canAttackThisTurn = false;
-        Attack(characterOnTile);
+        Attack(characterOnTile, weapon);
     }
 
     public bool CanAttackUnit(PlayerGridMovement target, Weapon weapon)
@@ -224,9 +224,59 @@ public class CombatSystem : NetworkBehaviour
         return Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
     }
 
-    public void Attack(PlayerGridMovement target)
+    public void Attack(PlayerGridMovement target, Weapon weapon)
     {
         Debug.Log("Attack!");
+        if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
+        {
+            var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
+            NotifyAttackToEnemy(target, damage);
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+        }
+        else
+        {
+            var damage = (int)(target.GetComponent<EnemyGridBehaviour>().weapon.damage);
+            NotifyAttackToPlayer(target, damage);
+
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+            if (target.gameObject == localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+        }
+    }
+
+    private void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
+    {
+        //todo
+        var targetIndex = characterList.IndexOf(target);
+        if (IsHost)
+        {
+            NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage);
+        }
+        else
+        {
+            NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage)
+    {
+        if(!IsHost) return;
+        characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
+    }
+
+    [ClientRpc]
+    private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage)
+    {
+        if(IsHost) return;
+        characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
+    }
+
+    private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
+    {
+        //todo
     }
 
     private void SkipTurn()
