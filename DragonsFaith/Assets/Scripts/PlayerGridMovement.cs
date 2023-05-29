@@ -208,7 +208,7 @@ public class PlayerGridMovement : MonoBehaviour
         return team;
     }
 
-    public bool IsEnemy(PlayerGridMovement target)
+    public bool IsOppositeTeam(PlayerGridMovement target)
     {
         return target.GetTeam() != team;
     }

@@ -4595,7 +4595,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5205224339732572588, guid: d5294db4bc634b44581e0fef36ebfe7a, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 3205800083
+      value: 2400645901
       objectReference: {fileID: 0}
     - target: {fileID: 5684009725302641138, guid: d5294db4bc634b44581e0fef36ebfe7a, type: 3}
       propertyPath: m_IsActive
@@ -9365,6 +9365,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InventoryManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4801275646339573868, guid: 6aba750d5a96a9b4a995ca14a75fc3b5, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1874046375
+      objectReference: {fileID: 0}
     - target: {fileID: 4801275646339573869, guid: 6aba750d5a96a9b4a995ca14a75fc3b5, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -10384,7 +10388,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7839636692864282344, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 3661973696
+      value: 15795572
       objectReference: {fileID: 0}
     - target: {fileID: 7839636692864282346, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
       propertyPath: m_RootOrder
@@ -10532,7 +10536,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3858903269995350542, guid: c4ec81fb16f6c4d4a8adfa1795473ecb, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 1463082351
+      value: 221503437
       objectReference: {fileID: 0}
     - target: {fileID: 3858903269995350543, guid: c4ec81fb16f6c4d4a8adfa1795473ecb, type: 3}
       propertyPath: m_RootOrder
@@ -22277,7 +22281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1243828952
+  GlobalObjectIdHash: 2933598299
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1

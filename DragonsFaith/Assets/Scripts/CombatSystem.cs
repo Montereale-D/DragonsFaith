@@ -171,7 +171,7 @@ public class CombatSystem : NetworkBehaviour
         selectMode = SelectTileMode.None;
     }
 
-    private void CheckMovement(Tile tile)
+    public void CheckMovement(Tile tile)
     {
         if (!MapHandler.instance.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(tile)) return;
 
@@ -228,17 +228,17 @@ public class CombatSystem : NetworkBehaviour
     }
 
     //// <returns>false if no action has been performed</returns>
-    private void CheckAction(PlayerGridMovement target)
+    public void CheckAction(PlayerGridMovement target)
     {
         // Clicked on top of a Unit
-        if (_activeUnit.IsEnemy(target))
+        if (_activeUnit.IsOppositeTeam(target))
         {
             Debug.Log("Target is an enemy of active unit");
-            CheckActionOnEnemy(target);
+            CheckActionOnOppositeTeam(target);
         }
     }
 
-    private void CheckActionOnEnemy(PlayerGridMovement characterOnTile)
+    private void CheckActionOnOppositeTeam(PlayerGridMovement characterOnTile)
     {
         // Can Attack Enemy
         if (!_canAttackThisTurn)
