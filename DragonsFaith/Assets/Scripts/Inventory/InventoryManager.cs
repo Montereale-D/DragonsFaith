@@ -388,5 +388,12 @@ namespace Inventory
             var armor = ExchangeManager.Instance.CreateItem("3785c742-f8ff-4016-a374-81d62dc75746");
             Debug.Log("AddItem request " + AddItem(armor));
         }
+        
+        [ContextMenu("Add Sniper")]
+        public void AddSniperContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("73cc3261-00ae-4a96-bc79-fe4f9d1ff07c");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
     }
 }

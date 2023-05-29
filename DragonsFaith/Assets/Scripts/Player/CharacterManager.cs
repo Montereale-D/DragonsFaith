@@ -18,6 +18,8 @@ namespace Player
         private int _maxMana = 100;
         private int _mana = 100;
 
+        public bool isBlocking;
+
         public static CharacterManager Instance { get; private set; }
 
         private void Awake()

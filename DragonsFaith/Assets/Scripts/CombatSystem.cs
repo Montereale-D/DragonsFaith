@@ -133,7 +133,29 @@ public class CombatSystem : NetworkBehaviour
             {
                 UnselectTile();
             }
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                BlockAction();
+            }
+            
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ReloadAction();
+            }
         }
+    }
+
+    private void BlockAction()
+    {
+        //todo block action
+        SkipTurn();
+    }
+    
+    public void ReloadAction()
+    {
+        GetActiveUnitWeapon().Reload();
+        SkipTurn();
     }
 
     public enum SelectTileMode
@@ -253,9 +275,7 @@ public class CombatSystem : NetworkBehaviour
         }
 
         // Clicked on an Enemy of the current unit
-        var weapon = _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
-            ? InventoryManager.Instance.GetWeapon()
-            : _activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
+        var weapon = GetActiveUnitWeapon();
         if (!weapon)
         {
             weapon = ScriptableObject.CreateInstance<Weapon>();
@@ -270,9 +290,22 @@ public class CombatSystem : NetworkBehaviour
             return;
         }
 
+        if (!weapon.CanFire())
+        {
+            Debug.Log("No ammo");
+            return;
+        }
+
         // Attack Enemy
         _canAttackThisTurn = false;
         Attack(characterOnTile, weapon);
+    }
+
+    private Weapon GetActiveUnitWeapon()
+    {
+        return _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
+            ? InventoryManager.Instance.GetWeapon()
+            : _activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
     }
 
     public bool CanAttackUnit(PlayerGridMovement target, Weapon weapon)
@@ -283,6 +316,12 @@ public class CombatSystem : NetworkBehaviour
     public void Attack(PlayerGridMovement target, Weapon weapon)
     {
         Debug.Log("Attack!");
+
+        if (weapon.weaponType == Weapon.WeaponType.Range)
+        {
+            weapon.UseAmmo();
+        }
+        
         if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
         {
             var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
@@ -326,7 +365,7 @@ public class CombatSystem : NetworkBehaviour
 
     private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
     {
-        //todo test dopo UI
+        //todo enemy attack player test dopo UI
         var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
         if (target.gameObject == localPlayer)
         {
