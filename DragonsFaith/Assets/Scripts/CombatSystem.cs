@@ -17,6 +17,7 @@ public class CombatSystem : NetworkBehaviour
     private bool _canAttackThisTurn;
     private bool _isThisPlayerTurn;
     private bool _isReady;
+    private Tile _selectedTile;
 
     private void Awake()
     {
@@ -47,6 +48,7 @@ public class CombatSystem : NetworkBehaviour
 
         _canMoveThisTurn = true;
         _canAttackThisTurn = true;
+        _selectedTile = null;
 
         if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Players &&
             _activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
@@ -87,6 +89,10 @@ public class CombatSystem : NetworkBehaviour
         if (!_isThisPlayerTurn) return;
 
         MapHandler.instance.ShowNavigableTiles(_activeUnit.onTile, _activeUnit.movement);
+        if (_selectedTile)
+        {
+            _selectedTile.SelectTile();
+        }
 
         //check if mouse is hovering at least one tile, then check player action
         var hoveredHit = MapHandler.instance.GetHoveredRaycast();
@@ -97,10 +103,10 @@ public class CombatSystem : NetworkBehaviour
             {
                 tile.ShowTile();
 
-                var characterOnTile = tile.GetCharacter();
+                //var characterOnTile = tile.GetCharacter();
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (characterOnTile)
+                    /*if (characterOnTile)
                     {
                         Debug.Log("Click for Action");
                         CheckAction(characterOnTile);
@@ -109,7 +115,23 @@ public class CombatSystem : NetworkBehaviour
                     {
                         Debug.Log("Click for Movement");
                         CheckMovement(tile);
-                    }
+                    }*/
+
+                    SelectTile(tile);
+                }
+            }
+
+            if (_selectedTile && Input.GetKeyDown(KeyCode.A))
+            {
+                if (selectMode == SelectTileMode.Action)
+                {
+                    Debug.Log("Click for Action");
+                    CheckAction(_selectedTile.GetCharacter());
+                }
+                else if (selectMode == SelectTileMode.Movement)
+                {
+                    Debug.Log("Click for Movement");
+                    CheckMovement(_selectedTile);
                 }
             }
 
@@ -117,7 +139,36 @@ public class CombatSystem : NetworkBehaviour
             {
                 SkipTurn();
             }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                UnselectTile();
+            }
         }
+    }
+
+    public enum SelectTileMode
+    {
+        None,
+        Movement,
+        Action
+    }
+
+    public SelectTileMode selectMode;
+
+    private void SelectTile(Tile tile)
+    {
+        _selectedTile = tile;
+        _selectedTile.SelectTile();
+
+        selectMode = tile.GetCharacter() ? SelectTileMode.Action : SelectTileMode.Movement;
+    }
+
+    private void UnselectTile()
+    {
+        _selectedTile.ShowTile();
+        _selectedTile = null;
+        selectMode = SelectTileMode.None;
     }
 
     private void CheckMovement(Tile tile)
@@ -231,24 +282,18 @@ public class CombatSystem : NetworkBehaviour
         {
             var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
             NotifyAttackToEnemy(target, damage);
-            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
         }
         else
         {
             var damage = (int)(target.GetComponent<EnemyGridBehaviour>().weapon.damage);
             NotifyAttackToPlayer(target, damage);
-
-            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-            if (target.gameObject == localPlayer)
-            {
-                CharacterManager.Instance.Damage(damage);
-            }
         }
     }
 
     private void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
     {
-        //todo
+        target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+
         var targetIndex = characterList.IndexOf(target);
         if (IsHost)
         {
@@ -263,20 +308,59 @@ public class CombatSystem : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage)
     {
-        if(!IsHost) return;
+        if (!IsHost) return;
         characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
     }
 
     [ClientRpc]
     private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage)
     {
-        if(IsHost) return;
+        if (IsHost) return;
         characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
     }
 
     private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
     {
-        //todo
+        //todo test dopo UI
+        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        if (target.gameObject == localPlayer)
+        {
+            CharacterManager.Instance.Damage(damage);
+        }
+
+        var targetIndex = characterList.IndexOf(target);
+        if (IsHost)
+        {
+            NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage);
+        }
+        else
+        {
+            NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyAttackFromEnemyToPlayerServerRpc(int targetIndex, int damage)
+    {
+        if (!IsHost) return;
+
+        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        if (characterList[targetIndex].gameObject == localPlayer)
+        {
+            CharacterManager.Instance.Damage(damage);
+        }
+    }
+
+    [ClientRpc]
+    private void NotifyAttackFromEnemyToPlayerClientRpc(int targetIndex, int damage)
+    {
+        if (IsHost) return;
+
+        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        if (characterList[targetIndex].gameObject == localPlayer)
+        {
+            CharacterManager.Instance.Damage(damage);
+        }
     }
 
     private void SkipTurn()
