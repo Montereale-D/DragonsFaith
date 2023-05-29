@@ -56,7 +56,7 @@ public class CombatSystem : NetworkBehaviour
             //if the active unity is enemy and I am host, I should notify the enemy
             if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies && NetworkManager.Singleton.IsHost)
             {
-                _activeUnit.GetComponent<EnemyGridBehaviour>().PlanAction();
+                _activeUnit.GetComponent<EnemyGridBehaviour>().PlanAction(characterList);
             }
         }
     }
