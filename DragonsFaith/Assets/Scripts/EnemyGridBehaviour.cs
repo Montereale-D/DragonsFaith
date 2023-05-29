@@ -15,19 +15,19 @@ public class EnemyGridBehaviour : MonoBehaviour
     private EnemyPlan _enemyPlan;
     public EnemyBehaviourType behaviourType;
     public Weapon weapon;
-    public Slider healthBar;
-    public TextMeshProUGUI healthNumber;
 
     public int agility = 1;
     public int healthMax = 100;
     private int _health;
 
+    private EnemyGridPopUpUI _popUpUI;
     private void Awake()
     {
         _enemyPlan = behaviourType == EnemyBehaviourType.Melee ? MeleePlan : RangedPlan;
         _health = healthMax;
-        healthBar.maxValue = _health;
-        healthBar.minValue = 0;
+        
+        _popUpUI = GetComponent<EnemyGridPopUpUI>();
+        _popUpUI.SetUI(healthMax);
     }
 
     public void PlanAction(List<PlayerGridMovement> characterList)
@@ -45,13 +45,7 @@ public class EnemyGridBehaviour : MonoBehaviour
             Die();
         }
         
-        UpdateHealthBar();
-    }
-
-    private void UpdateHealthBar()
-    {
-        healthBar.value = _health;
-        healthNumber.text = "Life: " + _health + "/" + 30;
+        _popUpUI.UpdateUI(_health);
     }
 
     private void Die()

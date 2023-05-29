@@ -106,17 +106,6 @@ public class CombatSystem : NetworkBehaviour
                 //var characterOnTile = tile.GetCharacter();
                 if (Input.GetMouseButtonDown(0))
                 {
-                    /*if (characterOnTile)
-                    {
-                        Debug.Log("Click for Action");
-                        CheckAction(characterOnTile);
-                    }
-                    else
-                    {
-                        Debug.Log("Click for Movement");
-                        CheckMovement(tile);
-                    }*/
-
                     SelectTile(tile);
                 }
             }
@@ -158,8 +147,19 @@ public class CombatSystem : NetworkBehaviour
 
     private void SelectTile(Tile tile)
     {
+        if (_selectedTile)
+        {
+            UnselectTile();
+        }
+        
         _selectedTile = tile;
         _selectedTile.SelectTile();
+
+        var character = _selectedTile.GetCharacter();
+        if (character && character.GetTeam() == PlayerGridMovement.Team.Enemies)
+        {
+            character.GetComponent<EnemyGridPopUpUI>().ShowUI();
+        }
 
         selectMode = tile.GetCharacter() ? SelectTileMode.Action : SelectTileMode.Movement;
     }
@@ -167,6 +167,11 @@ public class CombatSystem : NetworkBehaviour
     private void UnselectTile()
     {
         _selectedTile.ShowTile();
+        var character = _selectedTile.GetCharacter();
+        if (character && character.GetTeam() == PlayerGridMovement.Team.Enemies)
+        {
+            character.GetComponent<EnemyGridPopUpUI>().HideUI();
+        }
         _selectedTile = null;
         selectMode = SelectTileMode.None;
     }
