@@ -56,7 +56,7 @@ public class MapHandler : MonoBehaviour
         }
     }
 
-    public RaycastHit2D? GetHoveredTile()
+    public RaycastHit2D? GetHoveredRaycast()
     {
         Camera mainCamera = Camera.main;
         if (mainCamera == null)

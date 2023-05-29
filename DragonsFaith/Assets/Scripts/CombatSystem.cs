@@ -31,7 +31,8 @@ public class CombatSystem : NetworkBehaviour
 
     public void Setup(IEnumerable<PlayerGridMovement> characters)
     {
-        characterList = characters.OrderByDescending(x => x.movement).ThenBy(x => x.GetHashCode()).ToList();
+        characterList = characters.OrderByDescending(x => x.movement).ThenBy(x => x.name).ThenBy(x => x.GetHashCode())
+            .ToList();
 
         SelectNextActiveUnit();
 
@@ -88,33 +89,34 @@ public class CombatSystem : NetworkBehaviour
         MapHandler.instance.ShowNavigableTiles(_activeUnit.onTile, _activeUnit.movement);
 
         //check if mouse is hovering at least one tile, then check player action
-        var tileHit = MapHandler.instance.GetHoveredTile();
-        if (tileHit.HasValue)
+        var hoveredHit = MapHandler.instance.GetHoveredRaycast();
+        if (hoveredHit.HasValue)
         {
-            var tile = tileHit.Value.collider.GetComponent<Tile>();
+            var tile = hoveredHit.Value.collider.GetComponent<Tile>();
             if (tile)
             {
                 tile.ShowTile();
-            }
 
-            if (Input.GetMouseButtonDown(0))
-            {
                 var characterOnTile = tile.GetCharacter();
-                if (characterOnTile)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    CheckAction(characterOnTile);
-                }
-                else
-                {
-                    CheckMovement(tile);
+                    if (characterOnTile)
+                    {
+                        Debug.Log("Click for Action");
+                        CheckAction(characterOnTile);
+                    }
+                    else
+                    {
+                        Debug.Log("Click for Movement");
+                        CheckMovement(tile);
+                    }
                 }
             }
-        }
 
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SkipTurn();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SkipTurn();
+            }
         }
     }
 
