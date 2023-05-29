@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Inventory;
+using Inventory.Items;
+using Player;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -77,7 +80,7 @@ public class CombatSystem : NetworkBehaviour
     {
         //wait for settings
         if (!_isReady) return;
-        
+
         MapHandler.instance.HideAllTiles();
 
         if (!_isThisPlayerTurn) return;
@@ -96,10 +99,15 @@ public class CombatSystem : NetworkBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                CheckAction(tile);
-
-                //No fight try to move
-                CheckMovement(tile);
+                var characterOnTile = tile.GetCharacter();
+                if (characterOnTile)
+                {
+                    CheckAction(characterOnTile);
+                }
+                else
+                {
+                    CheckMovement(tile);
+                }
             }
         }
 
@@ -166,41 +174,57 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
-
-    private void CheckAction(Tile tile)
+    //// <returns>false if no action has been performed</returns>
+    private void CheckAction(PlayerGridMovement target)
     {
-        // Check if clicking on a unit position
-        var characterOnTile = tile.GetCharacter();
-        if (!characterOnTile) return;
-
         // Clicked on top of a Unit
-        if (_activeUnit.IsEnemy(characterOnTile))
+        if (_activeUnit.IsEnemy(target))
         {
-            CheckActionOnEnemy(tile, characterOnTile);
+            CheckActionOnEnemy(target);
         }
         else
         {
-            CheckActionOnPlayer(tile, characterOnTile);
+            CheckActionOnPlayer(target);
         }
     }
 
-    private void CheckActionOnPlayer(Tile tile, PlayerGridMovement characterOnTile)
+    private void CheckActionOnPlayer(PlayerGridMovement characterOnTile)
     {
         //todo aggiungere azioni sul player
     }
 
-    private void CheckActionOnEnemy(Tile tile, PlayerGridMovement characterOnTile)
-    
+    private void CheckActionOnEnemy(PlayerGridMovement characterOnTile)
     {
-        // Clicked on an Enemy of the current unit
-        if (!_activeUnit.CanAttackUnit(characterOnTile)) return;
-
         // Can Attack Enemy
         if (!_canAttackThisTurn) return;
 
+        // Clicked on an Enemy of the current unit
+        var weapon = _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
+            ? InventoryManager.Instance.GetWeapon()
+            : _activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
+        if (!weapon)
+        {
+            weapon = ScriptableObject.CreateInstance<Weapon>();
+            weapon.range = 1;
+            weapon.weaponType = Weapon.WeaponType.Melee;
+            weapon.damage = 1;
+        }
+
+        if (CanAttackUnit(characterOnTile, weapon)) return;
+
         // Attack Enemy
         _canAttackThisTurn = false;
-        _activeUnit.Attack(characterOnTile);
+        Attack(characterOnTile);
+    }
+
+    public bool CanAttackUnit(PlayerGridMovement target, Weapon weapon)
+    {
+        return Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
+    }
+
+    public void Attack(PlayerGridMovement target)
+    {
+        Debug.Log("Attack!");
     }
 
     private void SkipTurn()

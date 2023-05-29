@@ -6726,7 +6726,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &481556427
 Transform:
   m_ObjectHideFlags: 0
@@ -8484,17 +8484,22 @@ MonoBehaviour:
   playerVolumeSlider: {fileID: 1509036831}
   enemyVolumeSlider: {fileID: 24582767}
   backgroundVolumeSlider: {fileID: 2020249847}
+  playerUI: {fileID: 0}
+  portrait: {fileID: 0}
   nameText: {fileID: 169211937}
   healthSlider: {fileID: 1948699304}
   healthText: {fileID: 443366454}
   manaSlider: {fileID: 1111982430}
   manaText: {fileID: 513243646}
+  inventorySlots: []
+  equipmentSlots: []
   popUpMessage: {fileID: 0}
   faith: {fileID: 529393120}
   fire: {fileID: 127357463, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
   air: {fileID: 1158037730, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
   earth: {fileID: 115032384, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
   water: {fileID: 1201451246, guid: d8ddb5fe0e497a64eb13fb670cc38d3c, type: 3}
+  chosenFaith: 0
   fadeInTime: 1
   fadeOutTime: 0.5
 --- !u!114 &596791107
@@ -16923,6 +16928,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b20609cb41d823843926f1a785709754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useButton: {fileID: 0}
+  sendButton: {fileID: 0}
 --- !u!114 &1145892788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25530,6 +25537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95467abcb5b0cf45b504932486c4be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontWaitClient: 0
   hostButton: {fileID: 884261472}
   clientButton: {fileID: 2096579021}
   cancelButton: {fileID: 286708663}

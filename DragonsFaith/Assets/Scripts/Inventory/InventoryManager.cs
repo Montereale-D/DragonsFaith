@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Inventory.Items;
 using Player;
 using Save;
@@ -224,6 +225,12 @@ namespace Inventory
             }
 
             return null;
+        }
+
+        public Weapon GetWeapon()
+        {
+            return (from slot in equipmentSlots select slot.GetComponentInChildren<InventoryItem>() into inventoryItem 
+                where inventoryItem select inventoryItem.item as Weapon).FirstOrDefault(weapon => weapon);
         }
 
         public float GetEquipmentModifiers(AttributeType type)

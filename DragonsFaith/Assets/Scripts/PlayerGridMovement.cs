@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Inventory.Items;
 using Player;
 using Unity.Netcode;
 
@@ -207,19 +208,9 @@ public class PlayerGridMovement : MonoBehaviour
         return team;
     }
 
-    public bool IsEnemy(PlayerGridMovement c)
+    public bool IsEnemy(PlayerGridMovement target)
     {
-        return c.GetTeam() != team;
-    }
-
-    public bool CanAttackUnit(PlayerGridMovement c)
-    {
-        return Vector2Int.Distance(onTile.mapPosition, c.onTile.mapPosition) < 50f;
-    }
-
-    public void Attack(PlayerGridMovement c)
-    {
-        Debug.Log("Attack!");
+        return target.GetTeam() != team;
     }
 
     // Called to update movement animation after one frame from movement end
