@@ -140,7 +140,7 @@ public class CombatSystem : NetworkBehaviour
                 SkipTurn();
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Delete))
             {
                 UnselectTile();
             }

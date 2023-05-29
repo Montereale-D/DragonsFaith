@@ -32,7 +32,8 @@ public class EnemyGridBehaviour : MonoBehaviour
 
     public void PlanAction(List<PlayerGridMovement> characterList)
     {
-        _enemyPlan.Invoke(characterList);
+        Debug.Log("PlanAction");
+        //_enemyPlan.Invoke(characterList);
     }
 
     public void Damage(int damage)
