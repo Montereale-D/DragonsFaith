@@ -76,19 +76,19 @@ namespace Inventory
         /// <summary>
         /// Notify this slot that the item has been used
         /// </summary>
-        public virtual void OnItemUse(InventoryItem item)
+        public virtual void OnItemUse(InventoryItem inventoryItem)
         {
-            Debug.Log("Use item " + item);
-            if (item.item.consumable)
+            Debug.Log("Use item " + inventoryItem);
+            if (inventoryItem.item.consumable)
             {
-                UpdateItemQuantity(item);
+                UpdateItemQuantity(inventoryItem);
             }
             else
             {
-                //active item
+                // activate item
             }
             
-            InventoryManager.Instance.OnSlotUse(this, item);
+            InventoryManager.Instance.OnSlotUse(this, inventoryItem);
         }
 
         public void OnItemSend(InventoryItem inventoryItem)
@@ -105,6 +105,7 @@ namespace Inventory
                 return;
             }
             
+            Debug.Log("Passed checks in InventorySlot");
             InventoryManager.Instance.OnItemSend(this, inventoryItem);
         }
         
@@ -131,6 +132,16 @@ namespace Inventory
                 item.UpdateCount();
                 onSlotUpdate.Invoke(item);
             }
+        }
+
+        public void OnItemDestroy(InventoryItem inventoryItem)
+        {
+            UpdateItemQuantity(inventoryItem);
+        }
+
+        public void OnItemDestroyAll(InventoryItem inventoryItem)
+        {
+            UpdateItemQuantity(inventoryItem, -inventoryItem.count);
         }
     }
 }

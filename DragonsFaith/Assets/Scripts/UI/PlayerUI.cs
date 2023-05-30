@@ -54,6 +54,7 @@ namespace UI
 
         [Header("Player UI")] 
         public GameObject playerUI;
+        public GameObject settingsButton;
         public Image portrait;
 
         [Header("Character Info")] 
@@ -298,6 +299,7 @@ namespace UI
         {
             SetMenu(Tab.Faith);
             playerUI.SetActive(true);
+            settingsButton.SetActive(true);
         }
 
         public void SetFire()
