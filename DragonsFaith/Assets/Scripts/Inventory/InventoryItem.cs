@@ -124,5 +124,15 @@ namespace Inventory
         {
             GetComponentInParent<InventorySlot>().OnItemUse(this);
         }
+
+        public void DestroyItemAction()
+        {
+            GetComponentInParent<InventorySlot>().OnItemDestroy(this);
+        }
+
+        public void DestroyAllItemAction()
+        {
+            GetComponentInParent<InventorySlot>().OnItemDestroyAll(this);
+        }
     }
 }

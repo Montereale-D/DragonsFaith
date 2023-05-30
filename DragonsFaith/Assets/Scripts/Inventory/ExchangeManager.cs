@@ -44,10 +44,16 @@ namespace Inventory
 
         public void SendItemToFriend(string itemToSendID)
         {
+            Debug.Log("SendItemToFriend");
             if (IsHost)
+            {
+                Debug.Log("Host");
                 SendItemClientRpc(itemToSendID);
-            else
+            } else
+            {
+                Debug.Log("Client");
                 SendItemServerRpc(itemToSendID);
+            }
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -55,6 +61,7 @@ namespace Inventory
         {
             if(!IsHost) return;
 
+            Debug.Log("SendItemServerRpc");
             var isSpaceAvailable = InventoryManager.Instance.AddItem(CreateItem(receivedItemID));
             SendItemResponseClientRpc(isSpaceAvailable);
         }
@@ -64,6 +71,7 @@ namespace Inventory
         {
             if(IsHost) return;
             
+            Debug.Log("SendItemClientRpc");
             var isSpaceAvailable = InventoryManager.Instance.AddItem(CreateItem(receivedItemID));
             SendItemResponseServerRpc(isSpaceAvailable);
         }

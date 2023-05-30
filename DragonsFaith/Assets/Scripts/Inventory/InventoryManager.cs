@@ -103,14 +103,14 @@ namespace Inventory
             return false;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Inventory request to add an item using a name or ID
         /// </summary>
         public void AddItem(string newItemIdOrName)
         {
             //return commented in order to test it with a button
             AddItem(ExchangeManager.Instance.CreateItem(newItemIdOrName));
-        }
+        }*/
 
         /// <summary>
         /// Instantiate an item and add it to the slot
@@ -134,6 +134,7 @@ namespace Inventory
                     OnConsumableUse(item);
                     break;
                 case ItemType.Weapon:
+                    //TODO add weapon function
                     break;
                 case ItemType.Head:
                     break;
@@ -164,10 +165,12 @@ namespace Inventory
         public void OnItemSend(InventorySlot slot, InventoryItem item)
         {
             if (item == null) return;
-
-            ExchangeManager.Instance.SendItemToFriend(item.item.id);
+            
+            Debug.Log("Passed checks in InventoryManager");
             _sendSlot = slot;
             _sendItem = item;
+            Debug.Log("(" + slot + ", " + item + ")");
+            ExchangeManager.Instance.SendItemToFriend(item.item.id);
         }
 
         public void OnItemSendResponse(bool isSuccess)

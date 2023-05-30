@@ -11,6 +11,8 @@ namespace UI
 
         [SerializeField] private Button useButton;
         [SerializeField] private Button sendButton;
+        [SerializeField] private Button destroyButton;
+        [SerializeField] private Button destroyAllButton;
 
         private void Awake()
         {
@@ -51,7 +53,9 @@ namespace UI
             _currentItem = item;
             useButton.onClick.AddListener(_currentItem.UseItemAction);
             sendButton.onClick.AddListener(_currentItem.SendItemAction);
-            
+            destroyButton.onClick.AddListener(_currentItem.DestroyItemAction);
+            destroyAllButton.onClick.AddListener(_currentItem.DestroyAllItemAction);
+
             FadeStart();
         }
 
@@ -61,6 +65,8 @@ namespace UI
             gameObject.SetActive(false);
             useButton.onClick.RemoveListener(_currentItem.UseItemAction);
             sendButton.onClick.RemoveListener(_currentItem.SendItemAction);
+            destroyButton.onClick.RemoveListener(_currentItem.DestroyItemAction);
+            destroyAllButton.onClick.RemoveListener(_currentItem.DestroyAllItemAction);
         }
         
         public void FadeStart()

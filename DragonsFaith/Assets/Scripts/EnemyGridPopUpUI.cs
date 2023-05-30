@@ -9,19 +9,19 @@ public class EnemyGridPopUpUI : MonoBehaviour
     public GameObject ui;
     public Slider healthBar;
     public TextMeshProUGUI healthNumber;
-    private int maxHealth;
+    private int _maxHealth;
 
     public void SetUI(int maxHealth)
     {
         HideUI();
-        this.maxHealth = maxHealth;
+        _maxHealth = maxHealth;
         healthBar.maxValue = maxHealth;
     }
 
     public void UpdateUI(int health)
     {
         healthBar.value = health;
-        healthNumber.text = "Life: " + health + "/" + maxHealth;
+        healthNumber.text = "Life: " + health + "/" + _maxHealth;
     }
     
     public void ShowUI()
