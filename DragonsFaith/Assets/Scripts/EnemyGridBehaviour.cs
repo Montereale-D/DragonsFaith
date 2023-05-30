@@ -15,19 +15,20 @@ public class EnemyGridBehaviour : MonoBehaviour
     private EnemyPlan _enemyPlan;
     public EnemyBehaviourType behaviourType;
     public Weapon weapon;
+    public string enemyName = "EnemyName";
 
     public int agility = 1;
     public int healthMax = 100;
     private int _health;
 
-    private EnemyGridPopUpUI _popUpUI;
+    private CharacterGridPopUpUI _popUpUI;
     private void Awake()
     {
         _enemyPlan = behaviourType == EnemyBehaviourType.Melee ? MeleePlan : RangedPlan;
         _health = healthMax;
         
-        _popUpUI = GetComponent<EnemyGridPopUpUI>();
-        _popUpUI.SetUI(healthMax);
+        _popUpUI = GetComponent<CharacterGridPopUpUI>();
+        _popUpUI.SetUI(enemyName, healthMax);
     }
 
     public void PlanAction(List<PlayerGridMovement> characterList)
@@ -45,7 +46,7 @@ public class EnemyGridBehaviour : MonoBehaviour
             Die();
         }
         
-        _popUpUI.UpdateUI(_health);
+        _popUpUI.UpdateHealth(_health);
     }
 
     private void Die()

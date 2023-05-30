@@ -1,7 +1,6 @@
 using System;
 using Inventory;
 using Save;
-using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,15 +9,8 @@ namespace Player
     public class CharacterManager : MonoBehaviour, IGameData
     {
         [SerializeField] private CharacterSO characterSo;
-
-        private PlayerUI _playerUI;
-
-        private int _maxHealth = 100;
-        private int _health = 100;
-        private int _maxMana = 100;
-        private int _mana = 100;
-
-        public bool isBlocking;
+        
+        private CharacterInfo _characterInfo;
 
         public static CharacterManager Instance { get; private set; }
 
@@ -34,96 +26,28 @@ namespace Player
             DontDestroyOnLoad(this);
 
             characterSo.Reset();
-
-            _health = _maxHealth;
-            _mana = _maxMana;
+            _characterInfo = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<CharacterInfo>();
+            _characterInfo.isLocalPlayer = true;
         }
-
 
         private void Start()
         {
-            _playerUI = PlayerUI.Instance;
-            _playerUI.healthSlider.maxValue = _maxHealth;
-            _playerUI.manaSlider.maxValue = _maxMana;
-            _playerUI.UpdateHealthBar(_maxHealth, _maxHealth);
-            _playerUI.UpdateManaBar(_maxMana, _maxMana);
-            _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
+            _characterInfo.SetUp();
         }
 
-        [ContextMenu("Increase Max Health")]
-        public void IncreaseMaxHealth()
+        public void Heal(int value)
         {
-            UpdateMaxHealth(_maxHealth + 20);
+            _characterInfo.Heal(value);
         }
 
-        public void UpdateMaxHealth(int value)
+        public void Damage(int value)
         {
-            _maxHealth = value;
-            _playerUI.UpdateMaxHealth(value);
+            _characterInfo.Damage(value);
         }
 
-        public void UpdateMaxMana(int value)
+        public bool IsAlive()
         {
-            _maxMana = value;
-            _playerUI.UpdateMaxMana(value);
-        }
-
-        [ContextMenu("Take Damage")]
-        public void DamageFromContext()
-        {
-            Damage(20);
-        }
-
-        public void Damage(int damage)
-        {
-            _health -= damage;
-
-            if (_health <= 0)
-            {
-                _health = 0;
-
-                //do stuff
-            }
-
-            _playerUI.UpdateHealthBar(_health, _maxHealth);
-        }
-
-        public void Heal(int heal)
-        {
-            _health += heal;
-
-            if (_health > _maxHealth)
-            {
-                _health = _maxHealth;
-            }
-
-            _playerUI.UpdateHealthBar(_health, _maxHealth);
-        }
-
-        public void Heal(InventoryItem item)
-        {
-            Heal(10);
-        }
-
-        public bool UseMana(int value)
-        {
-            if (_mana - value < 0) return false;
-
-            _mana -= value;
-            _playerUI.UpdateManaBar(_mana, _maxMana);
-            return true;
-        }
-
-        public void RestoreMana(int value)
-        {
-            _mana += value;
-
-            if (_mana > _maxMana)
-            {
-                _mana = _maxMana;
-            }
-
-            _playerUI.UpdateManaBar(_mana, _maxMana);
+            return _characterInfo.IsAlive();
         }
 
         public bool AbilityCheck(Attribute abilityAttribute)
@@ -188,22 +112,18 @@ namespace Player
 
             Debug.Log("CharacterManager load data " + playerType);
 
-            data.GetBarsData(playerType, out _health, out _maxHealth, out _mana, out _maxMana);
-            _playerUI.UpdateHealthBar(_health, _maxHealth);
-            _playerUI.UpdateManaBar(_mana, _maxMana);
-
-            _playerUI.nameText.text = data.GetPlayerName(playerType);
-            _playerUI.chosenFaith = data.GetFaith(playerType);
+            data.GetBarsData(playerType, out int health, out int maxHealth, out int mana, out int maxMana);
+            _characterInfo.LoadLocalPlayer(health, maxHealth, mana, maxMana, data.GetPlayerName(playerType), data.GetFaith(playerType));
         }
 
         public void SaveData(ref GameData data)
         {
             var playerType = GameData.GetPlayerType();
 
-            data.UpdateBarsData(playerType, _health, _maxHealth, _mana, _maxMana);
+            data.UpdateBarsData(playerType, _characterInfo.health, _characterInfo.GetMaxHealth(), _characterInfo.mana, _characterInfo.GetMaxMana());
 
-            data.SetPlayerName(playerType, _playerUI.nameText.text);
-            data.SetFaith(playerType, _playerUI.chosenFaith);
+            data.SetPlayerName(playerType, _characterInfo.characterName);
+            data.SetFaith(playerType, _characterInfo.faith);
         }
 
         public void SetPlayerGridMode()
@@ -222,6 +142,19 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
+        }
+        
+        [ContextMenu("Increase Max Health")]
+        public void IncreaseMaxHealth()
+        {
+            _characterInfo.UpdateMaxHealth(20);
+        }
+        
+
+        [ContextMenu("Take Damage")]
+        public void DamageFromContext()
+        {
+            _characterInfo.Damage(20);
         }
     }
 }

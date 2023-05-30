@@ -178,9 +178,9 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile.SelectTile();
 
         var character = _selectedTile.GetCharacter();
-        if (character && character.GetTeam() == PlayerGridMovement.Team.Enemies)
+        if (character && character != _activeUnit)
         {
-            character.GetComponent<EnemyGridPopUpUI>().ShowUI();
+            character.GetComponent<CharacterGridPopUpUI>().ShowUI();
         }
 
         selectMode = tile.GetCharacter() ? SelectTileMode.Action : SelectTileMode.Movement;
@@ -190,9 +190,9 @@ public class CombatSystem : NetworkBehaviour
     {
         _selectedTile.ShowTile();
         var character = _selectedTile.GetCharacter();
-        if (character && character.GetTeam() == PlayerGridMovement.Team.Enemies)
+        if (character && character != _activeUnit)
         {
-            character.GetComponent<EnemyGridPopUpUI>().HideUI();
+            character.GetComponent<CharacterGridPopUpUI>().HideUI();
         }
         _selectedTile = null;
         selectMode = SelectTileMode.None;
