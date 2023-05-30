@@ -44,14 +44,14 @@ namespace Inventory
 
         public void SendItemToFriend(string itemToSendID)
         {
-            Debug.Log("SendItemToFriend");
             if (IsHost)
             {
-                Debug.Log("Host");
+                Debug.Log("Host sending item to client");
                 SendItemClientRpc(itemToSendID);
-            } else
+            }
+            else
             {
-                Debug.Log("Client");
+                Debug.Log("Client sending item to host");
                 SendItemServerRpc(itemToSendID);
             }
         }
@@ -61,8 +61,10 @@ namespace Inventory
         {
             if(!IsHost) return;
 
-            Debug.Log("SendItemServerRpc");
             var isSpaceAvailable = InventoryManager.Instance.AddItem(CreateItem(receivedItemID));
+            
+            Debug.Log(isSpaceAvailable ? "Item accepted, replying ..." : "Item refused, replying ...");
+
             SendItemResponseClientRpc(isSpaceAvailable);
         }
 
@@ -71,8 +73,10 @@ namespace Inventory
         {
             if(IsHost) return;
             
-            Debug.Log("SendItemClientRpc");
             var isSpaceAvailable = InventoryManager.Instance.AddItem(CreateItem(receivedItemID));
+            
+            Debug.Log(isSpaceAvailable ? "Item accepted, replying ..." : "Item refused, replying ...");
+            
             SendItemResponseServerRpc(isSpaceAvailable);
         }
 
@@ -82,6 +86,8 @@ namespace Inventory
             if(!IsHost) return;
 
             Debug.Log("[HOST] Can remove item");
+            Debug.Log(isSpaceAvailable ? "Item accepted, thanks client!" : "Item refused, Item accepted, sorry client!");
+            
             InventoryManager.Instance.OnItemSendResponse(isSpaceAvailable);
         }
 
@@ -91,6 +97,8 @@ namespace Inventory
             if(IsHost) return;
 
             Debug.Log("[CLIENT] Can remove item");
+            Debug.Log(isSpaceAvailable ? "Item accepted, thanks host!" : "Item refused, Item accepted, sorry host!");
+
             InventoryManager.Instance.OnItemSendResponse(isSpaceAvailable);
         }
     }

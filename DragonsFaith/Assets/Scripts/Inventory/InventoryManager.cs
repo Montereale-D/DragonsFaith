@@ -41,6 +41,14 @@ namespace Inventory
             }
         }
 
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Z))
+            {
+                AddHealthKitContextMenu();
+            }
+        }
+
         /// <summary>
         /// Inventory request to add an item
         /// </summary>
