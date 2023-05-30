@@ -665,6 +665,7 @@ MonoBehaviour:
   team: 1
   pathMovementSpeed: 5
   isMoving: 0
+  turnSprite: {fileID: -2102863413, guid: 049dce31061bbcc499477f2b0c89ee7c, type: 3}
 --- !u!114 &-1754092425021754728
 MonoBehaviour:
   m_ObjectHideFlags: 0

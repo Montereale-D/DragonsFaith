@@ -5,7 +5,9 @@ using System.Linq;
 using Inventory;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace UI
 {
@@ -55,7 +57,9 @@ namespace UI
         [Header("Player UI")] 
         public GameObject playerUI;
         public GameObject settingsButton;
+        public RectTransform turnUI;
         public Image portrait;
+        public Sprite[] portraitSprites;
 
         [Header("Character Info")] 
         public TextMeshProUGUI nameText;
@@ -83,11 +87,16 @@ namespace UI
         public Element chosenFaith;
 
         private RectTransform _rectTransformFaithTab;
+        private RectTransform _rectTransformTurnUI;
         private static LTDescr delay;
-        [SerializeField] [Tooltip("Time for the Faith tab to appear.")] 
-        private float fadeInTime = 0.5f;
-        [SerializeField] [Tooltip("Time for the Faith tab to dissolve.")] 
-        private float fadeOutTime = 0.5f;
+        [SerializeField] [Tooltip("Faith tab fade in duration.")] 
+        private float faithTabFadeInTime = 0.5f;
+        [SerializeField] [Tooltip("Faith tab fade out duration.")] 
+        private float faithTabFadeOutTime = 0.5f;
+        [SerializeField] [Tooltip("Faith tab fade in duration.")] 
+        private float turnUIFadeInTime = 0.5f;
+        [SerializeField] [Tooltip("Faith tab fade out duration.")] 
+        private float turnUIFadeOutTime = 0.5f;
         
         private OptionsManager _optionsManager;
 
@@ -126,8 +135,9 @@ namespace UI
             
             //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
             
+            //_rectTransformTurnUI = turnUI.GetComponent<RectTransform>();
             _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
-            FadeInElement(_rectTransformFaithTab);
+            FadeInElement(_rectTransformFaithTab, faithTabFadeInTime);
         }
 
         private void Start()
@@ -138,6 +148,7 @@ namespace UI
         private void Update()
         {
             if (!_faithChoiceDone) return;
+            //if (_faithChoiceDone && faithTab.activeSelf) faithTab.SetActive(false);
             
             if (Input.GetKeyDown(KeyCode.I))
             {
@@ -174,10 +185,11 @@ namespace UI
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.T))
+            /*if (Input.GetKeyDown(KeyCode.T))
             {
-                ShowMessage("Testing...");
-            }
+                /*ShowMessage("Testing...");#1#
+                ToggleTurnUI();
+            }*/
         }
         
         public void ShowMessage(string message)
@@ -185,6 +197,13 @@ namespace UI
             popUpMessage.uiSettings.text.text = message;
             popUpMessage.StartOpen();
         }
+        
+        public void ShowUI(bool b)
+        {
+            GetComponent<Canvas>().enabled = b;
+        }
+        
+        #region OpenTabFunctions
 
         private void SetMenu(Tab menu)
         {
@@ -211,11 +230,12 @@ namespace UI
                     skillsTab.SetActive(!skillsTab.activeSelf);
                     break;
                 case Tab.Faith:
-                    FadeOutElement(_rectTransformFaithTab);
-                    delay = LeanTween.delayedCall(fadeOutTime, () =>
+                    FadeOutElement(_rectTransformFaithTab, faithTabFadeOutTime);
+                    /*delay = LeanTween.delayedCall(faithTabFadeOutTime, () =>
                     {
                         faithTab.SetActive(false);
-                    });
+                    });*/
+                    faithTab.SetActive(false);
                     _faithChoiceDone = true;
                     break;
                 case Tab.Main:
@@ -246,9 +266,9 @@ namespace UI
             }
         }
         
-        private void SetFaithImage(Element element)
+        private void SetFaithSprite(Element element)
         {
-            faith.sprite = portrait.sprite = element switch
+            faith.sprite = element switch
             {
                 Element.Fire => fire,
                 Element.Air => air,
@@ -256,6 +276,12 @@ namespace UI
                 Element.Water => water,
                 _ => faith.sprite
             };
+        }
+
+        private void SetPortraitSprite()
+        {
+            var spriteIdx = Random.Range(0, portraitSprites.Length);
+            portrait.sprite = portraitSprites[spriteIdx];
         }
 
         public void OpenMenu()
@@ -298,48 +324,53 @@ namespace UI
         private void CloseFaithTab()
         {
             SetMenu(Tab.Faith);
+            SetPortraitSprite();
             playerUI.SetActive(true);
             settingsButton.SetActive(true);
         }
 
         public void SetFire()
         {
-            SetFaithImage(Element.Fire);
+            SetFaithSprite(Element.Fire);
             CloseFaithTab();
             chosenFaith = Element.Fire;
         }
         
         public void SetAir()
         {
-            SetFaithImage(Element.Air);
+            SetFaithSprite(Element.Air);
             CloseFaithTab();
             chosenFaith = Element.Air;
         }
         
         public void SetEarth()
         {
-            SetFaithImage(Element.Earth);
+            SetFaithSprite(Element.Earth);
             CloseFaithTab();
             chosenFaith = Element.Earth;
         }
         
         public void SetWater()
         {
-            SetFaithImage(Element.Water);
+            SetFaithSprite(Element.Water);
             CloseFaithTab();
             chosenFaith = Element.Water;
         }
+        
+        #endregion
 
-        private void FadeInElement(RectTransform rectTransform)
+        private void FadeInElement(RectTransform rectTransform, float fadeInDuration)
         {
-            LeanTween.alpha(rectTransform, 1f, fadeInTime).setEase(LeanTweenType.linear);
+            LeanTween.alpha(rectTransform, 1f, fadeInDuration).setEase(LeanTweenType.linear);
         }
         
-        private void FadeOutElement(RectTransform rectTransform)
+        private void FadeOutElement(RectTransform rectTransform, float fadeOutDuration)
         {
-            LeanTween.alpha(rectTransform, 0f, fadeOutTime).setEase(LeanTweenType.linear);
+            LeanTween.alpha(rectTransform, 0f, fadeOutDuration).setEase(LeanTweenType.linear);
         }
-
+        
+        #region UpdateValues
+        
         public void UpdateMaxHealth(int value)
         {
             healthSlider.maxValue = value;
@@ -389,10 +420,26 @@ namespace UI
         {
             _optionsManager.SetResolution(resolutionIndex);
         }
-
-        public void ShowUI(bool b)
+        
+        #endregion
+        
+        public void ToggleTurnUI(List<PlayerGridMovement> characterList)
         {
-            GetComponent<Canvas>().enabled = b;
+            if (!turnUI.gameObject.activeSelf)
+            {
+                turnUI.gameObject.SetActive(true);
+                FadeInElement(turnUI, turnUIFadeInTime);
+                turnUI.GetComponentInChildren<TurnUI>().SetUpList(characterList);
+            }
+            else
+            {
+                FadeOutElement(turnUI, turnUIFadeOutTime);
+                delay = LeanTween.delayedCall(turnUIFadeOutTime, () =>
+                {
+                    turnUI.gameObject.SetActive(false);
+                    turnUI.GetComponentInChildren<TurnUI>().DestroyList();
+                });
+            }
         }
     }
 }

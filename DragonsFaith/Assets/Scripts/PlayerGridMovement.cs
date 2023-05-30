@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using Inventory.Items;
 using Player;
+using UI;
 using Unity.Netcode;
 
 public class PlayerGridMovement : MonoBehaviour
@@ -16,6 +17,8 @@ public class PlayerGridMovement : MonoBehaviour
     public int movement { get; set; }
 
     public bool isMoving;
+
+    public Sprite turnSprite;
 
     public enum Team
     {
@@ -33,6 +36,7 @@ public class PlayerGridMovement : MonoBehaviour
     private void Awake()
     {
         state = State.Normal;
+        //if (team == Team.Players) turnSprite = PlayerUI.Instance.portrait.sprite;
     }
 
     public void SetGridPosition()

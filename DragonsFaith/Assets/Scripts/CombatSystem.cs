@@ -3,6 +3,7 @@ using System.Linq;
 using Inventory;
 using Inventory.Items;
 using Player;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -32,11 +33,14 @@ public class CombatSystem : NetworkBehaviour
 
     public void Setup(IEnumerable<PlayerGridMovement> characters)
     {
-        characterList = characters.OrderByDescending(x => x.movement).ThenBy(x => x.name).ThenBy(x => x.GetHashCode())
+        characterList = characters.OrderByDescending(x => x.movement)
+            .ThenBy(x => x.name)
+            .ThenBy(x => x.GetHashCode())
             .ToList();
 
         SelectNextActiveUnit();
 
+        PlayerUI.Instance.ToggleTurnUI(characterList);
         _isReady = true;
     }
 
@@ -270,7 +274,7 @@ public class CombatSystem : NetworkBehaviour
         // Can Attack Enemy
         if (!_canAttackThisTurn)
         {
-            Debug.Log("Already attack in this turn");
+            Debug.Log("Already attacked in this turn");
             return;
         }
 
@@ -286,7 +290,7 @@ public class CombatSystem : NetworkBehaviour
 
         if (!CanAttackUnit(characterOnTile, weapon))
         {
-            Debug.Log("Target outside range with this weapon");
+            Debug.Log("Target outside range of weapon");
             return;
         }
 
