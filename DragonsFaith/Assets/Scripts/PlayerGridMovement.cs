@@ -54,7 +54,6 @@ public class PlayerGridMovement : MonoBehaviour
             if (GetComponent<NetworkObject>().IsLocalPlayer)
             {
                 movement = (int)CharacterManager.Instance.GetTotalAgi();
-                //PlayerUI.Instance.SetMovementCounter(movement);
             }
             else
             {

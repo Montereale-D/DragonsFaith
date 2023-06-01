@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = System.Diagnostics.Debug;
 
 namespace UI
 {
@@ -11,7 +12,8 @@ namespace UI
         //TODO: add other player portrait
     
         public int threshold = 7;
-        [SerializeField] private int _numberOfCells;
+        /*[SerializeField]*/ 
+        private int _numberOfCells;
         private int _multiplier;
 
         public GameObject cellPrefab;
@@ -20,7 +22,9 @@ namespace UI
         private List<GameObject> _cellList = new List<GameObject>();
 
         private Sprite _otherPlayerSprite;
+        private string _otherPlayerName;
         private PlayerGridMovement _localPlayer;
+        private int _currentCellIdx;
 
         public float animFadeInDuration = 1;
         public float animFadeOutDuration = 1;
@@ -29,10 +33,11 @@ namespace UI
         public void SetUpList(List<PlayerGridMovement> characterList)
         {
             _charList = characterList;
-            //GetPortraitSprite();
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-            /*_otherPlayerSprite = sprite;*/
-        
+            Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
+                "CombatSystem.instance.otherPlayerSpriteIdx != null");
+            _otherPlayerSprite = PlayerUI.Instance.portraitSprites[(int)CombatSystem.instance.otherPlayerSpriteIdx];
+            
             if (_charList.Count < threshold)
             {
                 _multiplier = threshold / _charList.Count + 1;
@@ -64,8 +69,8 @@ namespace UI
             }
             
             newTurnUI.gameObject.SetActive(true);
-            //TODO: add player name
-            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[0].name;
+            _currentCellIdx = 0;
+            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[_currentCellIdx].name;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
 
@@ -124,8 +129,9 @@ namespace UI
             _cellList.RemoveAt(0);
             
             newTurnUI.gameObject.SetActive(true);
-            //TODO: add player name
-            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[0].name;
+            _currentCellIdx++;
+            _currentCellIdx %= 3;
+            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[_currentCellIdx].name;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
         
@@ -148,37 +154,5 @@ namespace UI
         {
             FadeOutElement(newTurnUI, animFadeOutDuration);
         }
-    
-        /*public void GetPortraitSprite()
-        {
-            if (IsHost)
-            {
-                Debug.Log("I'm host and i'm sending idx: " + PlayerUI.Instance.portraitIdx);
-                GetPortraitSpriteClientRpc(PlayerUI.Instance.portraitIdx);
-            }
-            else
-            {
-                Debug.Log("I'm client and i'm sending idx: " + PlayerUI.Instance.portraitIdx);
-                GetPortraitSpriteServerRpc(PlayerUI.Instance.portraitIdx);
-            }
-        }
-
-        [ServerRpc(RequireOwnership = false)]
-        private void GetPortraitSpriteServerRpc(int portraitIdx)
-        {
-            if (!IsHost) return;
-            Debug.Log("I'm host and i received: " + portraitIdx);
-            _otherPlayerSprite = PlayerUI.Instance.portraitSprites[portraitIdx];
-            Debug.Log("host: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + _otherPlayerSprite);
-        }
-
-        [ClientRpc]
-        private void GetPortraitSpriteClientRpc(int portraitIdx)
-        {
-            if (IsHost) return;
-            Debug.Log("I'm client and i received: " + portraitIdx);
-            _otherPlayerSprite = PlayerUI.Instance.portraitSprites[portraitIdx];
-            Debug.Log("client: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + _otherPlayerSprite);
-        }*/
     }
 }

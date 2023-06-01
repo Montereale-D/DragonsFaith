@@ -156,5 +156,10 @@ namespace Player
         {
             _characterInfo.Damage(20);
         }
+
+        public string GetCharName()
+        {
+            return _characterInfo.characterName;
+        }
     }
 }
