@@ -32,7 +32,7 @@ public class MapHandler : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void Start()
     {
         container = new GameObject("OverlayContainer");
         Tilemap tileMap = gameObject.GetComponentInChildren<Tilemap>();

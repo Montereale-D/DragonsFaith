@@ -720,7 +720,7 @@ MonoBehaviour:
   behaviourType: 0
   weapon: {fileID: 11400000, guid: f0828874982b53a49a39fcc879f20a1b, type: 2}
   enemyName: EnemyName
-  agility: 1
+  agility: 3
   healthMax: 100
 --- !u!114 &-3303874697613722726
 MonoBehaviour:

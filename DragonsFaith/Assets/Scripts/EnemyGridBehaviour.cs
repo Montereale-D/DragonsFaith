@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Inventory.Items;
 using TMPro;
 using UnityEngine;
@@ -8,12 +10,16 @@ public class EnemyGridBehaviour : MonoBehaviour
 {
     public enum EnemyBehaviourType
     {
-        Melee, Ranged
+        Melee,
+        Ranged
     }
 
     private delegate void EnemyPlan(List<PlayerGridMovement> characterList);
+
     private EnemyPlan _enemyPlan;
     public EnemyBehaviourType behaviourType;
+    private CharacterInfo _characterInfo;
+
     public Weapon weapon;
     public string enemyName = "EnemyName";
 
@@ -22,19 +28,22 @@ public class EnemyGridBehaviour : MonoBehaviour
     private int _health;
 
     private CharacterGridPopUpUI _popUpUI;
+
     private void Awake()
     {
         _enemyPlan = behaviourType == EnemyBehaviourType.Melee ? MeleePlan : RangedPlan;
         _health = healthMax;
-        
+
         _popUpUI = GetComponent<CharacterGridPopUpUI>();
         _popUpUI.SetUI(enemyName, healthMax);
+
+        _characterInfo = GetComponent<CharacterInfo>();
     }
 
     public void PlanAction(List<PlayerGridMovement> characterList)
     {
         Debug.Log("PlanAction");
-        //_enemyPlan.Invoke(characterList);
+        _enemyPlan.Invoke(characterList);
     }
 
     public void Damage(int damage)
@@ -45,7 +54,7 @@ public class EnemyGridBehaviour : MonoBehaviour
             _health = 0;
             Die();
         }
-        
+
         _popUpUI.UpdateHealth(_health);
     }
 
@@ -70,9 +79,10 @@ public class EnemyGridBehaviour : MonoBehaviour
         {
             //if(!p.isDead()) {alive ++; whoAlive=p;}  At the moment there is no HP system in PlayerGridMovement or a reference in the CharacterSO   
         }
+
         //if only one is alive attack him
         if (alive == 1) target = whoAlive;
-        //if both alive check players distance and attacks the most distant
+        //if both alive check players distance and attacks the nearest
         else
         {
             float distance = 100;
@@ -86,43 +96,50 @@ public class EnemyGridBehaviour : MonoBehaviour
                     nearest = p;
                 }
             }
+
             target = nearest;
         }
-        //move in the range area (or as close as you can)
-        Tile tileToReach = target.onTile;
-        List<Tile> reachables = new List<Tile>();
-        while (reachables.Count < 1)
-        {
-            reachables = MapHandler.instance.GetNeighbourTiles(tileToReach, MapHandler.instance.GetTilesInRange(onTile, agility));
-            float d = 100.0f;
-            Tile nextToReach = null;
-            foreach (Tile t in MapHandler.instance.GetNeighbourTiles(tileToReach, new List<Tile>()))
-            {
-                if (Vector2Int.Distance(onTile.mapPosition, t.mapPosition) < d)
-                {
-                    d = Vector2Int.Distance(onTile.mapPosition, t.mapPosition);
-                    nextToReach = t;
-                }
-            }
-            tileToReach = nextToReach;
-        }
-        
-        //GetComponent<PlayerGridMovement>().MoveToTile(tileToReach);
-        CombatSystem.instance.CheckMovement(tileToReach);
-        
-        //if in range attack
-        onTile = GetComponent<PlayerGridMovement>().onTile;  //not sure if we need this, or if is auto-updated post movement
-        
-        foreach (Tile t in MapHandler.instance.GetNeighbourTiles(onTile, new List<Tile>()) )
-        {
-            if (t.GetCharacter() == target)
-            {
-                //CombatSystem.instance.Attack(target, weapon);
-                CombatSystem.instance.CheckAction(target);
-                break;
-            }
 
+        Debug.Log("The target is " + target.name);
+
+        //move in the range area (or as close as you can)
+        Tile targetTile = target.onTile;
+        Tile tileToReach;
+
+        var agilityMaxMovement = MapHandler.instance.GetTilesInRange(onTile, agility); 
+        List<Tile> reachable =
+            MapHandler.instance.GetNeighbourTiles(targetTile, agilityMaxMovement);
+
+        reachable.RemoveAll(x => x.GetCharacter() != null);
+        
+
+        if (reachable.Count == 0)
+        {
+            Debug.Log("Target not reachable");
+            tileToReach = MoveTowardTarget(targetTile, agilityMaxMovement);
+            CombatSystem.instance.CheckMovement(tileToReach, true);
+            CombatSystem.instance.ForceSkipDebug();
         }
+        else
+        {
+            Debug.Log("Target reachable");
+            tileToReach = MoveNearTarget(targetTile, reachable);
+            CombatSystem.instance.CheckMovement(tileToReach, true);
+            CombatSystem.instance.Attack(target, weapon);
+            CombatSystem.instance.ForceSkipDebug();
+        }
+    }
+
+    private Tile MoveNearTarget(Tile targetTile, List<Tile> reachableTiles)
+    {
+        reachableTiles = reachableTiles.OrderBy(x => Vector2Int.Distance(targetTile.mapPosition, x.mapPosition)).ToList();
+        return reachableTiles[0];
+    }
+
+    private Tile MoveTowardTarget(Tile targetTile, List<Tile> reachableTiles)
+    {
+        reachableTiles = reachableTiles.OrderBy(x => Vector2Int.Distance(targetTile.mapPosition, x.mapPosition)).ToList();
+        return reachableTiles[0];
     }
 
     #endregion
@@ -136,15 +153,16 @@ public class EnemyGridBehaviour : MonoBehaviour
         List<PlayerGridMovement> players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
         PlayerGridMovement target = null;
         //check if they are both alive
-        int alive=0;
-        PlayerGridMovement whoAlive=null;
+        int alive = 0;
+        PlayerGridMovement whoAlive = null;
         Tile onTile = GetComponent<PlayerGridMovement>().onTile;
         foreach (PlayerGridMovement p in players)
         {
             //if(!p.isDead()) {alive ++; whoAlive=p;}  At the moment there is no HP system in PlayerGridMovement or a reference in the CharacterSO   
         }
+
         //if only one is alive attack him
-        if (alive == 1) target=whoAlive;
+        if (alive == 1) target = whoAlive;
         //if both alive check players distance and attacks the most distant
         else
         {
@@ -159,27 +177,36 @@ public class EnemyGridBehaviour : MonoBehaviour
                     farthest = p;
                 }
             }
+
             target = farthest;
         }
+
         //move in the range area (or as close as you can)
         Tile tileToReach = target.onTile;
         List<Tile> reachables = new List<Tile>();
-        while (reachables.Count < 1) {
-            reachables = MapHandler.instance.GetNeighbourTiles(tileToReach, MapHandler.instance.GetTilesInRange(onTile, agility));
+        while (reachables.Count < 1)
+        {
+            reachables =
+                MapHandler.instance.GetNeighbourTiles(tileToReach,
+                    MapHandler.instance.GetTilesInRange(onTile, agility));
             float d = 100.0f;
             Tile nextToReach = null;
-            foreach( Tile t in MapHandler.instance.GetNeighbourTiles(tileToReach, new List<Tile>()) ){
+            foreach (Tile t in MapHandler.instance.GetNeighbourTiles(tileToReach, new List<Tile>()))
+            {
                 if (Vector2Int.Distance(onTile.mapPosition, t.mapPosition) < d)
                 {
                     d = Vector2Int.Distance(onTile.mapPosition, t.mapPosition);
                     nextToReach = t;
                 }
             }
+
             tileToReach = nextToReach;
         }
+
         GetComponent<PlayerGridMovement>().MoveToTile(tileToReach);
         //if in range attack
-        onTile = GetComponent<PlayerGridMovement>().onTile;  //not sure if we need this, or if is auto-updated post movement
+        onTile = GetComponent<PlayerGridMovement>()
+            .onTile; //not sure if we need this, or if is auto-updated post movement
         foreach (Tile t in MapHandler.instance.GetTilesInRange(onTile, (int)weapon.range))
         {
             if (t.GetCharacter() == target)
@@ -187,9 +214,8 @@ public class EnemyGridBehaviour : MonoBehaviour
                 CombatSystem.instance.Attack(target, weapon);
                 break;
             }
-   
         }
     }
-    
+
     #endregion
 }
