@@ -25,6 +25,9 @@ public class CombatSystem : NetworkBehaviour
     private PlayerGridMovement _target;
 
     private int _otherPlayerSpriteIdx;
+    private PlayerUI _playerUI;
+    private MapHandler _mapHandler;
+    private TurnUI _turnUI;
 
     private void Awake()
     {
@@ -35,6 +38,9 @@ public class CombatSystem : NetworkBehaviour
         }
 
         instance = this;
+        
+        _playerUI = PlayerUI.Instance;
+        _mapHandler = MapHandler.instance;
     }
 
     public void Setup(IEnumerable<PlayerGridMovement> characters)
@@ -48,7 +54,8 @@ public class CombatSystem : NetworkBehaviour
         
         //GetPortraitSprite();
 
-        PlayerUI.Instance.ToggleCombatUI(characterList); 
+        _playerUI.ToggleCombatUI(characterList);
+        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
         _isReady = true;
     }
 
@@ -66,7 +73,7 @@ public class CombatSystem : NetworkBehaviour
             _activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
         {
             _isThisPlayerTurn = true;
-            PlayerUI.Instance.SetMovementCounter(_activeUnit.movement);
+            //_playerUI.SetMovementCounter(_activeUnit.movement);
         }
         else
         {
@@ -97,18 +104,24 @@ public class CombatSystem : NetworkBehaviour
         //wait for settings
         if (!_isReady) return;
 
-        MapHandler.instance.HideAllTiles();
+        _mapHandler.HideAllTiles();
 
         if (!_isThisPlayerTurn) return;
 
-        MapHandler.instance.ShowNavigableTiles(_activeUnit.onTile, _activeUnit.movement);
+        _mapHandler.ShowNavigableTiles(_activeUnit.onTile, _activeUnit.movement);
         if (_selectedTile)
         {
             _selectedTile.SelectTile();
         }
+        
+        /*if (Input.GetKeyDown(KeyCode.T))
+        {
+            /*ShowMessage("Testing...");#1#
+            _playerUI.ToggleCombatUI(characterList);
+        }*/
 
         //check if mouse is hovering at least one tile, then check player action
-        var hoveredHit = MapHandler.instance.GetHoveredRaycast();
+        var hoveredHit = _mapHandler.GetHoveredRaycast();
         if (hoveredHit.HasValue)
         {
             var tile = hoveredHit.Value.collider.GetComponent<Tile>();
@@ -176,11 +189,11 @@ public class CombatSystem : NetworkBehaviour
         var weapon = GetActiveUnitWeapon();
         if (weapon.IsFullyLoaded())
         {
-            PlayerUI.Instance.ShowMessage("Weapon already fully loaded.");
+            _playerUI.ShowMessage("Weapon already fully loaded.");
             return;
         }
         weapon.Reload();
-        PlayerUI.Instance.SetAmmoCounter(weapon.GetAmmo());
+        _playerUI.SetAmmoCounter(weapon.GetAmmo());
         SkipTurn();
     }
 
@@ -209,31 +222,67 @@ public class CombatSystem : NetworkBehaviour
             character.GetComponent<CharacterGridPopUpUI>().ShowUI();
             if (character.GetTeam() == PlayerGridMovement.Team.Players)
             {
-                PlayerUI.Instance.ToggleMoveAttackButton("Move");    
+                _playerUI.ToggleMoveAttackButton("Move");    
             }
             else
             {
+                // Clicked on an Enemy of the current unit
+                var weapon = GetActiveUnitWeapon();
+    
+                //TODO: test
+                if (!_canAttackThisTurn)
+                {
+                    _playerUI.SetCombatPopUp(true,"Already attacked this turn.");
+                }
+                else if (!IsWithinRange(character, weapon))
+                {
+                    //Debug.Log("Target outside range of weapon");
+                    //_playerUI.ShowMessage("Target outside range of weapon.");
+                    _playerUI.SetCombatPopUp(true,"Target outside weapon range.");
+                }
+                else
+                {
+                    _playerUI.SetCombatPopUp(true,
+                        "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine + 
+                                "Strike target and deal " + (weapon.damage + CharacterManager.Instance.GetTotalStr()) + 
+                                " DMG.");
+                }
+
                 _target = character;
                 selectMode = SelectTileMode.Action;
-                PlayerUI.Instance.ToggleMoveAttackButton("Attack");
+                _playerUI.ToggleMoveAttackButton("Attack");
             }
         }
         else
         {
+            //TODO: test
+            if (!_canMoveThisTurn)
+            {
+                _playerUI.SetCombatPopUp(true, "Already moved this turn.");
+            }
+            else if (!_mapHandler.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(_selectedTile))
+            {
+                _playerUI.SetCombatPopUp(true, "Cell is too far away.");
+            }
+            else
+            {
+                _playerUI.SetCombatPopUp(true, "Cell is within movement range " + _activeUnit.movement + ".");
+            }
+            
             selectMode = SelectTileMode.Movement;
-            PlayerUI.Instance.ToggleMoveAttackButton("Move");
+            _playerUI.ToggleMoveAttackButton("Move");
         }
 
         /*if (character)
         {
             _target = tile.GetCharacter();
             selectMode = SelectTileMode.Action;
-            PlayerUI.Instance.ToggleMoveAttackButton("Attack");
+            _playerUI.ToggleMoveAttackButton("Attack");
         }
         else
         {
             selectMode = SelectTileMode.Movement;
-            PlayerUI.Instance.ToggleMoveAttackButton("Move");
+            _playerUI.ToggleMoveAttackButton("Move");
         }*/
         //selectMode = tile.GetCharacter() ? SelectTileMode.Action : SelectTileMode.Movement;
     }
@@ -241,6 +290,7 @@ public class CombatSystem : NetworkBehaviour
     private void UnselectTile()
     {
         _selectedTile.ShowTile();
+        _playerUI.SetCombatPopUp(false);
         var character = _selectedTile.GetCharacter();
         if (character && character != _activeUnit)
         {
@@ -263,23 +313,24 @@ public class CombatSystem : NetworkBehaviour
 
     public void CheckMovement(Tile tile)
     {
-        if (!MapHandler.instance.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(tile))
+        if (!_mapHandler.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(tile))
         {
-            PlayerUI.Instance.ShowMessage("Cell is too far away.");
+            //_playerUI.ShowMessage("Cell is too far away.");
+            //_playerUI.SetCombatPopUp(true, "Cell is too far away.");
             return;
         }
         
         if (!_canMoveThisTurn)
         {
-            PlayerUI.Instance.ShowMessage("Already moved this turn.");
+            //_playerUI.ShowMessage("Already moved this turn.");
             return;
         }
 
         _canMoveThisTurn = false;
-        PlayerUI.Instance.SetMovementCounter(0);
+        //_playerUI.SetMovementCounter(0);
 
         // Set entire Tilemap to Invisible
-        MapHandler.instance.HideAllTiles();
+        _mapHandler.HideAllTiles();
 
         // Remove Unit from tile
         _activeUnit.onTile.ClearTile();
@@ -308,7 +359,7 @@ public class CombatSystem : NetworkBehaviour
         if (!IsHost) return;
 
         var toPosition = new Vector2Int(x, y);
-        var tile = MapHandler.instance.GetMap()[toPosition];
+        var tile = _mapHandler.GetMap()[toPosition];
         _activeUnit.MoveToTile(tile);
     }
 
@@ -318,7 +369,7 @@ public class CombatSystem : NetworkBehaviour
         if (IsHost) return;
 
         var toPosition = new Vector2Int(x, y);
-        var tile = MapHandler.instance.GetMap()[toPosition];
+        var tile = _mapHandler.GetMap()[toPosition];
 
         if (move)
         {
@@ -348,31 +399,31 @@ public class CombatSystem : NetworkBehaviour
         if (!_canAttackThisTurn)
         {
             //Debug.Log("Already attacked in this turn");
-            PlayerUI.Instance.ShowMessage("Already attacked in this turn.");
+            //_playerUI.ShowMessage("Already attacked in this turn.");
             return;
         }
 
         // Clicked on an Enemy of the current unit
         var weapon = GetActiveUnitWeapon();
-        if (!weapon)
+        /*if (!weapon)
         {
             weapon = ScriptableObject.CreateInstance<Weapon>();
             weapon.range = 1;
             weapon.weaponType = Weapon.WeaponType.Melee;
             weapon.damage = 1;
-        }
+        }*/
 
-        if (!CanAttackUnit(characterOnTile, weapon))
+        if (!IsWithinRange(characterOnTile, weapon))
         {
             //Debug.Log("Target outside range of weapon");
-            PlayerUI.Instance.ShowMessage("Target outside range of weapon.");
+            //_playerUI.ShowMessage("Target outside range of weapon.");
             return;
         }
 
         if (!weapon.CanFire())
         {
             //Debug.Log("No ammo");
-            PlayerUI.Instance.ShowMessage("No ammo.");
+            _playerUI.ShowMessage("No ammo.");
             return;
         }
 
@@ -383,12 +434,23 @@ public class CombatSystem : NetworkBehaviour
 
     private Weapon GetActiveUnitWeapon()
     {
-        return _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
+        var weapon = _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
             ? InventoryManager.Instance.GetWeapon()
             : _activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
+        
+        //for testing
+        if (!weapon)
+        {
+            weapon = ScriptableObject.CreateInstance<Weapon>();
+            weapon.range = 1;
+            weapon.weaponType = Weapon.WeaponType.Melee;
+            weapon.damage = 1;
+        }
+
+        return weapon;
     }
 
-    public bool CanAttackUnit(PlayerGridMovement target, Weapon weapon)
+    public bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
     {
         return Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
     }
@@ -401,7 +463,7 @@ public class CombatSystem : NetworkBehaviour
         if (weapon.weaponType == Weapon.WeaponType.Range)
         {
             weapon.UseAmmo();
-            PlayerUI.Instance.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
+            _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
         }
         
         if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
@@ -497,19 +559,20 @@ public class CombatSystem : NetworkBehaviour
 
     public void SkipTurn()
     {
-        // TODO: test if fixes button skipping turn when not my turn
         var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
         if (IsHost && _activeUnit == localPlayer)
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
-            PlayerUI.Instance.turnUI.NextTurn();
+            _playerUI.SetCombatPopUp(false);
+            _turnUI.NextTurn();
         }
         else if (IsClient && _activeUnit == localPlayer)
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
-            PlayerUI.Instance.turnUI.NextTurn();
+            _playerUI.SetCombatPopUp(false);
+            _turnUI.NextTurn();
         }
     }
 
@@ -519,7 +582,8 @@ public class CombatSystem : NetworkBehaviour
         if (!IsHost) return;
 
         SelectNextActiveUnit();
-        PlayerUI.Instance.turnUI.NextTurn();
+        //_playerUI.SetCombatPopUp(false);
+        _turnUI.NextTurn();
     }
 
     [ClientRpc]
@@ -528,7 +592,8 @@ public class CombatSystem : NetworkBehaviour
         if (IsHost) return;
 
         SelectNextActiveUnit();
-        PlayerUI.Instance.turnUI.NextTurn();
+        //_playerUI.SetCombatPopUp(false);
+        _turnUI.NextTurn();
     }
 
 
@@ -555,13 +620,13 @@ public class CombatSystem : NetworkBehaviour
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
-            PlayerUI.Instance.turnUI.NextTurn();
+            _turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
-            PlayerUI.Instance.turnUI.NextTurn();
+            _turnUI.NextTurn();
         }
     }
     
@@ -569,13 +634,13 @@ public class CombatSystem : NetworkBehaviour
     {
         if (IsHost)
         {
-            Debug.Log("I'm host and i'm sending idx: " + PlayerUI.Instance.portraitIdx);
-            GetPortraitSpriteClientRpc(PlayerUI.Instance.portraitIdx);
+            Debug.Log("I'm host and i'm sending idx: " + _playerUI.portraitIdx);
+            GetPortraitSpriteClientRpc(_playerUI.portraitIdx);
         }
         else
         {
-            Debug.Log("I'm client and i'm sending idx: " + PlayerUI.Instance.portraitIdx);
-            GetPortraitSpriteServerRpc(PlayerUI.Instance.portraitIdx);
+            Debug.Log("I'm client and i'm sending idx: " + _playerUI.portraitIdx);
+            GetPortraitSpriteServerRpc(_playerUI.portraitIdx);
         }
     }
 
@@ -584,9 +649,9 @@ public class CombatSystem : NetworkBehaviour
     {
         if (!IsHost) return;
         Debug.Log("I'm host and i received: " + portraitIdx);
-        //_otherPlayerSprite = PlayerUI.Instance.portraitSprites[portraitIdx];
-        _otherPlayerSpriteIdx = PlayerUI.Instance.portraitIdx;
-        Debug.Log("host: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + _otherPlayerSpriteIdx);
+        //_otherPlayerSprite = _playerUI.portraitSprites[portraitIdx];
+        _otherPlayerSpriteIdx = _playerUI.portraitIdx;
+        Debug.Log("host: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + _otherPlayerSpriteIdx);
     }
 
     [ClientRpc]
@@ -594,8 +659,8 @@ public class CombatSystem : NetworkBehaviour
     {
         if (IsHost) return;
         Debug.Log("I'm client and i received: " + portraitIdx);
-        //_otherPlayerSprite = PlayerUI.Instance.portraitSprites[portraitIdx];
-        _otherPlayerSpriteIdx = PlayerUI.Instance.portraitIdx;
-        Debug.Log("client: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + _otherPlayerSpriteIdx);
+        //_otherPlayerSprite = _playerUI.portraitSprites[portraitIdx];
+        _otherPlayerSpriteIdx = _playerUI.portraitIdx;
+        Debug.Log("client: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + _otherPlayerSpriteIdx);
     }*/
 }

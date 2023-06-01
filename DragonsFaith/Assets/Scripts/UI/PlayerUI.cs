@@ -63,15 +63,20 @@ namespace UI
         
         [Header("CombatUI")]
         public RectTransform combatUI;
-        public Button moveOrAttackButton;
-        public Button skipTurnButton;
-        public Button reloadButton;
+        private CombatUI _combatUI;
+        /*public Button moveOrAttackButton;
+        public Button skillButton;
         public Button blockButton;
+        public Button reloadButton;
+        public Button itemsButton;
+        public GameObject infoHover;
+        public Button skipTurnButton;
         public Sprite attackSprite;
         public Sprite moveSprite;
+        public TextMeshProUGUI weaponRange;
+        public TextMeshProUGUI weaponDamage;
         public TextMeshProUGUI ammoCounter;
-        public TextMeshProUGUI movementCounter;
-        public TextMeshProUGUI rangeCounter;
+        public GameObject combatPopUp;*/
 
         [Header("Character Info")] 
         public TextMeshProUGUI nameText;
@@ -115,8 +120,8 @@ namespace UI
         private UnityAction _moveOrAttackAction;
         private Image _moveOrAttackImage;
         private TextMeshProUGUI _moveOrAttackText;
-        public TurnUI turnUI;
-        public int portraitIdx;
+        //[HideInInspector] public TurnUI turnUI;
+        [HideInInspector] public int portraitIdx;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -248,12 +253,14 @@ namespace UI
                     skillsTab.SetActive(!skillsTab.activeSelf);
                     break;
                 case Tab.Faith:
-                    FadeOutElement(_rectTransformFaithTab, faithTabFadeOutTime);
+                    //FadeOutElement(_rectTransformFaithTab, faithTabFadeOutTime);
+                    LeanTween.alpha(_rectTransformFaithTab, 0f, faithTabFadeOutTime).setEase(LeanTweenType.linear)
+                        .setOnComplete(FaithTabAnimComplete);
                     /*delay = LeanTween.delayedCall(faithTabFadeOutTime, () =>
                     {
                         faithTab.SetActive(false);
                     });*/
-                    faithTab.SetActive(false);
+                    //faithTab.SetActive(false);
                     _faithChoiceDone = true;
                     break;
                 case Tab.Main:
@@ -387,6 +394,11 @@ namespace UI
         {
             LeanTween.alpha(rectTransform, 0f, fadeOutDuration).setEase(LeanTweenType.linear);
         }
+
+        private void FaithTabAnimComplete()
+        {
+            faithTab.SetActive(false);
+        }
         
         #region UpdateValues
         
@@ -439,20 +451,32 @@ namespace UI
         {
             _optionsManager.SetResolution(resolutionIndex);
         }
+        public void SetWeaponRangeUI(int value)
+        {
+            //weaponRange.text = "Weapon range: " + value;
+            _combatUI.SetWeaponRangeUI(value);
+        }
+        
+        public void SetWeaponDamageUI(int value)
+        {
+            //weaponDamage.text = "Weapon damage: " + value;
+            _combatUI.SetWeaponDamageUI(value);
+        }
 
         public void SetAmmoCounter(int value)
         {
-            ammoCounter.text = "Ammo: " + value.ToString();
+            //ammoCounter.text = "Ammo left: " + value;
+            _combatUI.SetAmmoCounter(value);
         }
-        
-        public void SetMovementCounter(int value)
+
+        public void SetCombatPopUp(bool state, string text = "")
         {
-            movementCounter.text = "Move range: " + value.ToString();
+            _combatUI.SetCombatPopUp(state, text);
         }
-        
-        public void SetRangeCounter(int value)
+
+        public CombatUI GetCombatUI()
         {
-            rangeCounter.text = value.ToString();
+            return _combatUI;
         }
         
         #endregion
@@ -463,9 +487,12 @@ namespace UI
             {
                 combatUI.gameObject.SetActive(true);
                 FadeInElement(combatUI, turnUIFadeInTime);
-                //SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());
-                //SetRangeCounter((int)InventoryManager.Instance.GetWeapon().GetRange());   //uncomment when adding range counter
-                SetMovementCounter((int)CharacterManager.Instance.GetTotalAgi());
+                _combatUI = combatUI.GetComponent<CombatUI>();
+                _combatUI.SetUp(characterList);
+                /*//TODO: uncomment when player weapons
+                /*SetWeaponRangeUI((int)InventoryManager.Instance.GetWeapon().GetRange());
+                SetWeaponDamageUI((int)InventoryManager.Instance.GetWeapon().GetDamage());
+                SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());#1#
                 
                 turnUI = combatUI.GetComponentInChildren<TurnUI>();
                 /*Debug.Log("spriteIdx=" + spriteIdx);
@@ -473,7 +500,7 @@ namespace UI
                 {
                     Debug.Log(portraitSprites[i].name);
                 }
-                var otherPlayerSprite = portraitSprites[spriteIdx];*/
+                var otherPlayerSprite = portraitSprites[spriteIdx];#1#
                 
                 turnUI.SetUpList(characterList);
 
@@ -485,42 +512,32 @@ namespace UI
                         _moveOrAttackImage = img;
                 }
                 
-                skipTurnButton.onClick.AddListener(CombatSystem.instance.SkipTurn);
-                reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
+                //skillButton.onClick.AddListener(add use skill function);
                 blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
+                reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
+                skipTurnButton.onClick.AddListener(CombatSystem.instance.SkipTurn);*/
             }
             else
             {
                 FadeOutElement(combatUI, turnUIFadeOutTime);
-                moveOrAttackButton.onClick.RemoveAllListeners();
-                skipTurnButton.onClick.RemoveAllListeners();
-                reloadButton.onClick.RemoveAllListeners();
+                //TODO: needs testing
+                _combatUI.Destroy();
+                /*moveOrAttackButton.onClick.RemoveAllListeners();
+                //skillButton.onClick.RemoveAllListeners();
                 blockButton.onClick.RemoveAllListeners();
+                reloadButton.onClick.RemoveAllListeners();
+                skipTurnButton.onClick.RemoveAllListeners();*/
                 delay = LeanTween.delayedCall(turnUIFadeOutTime, () =>
                 {
                     combatUI.gameObject.SetActive(false);
-                    turnUI.DestroyList();
+                    //turnUI.DestroyList();
                 });
             }
         }
 
         public void ToggleMoveAttackButton(string mode)
         {
-            switch (mode)
-            {
-                case "Attack":
-                    moveOrAttackButton.onClick.RemoveAllListeners();
-                    _moveOrAttackImage.sprite = attackSprite;
-                    _moveOrAttackText.text = "Attack";
-                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonCheckAction);
-                    break;
-                case "Move":
-                    moveOrAttackButton.onClick.RemoveAllListeners();
-                    _moveOrAttackImage.sprite = moveSprite;
-                    _moveOrAttackText.text = "Move";
-                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonCheckMovement);
-                    break;
-            }
+            _combatUI.ToggleMoveAttackButton(mode);
         }
     }
 }

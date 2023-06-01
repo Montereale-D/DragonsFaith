@@ -588,13 +588,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Weapons_23
+      name: pistol
       rect:
         serializedVersion: 2
-        x: 234
-        y: 77.75
-        width: 78.6
-        height: 77.25
+        x: 243
+        y: 88
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -971,7 +971,6 @@ TextureImporter:
       Weapons_20: 1021512798
       Weapons_21: 1105620293
       Weapons_22: -1215531944
-      Weapons_23: -10514552
       Weapons_24: 496740137
       Weapons_25: 1968778060
       Weapons_26: 777261671
@@ -995,6 +994,7 @@ TextureImporter:
       Weapons_7: 1002220524
       Weapons_8: -961850550
       Weapons_9: -1652146166
+      pistol: -10514552
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

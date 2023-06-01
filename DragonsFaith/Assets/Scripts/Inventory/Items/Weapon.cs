@@ -62,5 +62,10 @@ namespace Inventory.Items
         {
             return range;
         }
+
+        public float GetDamage()
+        {
+            return damage;
+        }
     }
 }

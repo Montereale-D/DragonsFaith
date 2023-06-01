@@ -20,6 +20,9 @@ namespace Inventory
             {
                 _itemCopy.gameObject.SetActive(false);
             }
+            
+            // added for combat UI update
+            OnSlotUpdate(inventorySlot.GetComponentInChildren<InventoryItem>());
         }
 
         private void OnSlotUpdate(InventoryItem realItem)
