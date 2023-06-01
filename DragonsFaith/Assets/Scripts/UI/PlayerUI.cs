@@ -64,19 +64,6 @@ namespace UI
         [Header("CombatUI")]
         public RectTransform combatUI;
         private CombatUI _combatUI;
-        /*public Button moveOrAttackButton;
-        public Button skillButton;
-        public Button blockButton;
-        public Button reloadButton;
-        public Button itemsButton;
-        public GameObject infoHover;
-        public Button skipTurnButton;
-        public Sprite attackSprite;
-        public Sprite moveSprite;
-        public TextMeshProUGUI weaponRange;
-        public TextMeshProUGUI weaponDamage;
-        public TextMeshProUGUI ammoCounter;
-        public GameObject combatPopUp;*/
 
         [Header("Character Info")] 
         public TextMeshProUGUI nameText;
@@ -139,8 +126,6 @@ namespace UI
                 DontDestroyOnLoad(this);
             }
 
-            
-            
             menuTab.SetActive(false);
             inventoryTab.SetActive(false);
             skillsTab.SetActive(false);

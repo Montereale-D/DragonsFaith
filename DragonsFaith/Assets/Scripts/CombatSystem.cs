@@ -8,6 +8,7 @@ using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class CombatSystem : NetworkBehaviour
 {
@@ -130,7 +131,7 @@ public class CombatSystem : NetworkBehaviour
                 tile.HoverTile();
 
                 //var characterOnTile = tile.GetCharacter();
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
                 {
                     SelectTile(tile);
                 }
