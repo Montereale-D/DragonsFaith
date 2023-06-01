@@ -143,7 +143,7 @@ namespace UI
         private void OpenHeight()
         {
             uiSettings.currentSize.y = Mathf.Lerp(uiSettings.currentSize.y, uiSettings.openedBoxSize.y,
-                animSettings.widthSmooth * Time.deltaTime);
+                animSettings.heightSmooth * Time.deltaTime);
             if (Mathf.Abs(uiSettings.currentSize.y - uiSettings.openedBoxSize.y) < uiSettings.snapToSizeDistance)
             {
                 uiSettings.currentSize.y = uiSettings.openedBoxSize.y;

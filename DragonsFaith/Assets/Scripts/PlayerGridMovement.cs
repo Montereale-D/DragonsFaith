@@ -36,7 +36,6 @@ public class PlayerGridMovement : MonoBehaviour
     private void Awake()
     {
         state = State.Normal;
-        //if (team == Team.Players) turnSprite = PlayerUI.Instance.portrait.sprite;
     }
 
     public void SetGridPosition()
@@ -55,6 +54,7 @@ public class PlayerGridMovement : MonoBehaviour
             if (GetComponent<NetworkObject>().IsLocalPlayer)
             {
                 movement = (int)CharacterManager.Instance.GetTotalAgi();
+                //PlayerUI.Instance.SetMovementCounter(movement);
             }
             else
             {
@@ -221,5 +221,10 @@ public class PlayerGridMovement : MonoBehaviour
     private IEnumerator UpdateMovementAnimation()
     {
         yield return null;
+    }
+
+    public void SetTurnSprite(Sprite sprite)
+    {
+        turnSprite = sprite;
     }
 }

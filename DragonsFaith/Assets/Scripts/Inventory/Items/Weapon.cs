@@ -47,5 +47,20 @@ namespace Inventory.Items
 
             return _ammo > 0;
         }
+
+        public bool IsFullyLoaded()
+        {
+            return _ammo == capacity;
+        }
+
+        public int GetAmmo()
+        {
+            return _ammo;
+        }
+        
+        public float GetRange()
+        {
+            return range;
+        }
     }
 }

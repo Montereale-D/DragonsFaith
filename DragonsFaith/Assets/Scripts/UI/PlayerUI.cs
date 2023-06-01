@@ -5,6 +5,7 @@ using System.Linq;
 using Inventory;
 using Player;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -57,9 +58,20 @@ namespace UI
         [Header("Player UI")] 
         public GameObject playerUI;
         public GameObject settingsButton;
-        public RectTransform turnUI;
         public Image portrait;
         public Sprite[] portraitSprites;
+        
+        [Header("CombatUI")]
+        public RectTransform combatUI;
+        public Button moveOrAttackButton;
+        public Button skipTurnButton;
+        public Button reloadButton;
+        public Button blockButton;
+        public Sprite attackSprite;
+        public Sprite moveSprite;
+        public TextMeshProUGUI ammoCounter;
+        public TextMeshProUGUI movementCounter;
+        public TextMeshProUGUI rangeCounter;
 
         [Header("Character Info")] 
         public TextMeshProUGUI nameText;
@@ -99,6 +111,12 @@ namespace UI
         private float turnUIFadeOutTime = 0.5f;
         
         private OptionsManager _optionsManager;
+
+        private UnityAction _moveOrAttackAction;
+        private Image _moveOrAttackImage;
+        private TextMeshProUGUI _moveOrAttackText;
+        public TurnUI turnUI;
+        public int portraitIdx;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -188,7 +206,7 @@ namespace UI
             /*if (Input.GetKeyDown(KeyCode.T))
             {
                 /*ShowMessage("Testing...");#1#
-                ToggleTurnUI();
+                ToggleCombatUI();
             }*/
         }
         
@@ -281,6 +299,7 @@ namespace UI
         private void SetPortraitSprite()
         {
             var spriteIdx = Random.Range(0, portraitSprites.Length);
+            portraitIdx = spriteIdx;
             portrait.sprite = portraitSprites[spriteIdx];
         }
 
@@ -420,25 +439,87 @@ namespace UI
         {
             _optionsManager.SetResolution(resolutionIndex);
         }
+
+        public void SetAmmoCounter(int value)
+        {
+            ammoCounter.text = "Ammo: " + value.ToString();
+        }
+        
+        public void SetMovementCounter(int value)
+        {
+            movementCounter.text = "Move range: " + value.ToString();
+        }
+        
+        public void SetRangeCounter(int value)
+        {
+            rangeCounter.text = value.ToString();
+        }
         
         #endregion
         
-        public void ToggleTurnUI(List<PlayerGridMovement> characterList)
+        public void ToggleCombatUI(List<PlayerGridMovement> characterList)
         {
-            if (!turnUI.gameObject.activeSelf)
+            if (!combatUI.gameObject.activeSelf)
             {
-                turnUI.gameObject.SetActive(true);
-                FadeInElement(turnUI, turnUIFadeInTime);
-                turnUI.GetComponentInChildren<TurnUI>().SetUpList(characterList);
+                combatUI.gameObject.SetActive(true);
+                FadeInElement(combatUI, turnUIFadeInTime);
+                //SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());
+                //SetRangeCounter((int)InventoryManager.Instance.GetWeapon().GetRange());   //uncomment when adding range counter
+                SetMovementCounter((int)CharacterManager.Instance.GetTotalAgi());
+                
+                turnUI = combatUI.GetComponentInChildren<TurnUI>();
+                /*Debug.Log("spriteIdx=" + spriteIdx);
+                for (int i = 0; i < portraitSprites.Length; i++)
+                {
+                    Debug.Log(portraitSprites[i].name);
+                }
+                var otherPlayerSprite = portraitSprites[spriteIdx];*/
+                
+                turnUI.SetUpList(characterList);
+
+                _moveOrAttackText = moveOrAttackButton.GetComponentInChildren<TextMeshProUGUI>();
+                var imgs = moveOrAttackButton.GetComponentsInChildren<Image>();
+                foreach (var img in imgs)
+                {
+                    if (img.gameObject.GetInstanceID() != moveOrAttackButton.GetInstanceID())
+                        _moveOrAttackImage = img;
+                }
+                
+                skipTurnButton.onClick.AddListener(CombatSystem.instance.SkipTurn);
+                reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
+                blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
             }
             else
             {
-                FadeOutElement(turnUI, turnUIFadeOutTime);
+                FadeOutElement(combatUI, turnUIFadeOutTime);
+                moveOrAttackButton.onClick.RemoveAllListeners();
+                skipTurnButton.onClick.RemoveAllListeners();
+                reloadButton.onClick.RemoveAllListeners();
+                blockButton.onClick.RemoveAllListeners();
                 delay = LeanTween.delayedCall(turnUIFadeOutTime, () =>
                 {
-                    turnUI.gameObject.SetActive(false);
-                    turnUI.GetComponentInChildren<TurnUI>().DestroyList();
+                    combatUI.gameObject.SetActive(false);
+                    turnUI.DestroyList();
                 });
+            }
+        }
+
+        public void ToggleMoveAttackButton(string mode)
+        {
+            switch (mode)
+            {
+                case "Attack":
+                    moveOrAttackButton.onClick.RemoveAllListeners();
+                    _moveOrAttackImage.sprite = attackSprite;
+                    _moveOrAttackText.text = "Attack";
+                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonCheckAction);
+                    break;
+                case "Move":
+                    moveOrAttackButton.onClick.RemoveAllListeners();
+                    _moveOrAttackImage.sprite = moveSprite;
+                    _moveOrAttackText.text = "Move";
+                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonCheckMovement);
+                    break;
             }
         }
     }

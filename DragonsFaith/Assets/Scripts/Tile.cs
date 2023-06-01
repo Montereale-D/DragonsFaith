@@ -5,6 +5,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private Color navigableColor = new Color(1f, 1f, 1f);
     [SerializeField] private Color occupiedColor = new Color(1f, 0f, 0f);
     [SerializeField] private Color selectedColor = new Color(0f, 0f, 0f);
+    [SerializeField] private Color hoveringColor = new Color(0.3f, 0.3f, 0.3f);
     [SerializeField, Range(0f, 1f)] private float alpha = 0.5f;
 
     public Tile previous;
@@ -28,6 +29,12 @@ public class Tile : MonoBehaviour
     public void ShowTile()
     {
         Color c = _characterOnTile ? occupiedColor : navigableColor;
+        c.a = alpha;
+        _spriteRenderer.color = c;
+    }
+    public void HoverTile()
+    {
+        Color c = _characterOnTile ? occupiedColor : hoveringColor;
         c.a = alpha;
         _spriteRenderer.color = c;
     }

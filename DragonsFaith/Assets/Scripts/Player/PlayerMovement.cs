@@ -48,7 +48,6 @@ namespace Player
             else
             {
                 gameObject.name = IsHost ? "Player_Client" : "Player_Host" ;
-                //gameObject.transform.parent.GetComponentInChildren<BoxCollider2D>().enabled = false;
             }
         }
     }

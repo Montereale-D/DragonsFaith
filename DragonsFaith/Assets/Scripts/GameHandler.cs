@@ -23,7 +23,7 @@ public class GameHandler : NetworkBehaviour
     public GameState state { get; private set; }
     public ChangeGameStateEvent onChangeGameState = new ChangeGameStateEvent();
 
-    private PlayerGridMovement[] characters;
+    private PlayerGridMovement[] _characters;
 
     private void SetGameState(GameState inState)
     {
@@ -55,10 +55,10 @@ public class GameHandler : NetworkBehaviour
     //Find and setup all characters, then setup the CombatSystem
     public void Setup()
     {
-        characters = FindObjectsOfType<PlayerGridMovement>();
-        for (var i = 0; i < characters.Length; i++)
+        _characters = FindObjectsOfType<PlayerGridMovement>();
+        for (var i = 0; i < _characters.Length; i++)
         {
-            var character = characters[i];
+            var character = _characters[i];
             character.SetGridPosition();
             if (!character.SetMovement())
             {
@@ -68,7 +68,7 @@ public class GameHandler : NetworkBehaviour
             SetTileUnderCharacter(character);
         }
 
-        StartCoroutine(WaitCharacterSetupAndContinue(characters));
+        StartCoroutine(WaitCharacterSetupAndContinue(_characters));
         //CombatSystem.instance.Setup(characters);
     }
 
@@ -97,8 +97,8 @@ public class GameHandler : NetworkBehaviour
     private void ReplyMovementServerRpc(int askedIndex, int movement)
     {
         if (!NetworkManager.Singleton.IsHost) return;
-        characters[askedIndex].movement = movement;
-        Debug.Log(characters[askedIndex].gameObject.name + " movement is " + movement);
+        _characters[askedIndex].movement = movement;
+        Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }
 
     [ClientRpc]
@@ -114,8 +114,8 @@ public class GameHandler : NetworkBehaviour
     private void ReplyMovementClientRpc(int askedIndex, int movement)
     {
         if (NetworkManager.Singleton.IsHost) return;
-        characters[askedIndex].movement = movement;
-        Debug.Log(characters[askedIndex].gameObject.name + " movement is " + movement);
+        _characters[askedIndex].movement = movement;
+        Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }
 
     private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
