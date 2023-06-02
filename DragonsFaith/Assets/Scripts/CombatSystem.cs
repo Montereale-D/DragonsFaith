@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Inventory;
 using Inventory.Items;
-using Newtonsoft.Json.Serialization;
 using Player;
 using UI;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class CombatSystem : NetworkBehaviour
@@ -17,11 +15,12 @@ public class CombatSystem : NetworkBehaviour
     public List<PlayerGridMovement> characterList;
 
     private int _indexCharacterTurn = -1;
-    private PlayerGridMovement _activeUnit;
+    public PlayerGridMovement _activeUnit { get; private set; }
     private bool _canMoveThisTurn;
     private bool _canAttackThisTurn;
     private bool _isThisPlayerTurn;
-    private bool _isReady;
+    private bool _isCombatReady;
+    private bool _isUIReady;
     private Tile _selectedTile;
 
     private PlayerGridMovement _target;
@@ -52,20 +51,35 @@ public class CombatSystem : NetworkBehaviour
             .ThenBy(x => x.GetHashCode())
             .ToList();
 
-        SelectNextActiveUnit();
+        StartCoroutine(SetUpTurns());
+
+        StartCoroutine(WaitSetupToStart());
+        //SelectNextActiveUnit();
 
         //GetPortraitSprite();
 
-        StartCoroutine(SetUpTurns());
+        
+        
         /*GetPortraitSprite();
         _playerUI.ToggleCombatUI(characterList);
         _turnUI = _playerUI.GetCombatUI().GetTurnUI();*/
-        _isReady = true;
+        _isCombatReady = true;
+    }
+
+    private IEnumerator WaitSetupToStart()
+    {
+        while (!_isCombatReady || !_isUIReady)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        
+        SelectNextActiveUnit();
     }
 
     private void SelectNextActiveUnit()
     {
         _activeUnit = GetNextActiveUnit();
+        _turnUI.NextTurn();
 
         Debug.Log("Turn of " + _activeUnit.name);
 
@@ -106,7 +120,7 @@ public class CombatSystem : NetworkBehaviour
     private void Update()
     {
         //wait for settings
-        if (!_isReady) return;
+        if (!_isCombatReady || !_isUIReady) return;
 
         _mapHandler.HideAllTiles();
 
@@ -404,7 +418,7 @@ public class CombatSystem : NetworkBehaviour
         // Can Attack Enemy
         if (!_canAttackThisTurn)
         {
-            //Debug.Log("Already attacked in this turn");
+            Debug.Log("Already attacked in this turn");
             //_playerUI.ShowMessage("Already attacked in this turn.");
             return;
         }
@@ -421,14 +435,14 @@ public class CombatSystem : NetworkBehaviour
 
         if (!IsWithinRange(characterOnTile, weapon))
         {
-            //Debug.Log("Target outside range of weapon");
+            Debug.Log("Target outside range of weapon");
             //_playerUI.ShowMessage("Target outside range of weapon.");
             return;
         }
 
         if (!weapon.CanFire())
         {
-            //Debug.Log("No ammo");
+            Debug.Log("No ammo");
             _playerUI.ShowMessage("No ammo.");
             return;
         }
@@ -458,6 +472,7 @@ public class CombatSystem : NetworkBehaviour
 
     public bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
     {
+        Debug.Log("Distance " + Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) + ", WeaponRange " + weapon.range);
         return Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
     }
 
@@ -564,22 +579,22 @@ public class CombatSystem : NetworkBehaviour
 
     public void SkipTurn()
     {
-        var localPlayer =
-            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-        if (_activeUnit != localPlayer) return;
+        //todo controllare che il bottone di skip faccia il controllo commentato e non questo metodo
+        /* return;*/
+        
         if (IsHost)
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            _turnUI.NextTurn();
+            //_turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            _turnUI.NextTurn();
+            //_turnUI.NextTurn();
         }
     }
 
@@ -590,7 +605,7 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        _turnUI.NextTurn();
+        //_turnUI.NextTurn();
     }
 
     [ClientRpc]
@@ -600,7 +615,7 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        _turnUI.NextTurn();
+        //_turnUI.NextTurn();
     }
 
 
@@ -651,6 +666,7 @@ public class CombatSystem : NetworkBehaviour
 
         _playerUI.ToggleCombatUI(characterList);
         _turnUI = _playerUI.GetCombatUI().GetTurnUI();
+        _isUIReady = true;
     }
 
     public void GetPortraitSprite()

@@ -1,10 +1,9 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory.Items;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Assertions;
 
 public class EnemyGridBehaviour : MonoBehaviour
 {
@@ -14,20 +13,19 @@ public class EnemyGridBehaviour : MonoBehaviour
         Ranged
     }
 
+    public string enemyName = "EnemyName";
+    [SerializeField] private EnemyBehaviourType behaviourType;
+    public int agility = 1;
+    public int healthMax = 100;
+    public Weapon weapon;
+
     private delegate void EnemyPlan(List<PlayerGridMovement> characterList);
 
     private EnemyPlan _enemyPlan;
-    public EnemyBehaviourType behaviourType;
     private CharacterInfo _characterInfo;
-
-    public Weapon weapon;
-    public string enemyName = "EnemyName";
-
-    public int agility = 1;
-    public int healthMax = 100;
-    private int _health;
-
     private CharacterGridPopUpUI _popUpUI;
+
+    private int _health;
 
     private void Awake()
     {
@@ -38,11 +36,17 @@ public class EnemyGridBehaviour : MonoBehaviour
         _popUpUI.SetUI(enemyName, healthMax);
 
         _characterInfo = GetComponent<CharacterInfo>();
+        _characterInfo.characterName = enemyName;
     }
 
     public void PlanAction(List<PlayerGridMovement> characterList)
     {
-        Debug.Log("PlanAction");
+        StartCoroutine(WaitAndPlan(characterList));
+    }
+
+    private IEnumerator WaitAndPlan(List<PlayerGridMovement> characterList)
+    {
+        yield return new WaitForSecondsRealtime(2f);
         _enemyPlan.Invoke(characterList);
     }
 
@@ -67,11 +71,11 @@ public class EnemyGridBehaviour : MonoBehaviour
 
     private void MeleePlan(List<PlayerGridMovement> characterList)
     {
-        //todo
         Debug.Log("Melee Enemy turn");
-        List<PlayerGridMovement> players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
-        PlayerGridMovement target = null;
-        //check if they are both alive
+        var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
+        PlayerGridMovement target;
+
+        //todo check if they are both alive
         int alive = 0;
         PlayerGridMovement whoAlive = null;
         Tile onTile = GetComponent<PlayerGridMovement>().onTile;
@@ -80,45 +84,37 @@ public class EnemyGridBehaviour : MonoBehaviour
             //if(!p.isDead()) {alive ++; whoAlive=p;}  At the moment there is no HP system in PlayerGridMovement or a reference in the CharacterSO   
         }
 
-        //if only one is alive attack him
-        if (alive == 1) target = whoAlive;
-        //if both alive check players distance and attacks the nearest
+        //target the only alive player, otherwise attack the nearest one
+        if (alive == 1)
+        {
+            target = whoAlive;
+        }
         else
         {
-            float distance = 100;
-            PlayerGridMovement nearest = null;
-            foreach (PlayerGridMovement p in players)
-            {
-                float d = Vector2Int.Distance(onTile.mapPosition, p.onTile.mapPosition);
-                if (distance > d)
-                {
-                    distance = d;
-                    nearest = p;
-                }
-            }
-
-            target = nearest;
+            target = players.OrderBy(x => Vector2Int.Distance(onTile.mapPosition, x.onTile.mapPosition))
+                .FirstOrDefault();
         }
 
+        Assert.IsNotNull(target);
         Debug.Log("The target is " + target.name);
 
         //move in the range area (or as close as you can)
         Tile targetTile = target.onTile;
         Tile tileToReach;
 
-        var agilityMaxMovement = MapHandler.instance.GetTilesInRange(onTile, agility); 
+        var agilityMaxMovement = MapHandler.instance.GetTilesInRange(onTile, agility);
         List<Tile> reachable =
             MapHandler.instance.GetNeighbourTiles(targetTile, agilityMaxMovement);
 
         reachable.RemoveAll(x => x.GetCharacter() != null);
-        
+
 
         if (reachable.Count == 0)
         {
             Debug.Log("Target not reachable");
             tileToReach = MoveTowardTarget(targetTile, agilityMaxMovement);
             CombatSystem.instance.CheckMovement(tileToReach, true);
-            CombatSystem.instance.ForceSkipDebug();
+            CombatSystem.instance.SkipTurn();
         }
         else
         {
@@ -126,20 +122,8 @@ public class EnemyGridBehaviour : MonoBehaviour
             tileToReach = MoveNearTarget(targetTile, reachable);
             CombatSystem.instance.CheckMovement(tileToReach, true);
             CombatSystem.instance.Attack(target, weapon);
-            CombatSystem.instance.ForceSkipDebug();
+            CombatSystem.instance.SkipTurn();
         }
-    }
-
-    private Tile MoveNearTarget(Tile targetTile, List<Tile> reachableTiles)
-    {
-        reachableTiles = reachableTiles.OrderBy(x => Vector2Int.Distance(targetTile.mapPosition, x.mapPosition)).ToList();
-        return reachableTiles[0];
-    }
-
-    private Tile MoveTowardTarget(Tile targetTile, List<Tile> reachableTiles)
-    {
-        reachableTiles = reachableTiles.OrderBy(x => Vector2Int.Distance(targetTile.mapPosition, x.mapPosition)).ToList();
-        return reachableTiles[0];
     }
 
     #endregion
@@ -148,11 +132,11 @@ public class EnemyGridBehaviour : MonoBehaviour
 
     private void RangedPlan(List<PlayerGridMovement> characterList)
     {
-        //todo
         Debug.Log("Ranged Enemy turn");
-        List<PlayerGridMovement> players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
-        PlayerGridMovement target = null;
-        //check if they are both alive
+        var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
+        PlayerGridMovement target;
+
+        //todo check if they are both alive
         int alive = 0;
         PlayerGridMovement whoAlive = null;
         Tile onTile = GetComponent<PlayerGridMovement>().onTile;
@@ -161,61 +145,74 @@ public class EnemyGridBehaviour : MonoBehaviour
             //if(!p.isDead()) {alive ++; whoAlive=p;}  At the moment there is no HP system in PlayerGridMovement or a reference in the CharacterSO   
         }
 
-        //if only one is alive attack him
-        if (alive == 1) target = whoAlive;
-        //if both alive check players distance and attacks the most distant
+        //target the only alive player, otherwise attack the farthest one
+        if (alive == 1)
+        {
+            target = whoAlive;
+        }
         else
         {
-            float distance = 0;
-            PlayerGridMovement farthest = null;
-            foreach (PlayerGridMovement p in players)
-            {
-                float d = Vector2Int.Distance(onTile.mapPosition, p.onTile.mapPosition);
-                if (distance < d)
-                {
-                    distance = d;
-                    farthest = p;
-                }
-            }
-
-            target = farthest;
+            target = players.OrderByDescending(x => Vector2Int.Distance(onTile.mapPosition, x.onTile.mapPosition))
+                .FirstOrDefault();
         }
 
-        //move in the range area (or as close as you can)
-        Tile tileToReach = target.onTile;
-        List<Tile> reachables = new List<Tile>();
-        while (reachables.Count < 1)
-        {
-            reachables =
-                MapHandler.instance.GetNeighbourTiles(tileToReach,
-                    MapHandler.instance.GetTilesInRange(onTile, agility));
-            float d = 100.0f;
-            Tile nextToReach = null;
-            foreach (Tile t in MapHandler.instance.GetNeighbourTiles(tileToReach, new List<Tile>()))
-            {
-                if (Vector2Int.Distance(onTile.mapPosition, t.mapPosition) < d)
-                {
-                    d = Vector2Int.Distance(onTile.mapPosition, t.mapPosition);
-                    nextToReach = t;
-                }
-            }
+        Assert.IsNotNull(target);
+        Debug.Log("The target is " + target.name);
+        
+        Tile targetTile = target.onTile;
+        var targetDistance = Vector2Int.Distance(targetTile.mapPosition, onTile.mapPosition);
 
-            tileToReach = nextToReach;
+        if (targetDistance <= weapon.range)
+        {
+            Debug.Log("Weapon range, just attack");
+            CombatSystem.instance.Attack(target, weapon);
+            CombatSystem.instance.SkipTurn();
         }
-
-        GetComponent<PlayerGridMovement>().MoveToTile(tileToReach);
-        //if in range attack
-        onTile = GetComponent<PlayerGridMovement>()
-            .onTile; //not sure if we need this, or if is auto-updated post movement
-        foreach (Tile t in MapHandler.instance.GetTilesInRange(onTile, (int)weapon.range))
+        else if(targetDistance <= weapon.range + agility)
         {
-            if (t.GetCharacter() == target)
+            Debug.Log("Reach the weapon range then attack");
+            var weaponRangeFromTarget = MapHandler.instance.GetTilesInRange(targetTile, weapon.range);
+            weaponRangeFromTarget.RemoveAll(x => x.GetCharacter() != null);
+            
+            //var farthestTile = weaponRangeFromTarget.OrderByDescending(x => Vector2Int.Distance(x.mapPosition, targetTile.mapPosition)).FirstOrDefault();
+            
+            //todo bug: non si muove in una casella da cui puo' attaccare (fuori dal range dell'arma)
+            /*CombatSystem.instance.CheckMovement(farthestTile, true);
+            CombatSystem.instance.CheckAction(target);
+            CombatSystem.instance.SkipTurn();*/
+        }
+        else
+        {
+            Debug.Log("Move towards not reachable target, then check if the other player is in weapon range");
+            var tileToReach = MoveTowardTarget(targetTile, MapHandler.instance.GetTilesInRange(onTile, agility));
+            CombatSystem.instance.CheckMovement(tileToReach, true);
+
+            var otherPlayer = players[0] == target ? players[1] : players[0];
+            if (Vector2Int.Distance(otherPlayer.onTile.mapPosition, onTile.mapPosition) <= weapon.range)
             {
-                CombatSystem.instance.Attack(target, weapon);
-                break;
+                CombatSystem.instance.CheckAction(otherPlayer);
+                CombatSystem.instance.SkipTurn();
+            }
+            else
+            {
+                CombatSystem.instance.SkipTurn();
             }
         }
     }
 
     #endregion
+
+    private Tile MoveNearTarget(Tile targetTile, List<Tile> reachableTiles)
+    {
+        reachableTiles = reachableTiles.OrderBy(x => Vector2Int.Distance(targetTile.mapPosition, x.mapPosition))
+            .ToList();
+        return reachableTiles[0];
+    }
+
+    private Tile MoveTowardTarget(Tile targetTile, List<Tile> reachableTiles)
+    {
+        reachableTiles = reachableTiles.OrderBy(x => Vector2Int.Distance(targetTile.mapPosition, x.mapPosition))
+            .ToList();
+        return reachableTiles[0];
+    }
 }

@@ -6,7 +6,7 @@ namespace Inventory.Items
     public class Weapon : Item
     {
         public WeaponType weaponType;
-        public float range = 1f;
+        public int range = 1;
         public float damage = 1;
         public int capacity = 1;
         private int _ammo;

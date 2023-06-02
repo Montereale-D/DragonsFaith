@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: -3303874697613722726}
   - component: {fileID: 8105661979939268855}
   m_Layer: 0
-  m_Name: CharacterMelee
+  m_Name: CharacterRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -679,7 +679,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_Sprite: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.14330745, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -717,11 +717,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f28565ff15bca2c43a2eea4fc994e923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyName: Melee Enemy
-  behaviourType: 0
+  enemyName: Range enemy
+  behaviourType: 1
   agility: 3
   healthMax: 100
-  weapon: {fileID: 11400000, guid: ff2cf01fb429a3d4cb5947cc3bb1542d, type: 2}
+  weapon: {fileID: 11400000, guid: f0828874982b53a49a39fcc879f20a1b, type: 2}
 --- !u!114 &-3303874697613722726
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ public class CharacterInfo : MonoBehaviour
     public int health { get; private set; }
 
     public int mana { get; private set; }
-    public string characterName { get; private set; }
+    [HideInInspector] public string characterName;
     public PlayerUI.Element faith { get; private set; }
 
     public bool isBlocking;

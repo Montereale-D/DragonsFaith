@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine.Serialization;
 
 namespace UI
@@ -63,7 +64,15 @@ namespace UI
             blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
             reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
-            skipTurnButton.onClick.AddListener(CombatSystem.instance.SkipTurn);
+            skipTurnButton.onClick.AddListener(() =>
+            {
+                var localPlayer =
+                    NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
+                if (CombatSystem.instance._activeUnit == localPlayer)
+                {
+                    CombatSystem.instance.SkipTurn();
+                }
+            });
         }
 
         public void Destroy()
