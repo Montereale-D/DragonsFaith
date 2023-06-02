@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
 using Player;
+using Save;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -103,11 +105,12 @@ namespace UI
         private float turnUIFadeOutTime = 0.5f;
         
         private OptionsManager _optionsManager;
+        private DataManager _dataManager;
 
         private UnityAction _moveOrAttackAction;
         private Image _moveOrAttackImage;
         private TextMeshProUGUI _moveOrAttackText;
-        //[HideInInspector] public TurnUI turnUI;
+        [HideInInspector] public Sprite otherPlayerSprite;
         [HideInInspector] public int portraitIdx;
 
         public static PlayerUI Instance { get; private set; }
@@ -131,6 +134,7 @@ namespace UI
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
             
+            _dataManager = DataManager.Instance;
             _optionsManager = OptionsManager.Instance;
             
             _optionsManager.SetDropdown(resolutionDropdown);
@@ -293,6 +297,20 @@ namespace UI
             var spriteIdx = Random.Range(0, portraitSprites.Length);
             portraitIdx = spriteIdx;
             portrait.sprite = portraitSprites[spriteIdx];
+            StartCoroutine(GetOtherPlayerSprite(portraitIdx));
+        }
+
+        private IEnumerator GetOtherPlayerSprite(int idx)
+        {
+            _dataManager.SendPortraitSprite(idx);
+            while (_dataManager.otherPlayerSpriteIdx == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+            }
+
+            Debug.Assert(_dataManager.otherPlayerSpriteIdx != null, 
+                "_dataManager.otherPlayerSpriteIdx != null");
+            otherPlayerSprite = portraitSprites[(int)_dataManager.otherPlayerSpriteIdx];
         }
 
         public void OpenMenu()
@@ -384,6 +402,11 @@ namespace UI
         {
             faithTab.SetActive(false);
         }
+
+        private void CombatUIAnimComplete()
+        {
+            combatUI.gameObject.SetActive(false);
+        }
         
         #region UpdateValues
         
@@ -473,50 +496,19 @@ namespace UI
                 combatUI.gameObject.SetActive(true);
                 FadeInElement(combatUI, turnUIFadeInTime);
                 _combatUI = combatUI.GetComponent<CombatUI>();
-                _combatUI.SetUp(characterList);
-                /*//TODO: uncomment when player weapons
-                /*SetWeaponRangeUI((int)InventoryManager.Instance.GetWeapon().GetRange());
-                SetWeaponDamageUI((int)InventoryManager.Instance.GetWeapon().GetDamage());
-                SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());#1#
-                
-                turnUI = combatUI.GetComponentInChildren<TurnUI>();
-                /*Debug.Log("spriteIdx=" + spriteIdx);
-                for (int i = 0; i < portraitSprites.Length; i++)
-                {
-                    Debug.Log(portraitSprites[i].name);
-                }
-                var otherPlayerSprite = portraitSprites[spriteIdx];#1#
-                
-                turnUI.SetUpList(characterList);
-
-                _moveOrAttackText = moveOrAttackButton.GetComponentInChildren<TextMeshProUGUI>();
-                var imgs = moveOrAttackButton.GetComponentsInChildren<Image>();
-                foreach (var img in imgs)
-                {
-                    if (img.gameObject.GetInstanceID() != moveOrAttackButton.GetInstanceID())
-                        _moveOrAttackImage = img;
-                }
-                
-                //skillButton.onClick.AddListener(add use skill function);
-                blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
-                reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
-                skipTurnButton.onClick.AddListener(CombatSystem.instance.SkipTurn);*/
+                _combatUI.SetUp(characterList, otherPlayerSprite);
             }
             else
             {
-                FadeOutElement(combatUI, turnUIFadeOutTime);
-                //TODO: needs testing
+                //FadeOutElement(combatUI, turnUIFadeOutTime);
+                LeanTween.alpha(combatUI, 0f, turnUIFadeOutTime).setEase(LeanTweenType.linear)
+                    .setOnComplete(CombatUIAnimComplete);
                 _combatUI.Destroy();
-                /*moveOrAttackButton.onClick.RemoveAllListeners();
-                //skillButton.onClick.RemoveAllListeners();
-                blockButton.onClick.RemoveAllListeners();
-                reloadButton.onClick.RemoveAllListeners();
-                skipTurnButton.onClick.RemoveAllListeners();*/
-                delay = LeanTween.delayedCall(turnUIFadeOutTime, () =>
+                /*delay = LeanTween.delayedCall(turnUIFadeOutTime, () =>
                 {
                     combatUI.gameObject.SetActive(false);
                     //turnUI.DestroyList();
-                });
+                });*/
             }
         }
 

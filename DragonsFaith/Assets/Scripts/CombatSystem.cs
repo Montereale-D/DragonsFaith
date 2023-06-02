@@ -19,13 +19,13 @@ public class CombatSystem : NetworkBehaviour
     private bool _canMoveThisTurn;
     private bool _canAttackThisTurn;
     private bool _isThisPlayerTurn;
-    private bool _isCombatReady;
-    private bool _isUIReady;
+    //private bool _isCombatReady;
+    //private bool _isUIReady;
     private Tile _selectedTile;
 
     private PlayerGridMovement _target;
 
-    public int? otherPlayerSpriteIdx;
+    //public int? otherPlayerSpriteIdx;
     private PlayerUI _playerUI;
     private MapHandler _mapHandler;
     private TurnUI _turnUI;
@@ -51,22 +51,12 @@ public class CombatSystem : NetworkBehaviour
             .ThenBy(x => x.GetHashCode())
             .ToList();
 
-        StartCoroutine(SetUpTurns());
-        StartCoroutine(WaitSetupToStart());
-        
-        _isCombatReady = true;
-    }
-
-    private IEnumerator WaitSetupToStart()
-    {
-        while (!_isCombatReady || !_isUIReady)
-        {
-            yield return new WaitForSeconds(0.2f);
-        }
+        _playerUI.ToggleCombatUI(characterList);
+        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
         
         ResetTurn();
     }
-
+    
     private void SelectNextActiveUnit()
     {
         ResetTurn();
@@ -115,9 +105,6 @@ public class CombatSystem : NetworkBehaviour
 
     private void Update()
     {
-        //wait for settings
-        if (!_isCombatReady || !_isUIReady) return;
-
         _mapHandler.HideAllTiles();
 
         if (!_isThisPlayerTurn) return;
@@ -286,19 +273,6 @@ public class CombatSystem : NetworkBehaviour
             selectMode = SelectTileMode.Movement;
             _playerUI.ToggleMoveAttackButton("Move");
         }
-
-        /*if (character)
-        {
-            _target = tile.GetCharacter();
-            selectMode = SelectTileMode.Action;
-            _playerUI.ToggleMoveAttackButton("Attack");
-        }
-        else
-        {
-            selectMode = SelectTileMode.Movement;
-            _playerUI.ToggleMoveAttackButton("Move");
-        }*/
-        //selectMode = tile.GetCharacter() ? SelectTileMode.Action : SelectTileMode.Movement;
     }
 
     private void UnselectTile()
@@ -315,11 +289,6 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile = null;
         selectMode = SelectTileMode.None;
     }
-
-    /*public PlayerGridMovement GetTarget()
-    {
-        return _selectedTile.GetCharacter();
-    }*/
 
     public void ButtonCheckMovement()
     {
@@ -473,7 +442,6 @@ public class CombatSystem : NetworkBehaviour
     public void Attack(PlayerGridMovement target, Weapon weapon)
     {
         Debug.Log("Attack!");
-        // TODO: add UI feedback
 
         if (weapon.weaponType == Weapon.WeaponType.Range)
         {
@@ -573,22 +541,17 @@ public class CombatSystem : NetworkBehaviour
 
     public void SkipTurn()
     {
-        //todo controllare che il bottone di skip faccia il controllo commentato e non questo metodo
-        /* return;*/
-        
         if (IsHost)
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            //_turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            //_turnUI.NextTurn();
         }
     }
 
@@ -599,7 +562,6 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        //_turnUI.NextTurn();
     }
 
     [ClientRpc]
@@ -609,7 +571,6 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        //_turnUI.NextTurn();
     }
 
 
@@ -636,59 +597,11 @@ public class CombatSystem : NetworkBehaviour
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
-            //_turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
-            //_turnUI.NextTurn();
         }
-    }
-
-    private IEnumerator SetUpTurns()
-    {
-        GetPortraitSprite();
-        //yield return new WaitUntil(otherPlayerSpriteIdx != null);
-        while (otherPlayerSpriteIdx == null)
-        {
-            yield return new WaitForSeconds(0.2f);
-        }
-
-        _playerUI.ToggleCombatUI(characterList);
-        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
-        _isUIReady = true;
-    }
-
-    public void GetPortraitSprite()
-    {
-        if (IsHost)
-        {
-            //Debug.Log("I'm host and i'm sending idx: " + _playerUI.portraitIdx);
-            GetPortraitSpriteClientRpc(_playerUI.portraitIdx);
-        }
-        else
-        {
-            //Debug.Log("I'm client and i'm sending idx: " + _playerUI.portraitIdx);
-            GetPortraitSpriteServerRpc(_playerUI.portraitIdx);
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void GetPortraitSpriteServerRpc(int portraitIdx)
-    {
-        if (!IsHost) return;
-        //Debug.Log("I'm host and i received: " + portraitIdx);
-        otherPlayerSpriteIdx = portraitIdx;
-        //Debug.Log("host: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
-    }
-
-    [ClientRpc]
-    private void GetPortraitSpriteClientRpc(int portraitIdx)
-    {
-        if (IsHost) return;
-        //Debug.Log("I'm client and i received: " + portraitIdx);
-        otherPlayerSpriteIdx = portraitIdx;
-        //Debug.Log("client: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
     }
 }

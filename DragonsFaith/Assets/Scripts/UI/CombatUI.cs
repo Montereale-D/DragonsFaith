@@ -35,7 +35,7 @@ namespace UI
         private TextMeshProUGUI _moveOrAttackText;
         private TurnUI _turnUI;
 
-        public void SetUp(List<PlayerGridMovement> characterList)
+        public void SetUp(List<PlayerGridMovement> characterList, Sprite otherPlayerSprite)
         {
             //TODO: uncomment when player weapons
             /*SetWeaponRangeUI((int)InventoryManager.Instance.GetWeapon().GetRange());
@@ -43,14 +43,7 @@ namespace UI
             SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());*/
                 
             _turnUI = GetComponentInChildren<TurnUI>();
-            /*Debug.Log("spriteIdx=" + spriteIdx);
-            for (int i = 0; i < portraitSprites.Length; i++)
-            {
-                Debug.Log(portraitSprites[i].name);
-            }
-            var otherPlayerSprite = portraitSprites[spriteIdx];*/
-                
-            _turnUI.SetUpList(characterList);
+            _turnUI.SetUpList(characterList, otherPlayerSprite);
 
             _moveOrAttackText = moveOrAttackButton.GetComponentInChildren<TextMeshProUGUI>();
             var imgs = moveOrAttackButton.GetComponentsInChildren<Image>();

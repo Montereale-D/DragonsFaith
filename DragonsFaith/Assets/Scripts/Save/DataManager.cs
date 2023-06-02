@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UI;
 using Unity.Netcode;
 
 namespace Save
@@ -11,6 +12,8 @@ namespace Save
         private List<IGameData> _dataObjects;
         private const string FileName = "DragonsFaithData.json";
         private FileData _fileData;
+        
+        public int? otherPlayerSpriteIdx;
 
         public static DataManager Instance { get; private set; }
 
@@ -181,6 +184,38 @@ namespace Save
             _gameData.SetPlayerName(GameData.PlayerType.Client, clientData.GetPlayerName(GameData.PlayerType.Client));
 
             _fileData.Save(_gameData);
+        }
+        
+        public void SendPortraitSprite(int idx)
+        {
+            if (IsHost)
+            {
+                Debug.Log("I'm host and i'm sending idx: " + idx);
+                SendPortraitSpriteClientRpc(idx);
+            }
+            else
+            {
+                Debug.Log("I'm client and i'm sending idx: " + idx);
+                SendPortraitSpriteServerRpc(idx);
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SendPortraitSpriteServerRpc(int portraitIdx)
+        {
+            if (!IsHost) return;
+            Debug.Log("I'm host and i received: " + portraitIdx);
+            otherPlayerSpriteIdx = portraitIdx;
+            Debug.Log("host: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
+        }
+
+        [ClientRpc]
+        private void SendPortraitSpriteClientRpc(int portraitIdx)
+        {
+            if (IsHost) return;
+            Debug.Log("I'm client and i received: " + portraitIdx);
+            otherPlayerSpriteIdx = portraitIdx;
+            Debug.Log("client: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
         }
     }
 }
