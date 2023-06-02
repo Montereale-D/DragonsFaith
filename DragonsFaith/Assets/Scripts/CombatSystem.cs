@@ -79,9 +79,7 @@ public class CombatSystem : NetworkBehaviour
         {
             //todo update turnUI
             //direi di rendere la UI grigia 
-            
-            //todo if->playerDied -> Skip
-            
+
         }
         else
         {
@@ -89,6 +87,11 @@ public class CombatSystem : NetworkBehaviour
             characterList.Remove(character);
             _indexCharacterTurn = characterList.IndexOf(activeUnit);
         }
+    }
+
+    public void PlayerRevive(PlayerGridMovement player)
+    {
+        //todo
     }
     
     private void ResetTurn()
@@ -111,7 +114,7 @@ public class CombatSystem : NetworkBehaviour
         else
         {
             _isThisPlayerTurn = false;
-
+            
             //if the active unity is enemy and I am host, I should notify the enemy
             if (activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies && NetworkManager.Singleton.IsHost)
             {
@@ -122,12 +125,23 @@ public class CombatSystem : NetworkBehaviour
 
     private PlayerGridMovement GetNextActiveUnit()
     {
-        //todo aggiungere controlli sulla scelta del next
+        var candidate = NextUnit();
 
+        if (candidate.GetTeam() == PlayerGridMovement.Team.Players && !candidate.GetComponent<CharacterInfo>().IsAlive())
+        {
+            candidate = NextUnit(); //assert only a player can be dead
+        }
+
+        return candidate;
+    }
+
+    private PlayerGridMovement NextUnit()
+    {
         _indexCharacterTurn++;
+
         if (_indexCharacterTurn >= characterList.Count)
             _indexCharacterTurn = 0;
-
+        
         return characterList[_indexCharacterTurn];
     }
 
@@ -590,15 +604,9 @@ public class CombatSystem : NetworkBehaviour
 
     private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
     {
-        //todo enemy attack player test dopo UI
-        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-        if (target.gameObject == localPlayer)
-        {
-            CharacterManager.Instance.Damage(damage);
-            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
-        }
-
         var targetIndex = characterList.IndexOf(target);
+        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+
         if (IsHost)
         {
             NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage);
@@ -606,6 +614,16 @@ public class CombatSystem : NetworkBehaviour
         else
         {
             NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage);
+        }
+        
+        if (target.gameObject == localPlayer)
+        {
+            CharacterManager.Instance.Damage(damage);
+            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+        }
+        else
+        {
+            target.GetComponent<CharacterInfo>().Damage(damage);
         }
     }
 
@@ -620,6 +638,10 @@ public class CombatSystem : NetworkBehaviour
             CharacterManager.Instance.Damage(damage);
             localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
+        else
+        {
+            characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
+        }
     }
 
     [ClientRpc]
@@ -632,6 +654,10 @@ public class CombatSystem : NetworkBehaviour
         {
             CharacterManager.Instance.Damage(damage);
             localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+        }
+        else
+        {
+            characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
         }
     }
 

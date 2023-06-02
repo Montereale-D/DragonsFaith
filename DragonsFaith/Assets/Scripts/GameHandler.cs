@@ -164,4 +164,6 @@ public class GameHandler : NetworkBehaviour
             Debug.Log("Set game state to Free Roaming by debug controls");
         }
     }
+    
+    //todo settare GameOver and GameWin
 }

@@ -1,4 +1,5 @@
 using UI;
+using Unity.Netcode;
 using UnityEngine;
 
 public class CharacterInfo : MonoBehaviour
@@ -10,7 +11,7 @@ public class CharacterInfo : MonoBehaviour
     [SerializeField] private int maxMana = 100;
 
     [HideInInspector] public bool isLocalPlayer;
-    public int health { get; private set; }
+    public int health;
 
     public int mana { get; private set; }
     [HideInInspector] public string characterName;
@@ -22,6 +23,8 @@ public class CharacterInfo : MonoBehaviour
     {
         health = maxHealth;
         mana = maxMana;
+        _characterUI = GetComponent<CharacterGridPopUpUI>();
+        _characterUI.SetUI(characterName, maxHealth);
     }
 
     public void SetUp()
@@ -68,8 +71,6 @@ public class CharacterInfo : MonoBehaviour
         if (health <= 0)
         {
             health = 0;
-
-            //do stuff
         }
 
         if (isLocalPlayer)
@@ -80,6 +81,16 @@ public class CharacterInfo : MonoBehaviour
         {
             _characterUI.UpdateHealth(health);
         }
+        
+        if (!IsAlive())
+        {
+            Die();
+        }
+    }
+    
+    private void Die()
+    {
+        CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
     }
 
     public bool IsAlive()
