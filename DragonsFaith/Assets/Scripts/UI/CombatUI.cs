@@ -68,7 +68,7 @@ namespace UI
             {
                 var localPlayer =
                     NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-                if (CombatSystem.instance._activeUnit == localPlayer)
+                if (CombatSystem.instance.activeUnit == localPlayer)
                 {
                     CombatSystem.instance.SkipTurn();
                 }

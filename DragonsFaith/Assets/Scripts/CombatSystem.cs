@@ -15,7 +15,7 @@ public class CombatSystem : NetworkBehaviour
     public List<PlayerGridMovement> characterList;
 
     private int _indexCharacterTurn = -1;
-    public PlayerGridMovement _activeUnit { get; private set; }
+    public PlayerGridMovement activeUnit { get; private set; }
     private bool _canMoveThisTurn;
     private bool _canAttackThisTurn;
     private bool _isThisPlayerTurn;
@@ -52,17 +52,8 @@ public class CombatSystem : NetworkBehaviour
             .ToList();
 
         StartCoroutine(SetUpTurns());
-
         StartCoroutine(WaitSetupToStart());
-        //SelectNextActiveUnit();
-
-        //GetPortraitSprite();
-
         
-        
-        /*GetPortraitSprite();
-        _playerUI.ToggleCombatUI(characterList);
-        _turnUI = _playerUI.GetCombatUI().GetTurnUI();*/
         _isCombatReady = true;
     }
 
@@ -73,22 +64,27 @@ public class CombatSystem : NetworkBehaviour
             yield return new WaitForSeconds(0.2f);
         }
         
-        SelectNextActiveUnit();
+        ResetTurn();
     }
 
     private void SelectNextActiveUnit()
     {
-        _activeUnit = GetNextActiveUnit(); 
-        //_turnUI.NextTurn(); //TODO solo comment: qua dentro non va bene perché fa skippare alla UI il primo turno
+        ResetTurn();
+        _turnUI.NextTurn();
+    }
 
-        Debug.Log("Turn of " + _activeUnit.name);
+    private void ResetTurn()
+    {
+        activeUnit = GetNextActiveUnit();
+
+        Debug.Log("Turn of " + activeUnit.name);
 
         _canMoveThisTurn = true;
         _canAttackThisTurn = true;
         _selectedTile = null;
 
-        if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Players &&
-            _activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
+        if (activeUnit.GetTeam() == PlayerGridMovement.Team.Players &&
+            activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
         {
             _isThisPlayerTurn = true;
             //_playerUI.SetMovementCounter(_activeUnit.movement);
@@ -98,9 +94,9 @@ public class CombatSystem : NetworkBehaviour
             _isThisPlayerTurn = false;
 
             //if the active unity is enemy and I am host, I should notify the enemy
-            if (_activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies && NetworkManager.Singleton.IsHost)
+            if (activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies && NetworkManager.Singleton.IsHost)
             {
-                _activeUnit.GetComponent<EnemyGridBehaviour>().PlanAction(characterList);
+                activeUnit.GetComponent<EnemyGridBehaviour>().PlanAction(characterList);
             }
         }
     }
@@ -126,7 +122,7 @@ public class CombatSystem : NetworkBehaviour
 
         if (!_isThisPlayerTurn) return;
 
-        if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(_activeUnit.onTile, _activeUnit.movement);
+        if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
         if (_selectedTile)
         {
             _selectedTile.SelectTile();
@@ -204,7 +200,7 @@ public class CombatSystem : NetworkBehaviour
     {
         var localPlayer =
             NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-        if (_activeUnit != localPlayer) return;
+        if (activeUnit != localPlayer) return;
         var weapon = GetActiveUnitWeapon();
         if (weapon.IsFullyLoaded())
         {
@@ -237,7 +233,7 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile.SelectTile();
 
         var character = _selectedTile.GetCharacter();
-        if (character && character != _activeUnit)
+        if (character && character != activeUnit)
         {
             character.GetComponent<CharacterGridPopUpUI>().ShowUI();
             if (character.GetTeam() == PlayerGridMovement.Team.Players)
@@ -278,13 +274,13 @@ public class CombatSystem : NetworkBehaviour
             {
                 _playerUI.SetCombatPopUp(true, "Already moved this turn.");
             }
-            else if (!_mapHandler.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(_selectedTile))
+            else if (!_mapHandler.GetTilesInRange(activeUnit.onTile, activeUnit.movement).Contains(_selectedTile))
             {
                 _playerUI.SetCombatPopUp(true, "Cell is too far away.");
             }
             else
             {
-                _playerUI.SetCombatPopUp(true, "Cell is within movement range " + _activeUnit.movement + ".");
+                _playerUI.SetCombatPopUp(true, "Cell is within movement range " + activeUnit.movement + ".");
             }
 
             selectMode = SelectTileMode.Movement;
@@ -310,7 +306,7 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile.ShowTile();
         _playerUI.SetCombatPopUp(false);
         var character = _selectedTile.GetCharacter();
-        if (character && character != _activeUnit)
+        if (character && character != activeUnit)
         {
             // hides the UI of the enemies on deselection of the cell
             character.GetComponent<CharacterGridPopUpUI>().HideUI();
@@ -332,7 +328,7 @@ public class CombatSystem : NetworkBehaviour
 
     public void CheckMovement(Tile tile, bool updatePosition)
     {
-        if (!_mapHandler.GetTilesInRange(_activeUnit.onTile, _activeUnit.movement).Contains(tile))
+        if (!_mapHandler.GetTilesInRange(activeUnit.onTile, activeUnit.movement).Contains(tile))
         {
             //_playerUI.ShowMessage("Cell is too far away.");
             //_playerUI.SetCombatPopUp(true, "Cell is too far away.");
@@ -352,10 +348,10 @@ public class CombatSystem : NetworkBehaviour
         _mapHandler.HideAllTiles();
 
         // Remove Unit from tile
-        _activeUnit.onTile.ClearTile();
+        activeUnit.onTile.ClearTile();
 
         // Set Unit on target Grid Object
-        tile.SetCharacterOnTile(_activeUnit);
+        tile.SetCharacterOnTile(activeUnit);
 
         if (IsHost)
         {
@@ -368,7 +364,7 @@ public class CombatSystem : NetworkBehaviour
             NotifyMovementServerRpc(tile.mapPosition.x, tile.mapPosition.y);
         }
 
-        _activeUnit.MoveToTile(tile);
+        activeUnit.MoveToTile(tile);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -378,7 +374,7 @@ public class CombatSystem : NetworkBehaviour
 
         var toPosition = new Vector2Int(x, y);
         var tile = _mapHandler.GetMap()[toPosition];
-        _activeUnit.MoveToTile(tile);
+        activeUnit.MoveToTile(tile);
     }
 
     [ClientRpc]
@@ -391,7 +387,7 @@ public class CombatSystem : NetworkBehaviour
 
         if (move)
         {
-            _activeUnit.MoveToTile(tile);
+            activeUnit.MoveToTile(tile);
         }
     }
 
@@ -404,7 +400,7 @@ public class CombatSystem : NetworkBehaviour
     public void CheckAction(PlayerGridMovement target)
     {
         // Clicked on top of a Unit
-        if (_activeUnit.IsOppositeTeam(target))
+        if (activeUnit.IsOppositeTeam(target))
         {
             Debug.Log("Target is an enemy of active unit");
             CheckActionOnOppositeTeam(target);
@@ -452,9 +448,9 @@ public class CombatSystem : NetworkBehaviour
 
     private Weapon GetActiveUnitWeapon()
     {
-        var weapon = _activeUnit.GetTeam() == PlayerGridMovement.Team.Players
+        var weapon = activeUnit.GetTeam() == PlayerGridMovement.Team.Players
             ? InventoryManager.Instance.GetWeapon()
-            : _activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
+            : activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
 
         //for testing
         if (!weapon)
@@ -470,8 +466,8 @@ public class CombatSystem : NetworkBehaviour
 
     public bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
     {
-        Debug.Log("Distance " + Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) + ", WeaponRange " + weapon.range);
-        return Vector2Int.Distance(_activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
+        Debug.Log("Distance " + Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) + ", WeaponRange " + weapon.range);
+        return Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
     }
 
     public void Attack(PlayerGridMovement target, Weapon weapon)
@@ -585,14 +581,14 @@ public class CombatSystem : NetworkBehaviour
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            _turnUI.NextTurn();
+            //_turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            _turnUI.NextTurn();
+            //_turnUI.NextTurn();
         }
     }
 
@@ -603,7 +599,7 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        _turnUI.NextTurn();
+        //_turnUI.NextTurn();
     }
 
     [ClientRpc]
@@ -613,13 +609,13 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        _turnUI.NextTurn();
+        //_turnUI.NextTurn();
     }
 
 
     public void SetUnitGridCombat(PlayerGridMovement unitGridCombat)
     {
-        _activeUnit = unitGridCombat;
+        activeUnit = unitGridCombat;
     }
 
     public void ClearUnitGridCombat()
@@ -629,7 +625,7 @@ public class CombatSystem : NetworkBehaviour
 
     public PlayerGridMovement GetUnitGridCombat()
     {
-        return _activeUnit;
+        return activeUnit;
     }
 
     [ContextMenu("Force skip")]
@@ -640,19 +636,13 @@ public class CombatSystem : NetworkBehaviour
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
-            _turnUI.NextTurn();
-
-            //todo null se nemico è il primo _turnUI.NextTurn();
-            //TODO: perche?
+            //_turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
-            _turnUI.NextTurn();
-
-            //todo null se nemico è il primo _turnUI.NextTurn();
-            //TODO: perche?
+            //_turnUI.NextTurn();
         }
     }
 
