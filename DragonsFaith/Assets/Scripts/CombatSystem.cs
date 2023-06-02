@@ -30,6 +30,8 @@ public class CombatSystem : NetworkBehaviour
     private MapHandler _mapHandler;
     private TurnUI _turnUI;
 
+    #region Core
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -55,7 +57,19 @@ public class CombatSystem : NetworkBehaviour
         StartCoroutine(WaitSetupToStart());
 
         _isCombatReady = true;
-        //ResetTurn();
+    }
+
+    private IEnumerator SetUpTurns()
+    {
+        SendPortraitSprite();
+        while (otherPlayerSpriteIdx == null)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        _playerUI.ToggleCombatUI(characterList);
+        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
+        _isUIReady = true;
     }
 
     private IEnumerator WaitSetupToStart()
@@ -68,38 +82,54 @@ public class CombatSystem : NetworkBehaviour
         ResetTurnActions();
     }
 
+    private void Update()
+    {
+        //wait for settings
+        if (!_isCombatReady || !_isUIReady) return;
+
+        _mapHandler.HideAllTiles();
+
+        if (!_isThisPlayerTurn) return;
+
+        if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
+        if (_selectedTile)
+        {
+            _selectedTile.SelectTile();
+        }
+
+        //check if mouse is hovering at least one tile, then check player action
+        var hoveredHit = _mapHandler.GetHoveredRaycast();
+        if (hoveredHit.HasValue)
+        {
+            var tile = hoveredHit.Value.collider.GetComponent<Tile>();
+            if (tile)
+            {
+                tile.HoverTile();
+
+                if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+                {
+                    SelectTile(tile);
+                }
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                UnselectTile();
+            }
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                BlockAction();
+            }
+
+            if (!_canAttackThisTurn && !_canMoveThisTurn) SkipTurn();
+        }
+    }
+
     private void SelectNextActiveUnit()
     {
         ResetTurnActions();
         _turnUI.NextTurn();
-    }
-
-    public void CharacterDied(PlayerGridMovement character)
-    {
-        if (character.GetTeam() == PlayerGridMovement.Team.Players)
-        {
-            //todo update turnUI
-            //direi di rendere immagine player grigia 
-        }
-        else
-        {
-            //todo update turnUI
-            characterList.Remove(character);
-            _indexCharacterTurn = characterList.IndexOf(activeUnit);
-        }
-    }
-
-    public void PlayerReviveAction()
-    {
-        var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
-        var otherPlayer = players[0] == activeUnit ? players[1] : players[0];
-        otherPlayer.GetComponent<CharacterInfo>().Revive();
-        _canAttackThisTurn = false;
-    }
-
-    private void ReceiveRevive()
-    {
-        CharacterManager.Instance.ReceiveRevive();
     }
 
     private void ResetTurnActions()
@@ -158,50 +188,41 @@ public class CombatSystem : NetworkBehaviour
 
         return characterList[_indexCharacterTurn];
     }
-    
-    private void Update()
+
+    #endregion
+
+    public void CharacterDied(PlayerGridMovement character)
     {
-        //wait for settings
-        if (!_isCombatReady || !_isUIReady) return;
-
-        _mapHandler.HideAllTiles();
-
-        if (!_isThisPlayerTurn) return;
-
-        if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
-        if (_selectedTile)
+        if (character.GetTeam() == PlayerGridMovement.Team.Players)
         {
-            _selectedTile.SelectTile();
+            //todo update turnUI
+            //direi di rendere immagine player grigia perchè il player morto viene skippato
         }
-
-        //check if mouse is hovering at least one tile, then check player action
-        var hoveredHit = _mapHandler.GetHoveredRaycast();
-        if (hoveredHit.HasValue)
+        else
         {
-            var tile = hoveredHit.Value.collider.GetComponent<Tile>();
-            if (tile)
-            {
-                tile.HoverTile();
-
-                if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-                {
-                    SelectTile(tile);
-                }
-            }
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                UnselectTile();
-            }
-
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                BlockAction();
-            }
-
-            if (!_canAttackThisTurn && !_canMoveThisTurn) SkipTurn();
+            //todo update turnUI
+            characterList.Remove(character);
+            _indexCharacterTurn = characterList.IndexOf(activeUnit);
         }
     }
+    public void ReloadAction()
+    {
+        var localPlayer =
+            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
+        if (activeUnit != localPlayer) return;
+        var weapon = GetActiveUnitWeapon();
+        if (weapon.IsFullyLoaded())
+        {
+            _playerUI.ShowMessage("Weapon already fully loaded.");
+            return;
+        }
+
+        weapon.Reload();
+        _playerUI.SetAmmoCounter(weapon.GetAmmo());
+        SkipTurn();
+    }
+
+    #region BlockAction
 
     public void BlockAction()
     {
@@ -222,6 +243,41 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyBlockServerRpc()
+    {
+        if (!IsHost) return;
+
+        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
+    }
+
+    [ClientRpc]
+    private void NotifyBlockClientRpc()
+    {
+        if (IsHost) return;
+
+        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
+    }
+
+    #endregion
+
+    #region ReviveAction
+
+    public void PlayerReviveAction()
+    {
+        //todo update turnUI, questo viene chiamato solo dal player che usa l'oggetto
+        var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
+        var otherPlayer = players[0] == activeUnit ? players[1] : players[0];
+        otherPlayer.GetComponent<CharacterInfo>().Revive();
+        _canAttackThisTurn = false;
+    }
+
+    private void ReceiveRevive()
+    {
+        //todo update turnUI, questo viene chiamato solo dal player che riceve il revive
+        CharacterManager.Instance.ReceiveRevive();
+    }
+
     public void NotifyRevive()
     {
         if (IsHost)
@@ -234,22 +290,25 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
-    public void ReloadAction()
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyReviveServerRpc()
     {
-        var localPlayer =
-            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-        if (activeUnit != localPlayer) return;
-        var weapon = GetActiveUnitWeapon();
-        if (weapon.IsFullyLoaded())
-        {
-            _playerUI.ShowMessage("Weapon already fully loaded.");
-            return;
-        }
+        if (!IsHost) return;
 
-        weapon.Reload();
-        _playerUI.SetAmmoCounter(weapon.GetAmmo());
-        SkipTurn();
+        ReceiveRevive();
     }
+
+    [ClientRpc]
+    private void NotifyReviveClientRpc()
+    {
+        if (IsHost) return;
+
+        ReceiveRevive();
+    }
+
+    #endregion
+
+    #region Tile
 
     private void SelectTile(Tile tile)
     {
@@ -329,6 +388,10 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile = null;
     }
 
+    #endregion
+
+    #region Movement
+
     public void ButtonCheckMovement()
     {
         CheckMovement(_selectedTile, false);
@@ -363,12 +426,10 @@ public class CombatSystem : NetworkBehaviour
 
         if (IsHost)
         {
-            //NB uso int perché servono primitive per Rpc
             NotifyMovementClientRpc(tile.mapPosition.x, tile.mapPosition.y, updatePosition);
         }
         else
         {
-            //NB uso int perché servono primitive per Rpc
             NotifyMovementServerRpc(tile.mapPosition.x, tile.mapPosition.y);
         }
 
@@ -399,41 +460,11 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
+    #endregion
 
-    [ServerRpc(RequireOwnership = false)]
-    private void NotifyBlockServerRpc()
-    {
-        if (!IsHost) return;
+    #region AttackAction
 
-        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
-    }
-
-    [ClientRpc]
-    private void NotifyBlockClientRpc()
-    {
-        if (IsHost) return;
-
-        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
-    }
-
-
-    [ServerRpc(RequireOwnership = false)]
-    private void NotifyReviveServerRpc()
-    {
-        if (!IsHost) return;
-
-        ReceiveRevive();
-    }
-
-    [ClientRpc]
-    private void NotifyReviveClientRpc()
-    {
-        if (IsHost) return;
-
-        ReceiveRevive();
-    }
-
-    public void ButtonCheckAction()
+    public void ButtonAttackAction()
     {
         CheckAction(_target);
     }
@@ -442,15 +473,13 @@ public class CombatSystem : NetworkBehaviour
     public void CheckAction(PlayerGridMovement target)
     {
         // Clicked on top of a Unit
-        if (activeUnit.IsOppositeTeam(target))
+        if (!activeUnit.IsOppositeTeam(target))
         {
-            Debug.Log("Target is an enemy of active unit");
-            CheckActionOnOppositeTeam(target);
+            Debug.Log("Target is an ally of active unit");
+            //_playerUI.ShowMessage("Cannot attack an ally");
+            return;
         }
-    }
 
-    private void CheckActionOnOppositeTeam(PlayerGridMovement characterOnTile)
-    {
         // Can Attack Enemy
         if (!_canAttackThisTurn)
         {
@@ -459,17 +488,9 @@ public class CombatSystem : NetworkBehaviour
             return;
         }
 
-        // Clicked on an Enemy of the current unit
         var weapon = GetActiveUnitWeapon();
-        /*if (!weapon)
-        {
-            weapon = ScriptableObject.CreateInstance<Weapon>();
-            weapon.range = 1;
-            weapon.weaponType = Weapon.WeaponType.Melee;
-            weapon.damage = 1;
-        }*/
 
-        if (!IsWithinRange(characterOnTile, weapon))
+        if (!IsWithinRange(target, weapon))
         {
             Debug.Log("Target outside range of weapon");
             //_playerUI.ShowMessage("Target outside range of weapon.");
@@ -485,32 +506,7 @@ public class CombatSystem : NetworkBehaviour
 
         // Attack Enemy
         _canAttackThisTurn = false;
-        Attack(characterOnTile, weapon);
-    }
-
-    private Weapon GetActiveUnitWeapon()
-    {
-        var weapon = activeUnit.GetTeam() == PlayerGridMovement.Team.Players
-            ? InventoryManager.Instance.GetWeapon()
-            : activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
-
-        //for testing
-        if (!weapon)
-        {
-            weapon = ScriptableObject.CreateInstance<Weapon>();
-            weapon.range = 1;
-            weapon.weaponType = Weapon.WeaponType.Melee;
-            weapon.damage = 1;
-        }
-
-        return weapon;
-    }
-
-    public bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
-    {
-        Debug.Log("Distance " + Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) +
-                  ", WeaponRange " + weapon.range);
-        return Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
+        Attack(target, weapon);
     }
 
     public void Attack(PlayerGridMovement target, Weapon weapon)
@@ -547,6 +543,31 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
+    private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
+    {
+        var targetIndex = characterList.IndexOf(target);
+        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+
+        if (IsHost)
+        {
+            NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage);
+        }
+        else
+        {
+            NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage);
+        }
+
+        if (target.gameObject == localPlayer)
+        {
+            CharacterManager.Instance.Damage(damage);
+            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+        }
+        else
+        {
+            target.GetComponent<CharacterInfo>().Damage(damage);
+        }
+    }
+
     public void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
     {
         var targetIndex = characterList.IndexOf(target);
@@ -579,30 +600,6 @@ public class CombatSystem : NetworkBehaviour
         characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
     }
 
-    private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
-    {
-        var targetIndex = characterList.IndexOf(target);
-        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-
-        if (IsHost)
-        {
-            NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage);
-        }
-        else
-        {
-            NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage);
-        }
-
-        if (target.gameObject == localPlayer)
-        {
-            CharacterManager.Instance.Damage(damage);
-            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
-        }
-        else
-        {
-            target.GetComponent<CharacterInfo>().Damage(damage);
-        }
-    }
 
     [ServerRpc(RequireOwnership = false)]
     private void NotifyAttackFromEnemyToPlayerServerRpc(int targetIndex, int damage)
@@ -638,6 +635,10 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
+    #endregion
+
+    #region SkipAction
+
     public void SkipTurn()
     {
         if (IsHost)
@@ -672,50 +673,9 @@ public class CombatSystem : NetworkBehaviour
         //_playerUI.SetCombatPopUp(false);
     }
 
+    #endregion
 
-    public void SetUnitGridCombat(PlayerGridMovement unitGridCombat)
-    {
-        activeUnit = unitGridCombat;
-    }
-
-    public void ClearUnitGridCombat()
-    {
-        SetUnitGridCombat(null);
-    }
-
-    public PlayerGridMovement GetUnitGridCombat()
-    {
-        return activeUnit;
-    }
-
-    [ContextMenu("Force skip")]
-    public void ForceSkipDebug()
-    {
-        Debug.Log("Skip from context menu");
-        if (IsHost)
-        {
-            HostHasSkippedClientRpc();
-            SelectNextActiveUnit();
-        }
-        else
-        {
-            ClientHasSkippedServerRpc();
-            SelectNextActiveUnit();
-        }
-    }
-
-    private IEnumerator SetUpTurns()
-    {
-        SendPortraitSprite();
-        while (otherPlayerSpriteIdx == null)
-        {
-            yield return new WaitForSeconds(0.2f);
-        }
-
-        _playerUI.ToggleCombatUI(characterList);
-        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
-        _isUIReady = true;
-    }
+    #region TurnUI
 
     public void SendPortraitSprite()
     {
@@ -747,5 +707,52 @@ public class CombatSystem : NetworkBehaviour
         //Debug.Log("I'm client and i received: " + portraitIdx);
         otherPlayerSpriteIdx = portraitIdx;
         //Debug.Log("client: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
+    }
+
+    #endregion
+
+    #region Helper
+
+    public bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
+    {
+        Debug.Log("Distance " + Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) +
+                  ", WeaponRange " + weapon.range);
+        return Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) <= weapon.range;
+    }
+
+    private Weapon GetActiveUnitWeapon()
+    {
+        var weapon = activeUnit.GetTeam() == PlayerGridMovement.Team.Players
+            ? InventoryManager.Instance.GetWeapon()
+            : activeUnit.GetComponent<EnemyGridBehaviour>().weapon;
+
+        //for testing
+        if (!weapon)
+        {
+            weapon = ScriptableObject.CreateInstance<Weapon>();
+            weapon.range = 1;
+            weapon.weaponType = Weapon.WeaponType.Melee;
+            weapon.damage = 1;
+        }
+
+        return weapon;
+    }
+
+    #endregion
+
+    [ContextMenu("Force skip")]
+    public void ForceSkipDebug()
+    {
+        Debug.Log("Skip from context menu");
+        if (IsHost)
+        {
+            HostHasSkippedClientRpc();
+            SelectNextActiveUnit();
+        }
+        else
+        {
+            ClientHasSkippedServerRpc();
+            SelectNextActiveUnit();
+        }
     }
 }

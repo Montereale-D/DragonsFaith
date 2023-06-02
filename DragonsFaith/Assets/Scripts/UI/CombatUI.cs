@@ -124,7 +124,7 @@ namespace UI
                     _moveOrAttackText.text = "Attack";
                     moveOrAttackButton.GetComponent<TooltipTrigger>().header = "Attack";
                     moveOrAttackButton.GetComponent<TooltipTrigger>().content = "Attack the selected enemy.";
-                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonCheckAction);
+                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonAttackAction);
                     break;
                 case "Move":
                     moveOrAttackButton.onClick.RemoveAllListeners();
