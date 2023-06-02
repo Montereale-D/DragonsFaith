@@ -13,7 +13,8 @@ namespace Save
         private const string FileName = "DragonsFaithData.json";
         private FileData _fileData;
         
-        public int? otherPlayerSpriteIdx;
+        /*public int otherPlayerSpriteIdx;
+        public bool received = false;*/
 
         public static DataManager Instance { get; private set; }
 
@@ -186,7 +187,7 @@ namespace Save
             _fileData.Save(_gameData);
         }
         
-        public void SendPortraitSprite(int idx)
+        /*public void SendPortraitSprite(int idx)
         {
             if (IsHost)
             {
@@ -206,6 +207,7 @@ namespace Save
             if (!IsHost) return;
             Debug.Log("I'm host and i received: " + portraitIdx);
             otherPlayerSpriteIdx = portraitIdx;
+            received = true;
             Debug.Log("host: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
         }
 
@@ -215,7 +217,8 @@ namespace Save
             if (IsHost) return;
             Debug.Log("I'm client and i received: " + portraitIdx);
             otherPlayerSpriteIdx = portraitIdx;
+            received = true;
             Debug.Log("client: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
-        }
+        }*/
     }
 }

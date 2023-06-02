@@ -19,13 +19,13 @@ public class CombatSystem : NetworkBehaviour
     private bool _canMoveThisTurn;
     private bool _canAttackThisTurn;
     private bool _isThisPlayerTurn;
-    //private bool _isCombatReady;
-    //private bool _isUIReady;
+    private bool _isCombatReady;
+    private bool _isUIReady;
     private Tile _selectedTile;
 
     private PlayerGridMovement _target;
 
-    //public int? otherPlayerSpriteIdx;
+    public int? otherPlayerSpriteIdx;
     private PlayerUI _playerUI;
     private MapHandler _mapHandler;
     private TurnUI _turnUI;
@@ -51,12 +51,23 @@ public class CombatSystem : NetworkBehaviour
             .ThenBy(x => x.GetHashCode())
             .ToList();
 
-        _playerUI.ToggleCombatUI(characterList);
-        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
+        StartCoroutine(SetUpTurns());
+        StartCoroutine(WaitSetupToStart());
+        
+        _isCombatReady = true;
+        //ResetTurn();
+    }
+
+    private IEnumerator WaitSetupToStart()
+    {
+        while (!_isCombatReady || !_isUIReady)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
         
         ResetTurn();
     }
-    
+
     private void SelectNextActiveUnit()
     {
         ResetTurn();
@@ -105,6 +116,9 @@ public class CombatSystem : NetworkBehaviour
 
     private void Update()
     {
+        //wait for settings
+        if (!_isCombatReady || !_isUIReady) return;
+
         _mapHandler.HideAllTiles();
 
         if (!_isThisPlayerTurn) return;
@@ -603,5 +617,50 @@ public class CombatSystem : NetworkBehaviour
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
         }
+    }
+
+    private IEnumerator SetUpTurns()
+    {
+        SendPortraitSprite();
+        while (otherPlayerSpriteIdx == null)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        _playerUI.ToggleCombatUI(characterList);
+        _turnUI = _playerUI.GetCombatUI().GetTurnUI();
+        _isUIReady = true;
+    }
+
+    public void SendPortraitSprite()
+    {
+        if (IsHost)
+        {
+            //Debug.Log("I'm host and i'm sending idx: " + _playerUI.portraitIdx);
+            SendPortraitSpriteClientRpc(_playerUI.portraitIdx);
+        }
+        else
+        {
+            //Debug.Log("I'm client and i'm sending idx: " + _playerUI.portraitIdx);
+            SendPortraitSpriteServerRpc(_playerUI.portraitIdx);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SendPortraitSpriteServerRpc(int portraitIdx)
+    {
+        if (!IsHost) return;
+        //Debug.Log("I'm host and i received: " + portraitIdx);
+        otherPlayerSpriteIdx = portraitIdx;
+        //Debug.Log("host: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
+    }
+
+    [ClientRpc]
+    private void SendPortraitSpriteClientRpc(int portraitIdx)
+    {
+        if (IsHost) return;
+        //Debug.Log("I'm client and i received: " + portraitIdx);
+        otherPlayerSpriteIdx = portraitIdx;
+        //Debug.Log("client: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
     }
 }

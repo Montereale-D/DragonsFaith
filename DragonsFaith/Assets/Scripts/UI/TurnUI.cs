@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = System.Diagnostics.Debug;
 
 namespace UI
 {
@@ -26,11 +27,13 @@ namespace UI
         public float animFadeOutDuration = 1;
         private static LTDescr delay;
         
-        public void SetUpList(List<PlayerGridMovement> characterList, Sprite otherPlayerSprite)
+        public void SetUpList(List<PlayerGridMovement> characterList)
         {
             _charList = characterList;
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-            _otherPlayerSprite = otherPlayerSprite;
+            Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
+                "CombatSystem.instance.otherPlayerSpriteIdx != null");
+            _otherPlayerSprite = PlayerUI.Instance.portraitSprites[(int)CombatSystem.instance.otherPlayerSpriteIdx];
             
             if (_charList.Count < threshold)
             {

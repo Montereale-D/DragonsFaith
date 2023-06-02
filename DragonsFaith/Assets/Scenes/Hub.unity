@@ -7956,7 +7956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3073505798662018449, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3073505798662018449, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7998,6 +7998,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4413061609816060500, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
+      propertyPath: m_ColliderPaths.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5846757291490897770, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 4148807578
@@ -8009,6 +8013,10 @@ PrefabInstance:
     - target: {fileID: 8688264915427968316, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: m_Name
       value: Hub
+      objectReference: {fileID: 0}
+    - target: {fileID: 8688264915427968316, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9218398997322553309, guid: f5c33c3a50866a04f859c1000bc2d14e, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -8707,7 +8715,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   header: Water Dragon
   content: Be blessed by the Water Dragon and gain the ability to use water based
-    abilities to vanquish your phoes.
+    abilities to vanquish your foes.
 --- !u!114 &472074351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13551,7 +13559,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   header: Fire Dragon
   content: Be blessed by the Fire Dragon and gain the ability to use fire based abilities
-    to vanquish your phoes.
+    to vanquish your foes.
 --- !u!114 &823806926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15389,19 +15397,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.375
       objectReference: {fileID: 0}
     - target: {fileID: 6822241147109976008, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -15410,6 +15418,10 @@ PrefabInstance:
     - target: {fileID: 6822241147109976011, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_Name
       value: GiftChest (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6822241147109976011, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6822241147109976023, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_RootOrder
@@ -15457,19 +15469,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -1.125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
@@ -15692,19 +15704,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 396228165847040358, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.375
       objectReference: {fileID: 0}
     - target: {fileID: 6822241147109976008, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -15713,6 +15725,10 @@ PrefabInstance:
     - target: {fileID: 6822241147109976011, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_Name
       value: GiftChest
+      objectReference: {fileID: 0}
+    - target: {fileID: 6822241147109976011, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6822241147109976023, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_RootOrder
@@ -15760,19 +15776,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 9001516453160353530, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -1.125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c07369ab089d849ac22b0402008ac2, type: 3}
@@ -18088,7 +18104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   header: Earth Dragon
   content: Be blessed by the Earth Dragon and gain the ability to use earth based
-    abilities to vanquish your phoes.
+    abilities to vanquish your foes.
 --- !u!114 &1073482838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19415,7 +19431,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   threshold: 7
-  _numberOfCells: 5
   cellPrefab: {fileID: 2827301964364811554, guid: 68de0167f2952d043bb62a533d905d03, type: 3}
   newTurnUI: {fileID: 289757086}
   animFadeInDuration: 1
@@ -21247,7 +21262,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1217453910
 MonoBehaviour:
@@ -22043,6 +22058,7 @@ MonoBehaviour:
   faithTabFadeOutTime: 0.5
   turnUIFadeInTime: 0.5
   turnUIFadeOutTime: 0.5
+  otherPlayerSprite: {fileID: 0}
   portraitIdx: 0
 --- !u!114 &1257730240
 MonoBehaviour:
@@ -22130,7 +22146,7 @@ RectTransform:
   - {fileID: 1627688773}
   - {fileID: 1337401991}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -35444,6 +35460,153 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1001 &2064330686
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: door
+      value: 
+      objectReference: {fileID: 2064330687}
+    - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: sceneName
+      value: Grid
+      objectReference: {fileID: 0}
+    - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: openDoorSprite
+      value: 
+      objectReference: {fileID: -1414346319, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
+    - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: activateOnFirstTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2077917959861270530, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[144].m_Data
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2077917959861270530, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[158].m_Data
+      value: 
+      objectReference: {fileID: 631202342, guid: c37bea2503e18dc489248074df46af8c, type: 3}
+    - target: {fileID: 2077917959861270530, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[144].m_RefCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2077917959861270530, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[158].m_RefCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2077917959861270530, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_Tiles.Array.data[140].second.m_TileSpriteIndex
+      value: 158
+      objectReference: {fileID: 0}
+    - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: door
+      value: 
+      objectReference: {fileID: 2064330688}
+    - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: sceneName
+      value: Grid
+      objectReference: {fileID: 0}
+    - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: openDoorSprite
+      value: 
+      objectReference: {fileID: -1414346319, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
+    - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: activateOnFirstTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413061609816060500, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_ColliderPaths.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8688264915427968316, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_Name
+      value: Hub_new
+      objectReference: {fileID: 0}
+    - target: {fileID: 8688264915427968316, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091421686079327211, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[0].m_Data
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091421686079327211, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[3].m_Data
+      value: 
+      objectReference: {fileID: -2031317626, guid: a82c8de07bf255d40ba9865f61c91c8c, type: 3}
+    - target: {fileID: 9091421686079327211, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[0].m_RefCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091421686079327211, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[3].m_RefCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091421686079327211, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_Tiles.Array.data[269].second.m_TileSpriteIndex
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+--- !u!212 &2064330687 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4492923141586812188, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+  m_PrefabInstance: {fileID: 2064330686}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2064330688 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1184524056993476385, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+  m_PrefabInstance: {fileID: 2064330686}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2082895986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36951,7 +37114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   header: Air Dragon
   content: Be blessed by the Air Dragon and gain the ability to use air based abilities
-    to vanquish your phoes.
+    to vanquish your foes.
 --- !u!114 &2128932590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37289,19 +37452,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 555139263663050442, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 555139263663050442, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 555139263663050442, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 555139263663050442, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.375
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552548, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -37310,6 +37473,10 @@ PrefabInstance:
     - target: {fileID: 6658175673000552551, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_Name
       value: AbiltyChecker
+      objectReference: {fileID: 0}
+    - target: {fileID: 6658175673000552551, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: abilityToCheck.score
@@ -37321,7 +37488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552571, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552571, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -37365,19 +37532,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9088300157277548886, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9088300157277548886, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9088300157277548886, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 9088300157277548886, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -1.125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}

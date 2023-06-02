@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class NextAreaLoader : MonoBehaviour
     private SceneManager _sceneManager;
     [SerializeField] private string sceneName;
     private int _playersReady;
+    public SpriteRenderer door;
+    public Sprite openDoorSprite;
 
     private void Awake()
     {
@@ -41,6 +44,17 @@ public class NextAreaLoader : MonoBehaviour
 
     private void OnPlayersReady()
     {
+        //_sceneManager.LoadSceneSingle(sceneName);
+        StartCoroutine(LoadScene());
+    }
+
+    private IEnumerator LoadScene()
+    {
+        if (door)
+        {
+            door.sprite = openDoorSprite;
+            yield return new WaitForSeconds(1f);
+        }
         _sceneManager.LoadSceneSingle(sceneName);
     }
 }

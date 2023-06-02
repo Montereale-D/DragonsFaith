@@ -297,21 +297,22 @@ namespace UI
             var spriteIdx = Random.Range(0, portraitSprites.Length);
             portraitIdx = spriteIdx;
             portrait.sprite = portraitSprites[spriteIdx];
-            StartCoroutine(GetOtherPlayerSprite(portraitIdx));
+            //StartCoroutine(GetOtherPlayerSprite(portraitIdx));
         }
 
-        private IEnumerator GetOtherPlayerSprite(int idx)
+        /*private IEnumerator GetOtherPlayerSprite(int idx)
         {
             _dataManager.SendPortraitSprite(idx);
-            while (_dataManager.otherPlayerSpriteIdx == null)
+            while (!_dataManager.received)
             {
+                Debug.Log("waiting...");
                 yield return new WaitForSeconds(0.2f);
             }
 
-            Debug.Assert(_dataManager.otherPlayerSpriteIdx != null, 
-                "_dataManager.otherPlayerSpriteIdx != null");
-            otherPlayerSprite = portraitSprites[(int)_dataManager.otherPlayerSpriteIdx];
-        }
+            /*Debug.Assert(_dataManager.otherPlayerSpriteIdx != null, 
+                "_dataManager.otherPlayerSpriteIdx != null");#1#
+            otherPlayerSprite = portraitSprites[_dataManager.otherPlayerSpriteIdx];
+        }*/
 
         public void OpenMenu()
         {
@@ -496,7 +497,7 @@ namespace UI
                 combatUI.gameObject.SetActive(true);
                 FadeInElement(combatUI, turnUIFadeInTime);
                 _combatUI = combatUI.GetComponent<CombatUI>();
-                _combatUI.SetUp(characterList, otherPlayerSprite);
+                _combatUI.SetUp(characterList);
             }
             else
             {
