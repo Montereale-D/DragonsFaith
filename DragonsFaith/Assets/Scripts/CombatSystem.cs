@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
@@ -82,6 +83,7 @@ public class CombatSystem : NetworkBehaviour
         _canMoveThisTurn = true;
         _canAttackThisTurn = true;
         _selectedTile = null;
+        activeUnit.GetComponent<CharacterInfo>().isBlocking = false;
 
         if (activeUnit.GetTeam() == PlayerGridMovement.Team.Players &&
             activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
@@ -192,8 +194,22 @@ public class CombatSystem : NetworkBehaviour
 
     public void BlockAction()
     {
-        //todo block action
+        NotifyBlock();
+        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
         SkipTurn();
+    }
+
+    private void NotifyBlock()
+    {
+        if (IsHost)
+        {
+            NotifyBlockClientRpc();
+        }
+        else
+        {
+            
+            NotifyBlockServerRpc();
+        }
     }
 
     public void ReloadAction()
@@ -390,6 +406,31 @@ public class CombatSystem : NetworkBehaviour
             activeUnit.MoveToTile(tile);
         }
     }
+    
+    
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyBlockServerRpc()
+    {
+        if (!IsHost) return;
+
+        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
+    }
+
+    [ClientRpc]
+    private void NotifyBlockClientRpc()
+    {
+        if (IsHost) return;
+
+        activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
+    }
+    
+    
+    
+    
+    
+    
+    
 
     public void ButtonCheckAction()
     {
@@ -484,11 +525,24 @@ public class CombatSystem : NetworkBehaviour
         if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
         {
             var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
+
+            if (target.GetComponent<CharacterInfo>().isBlocking)
+            {
+                damage /= 2;
+            }
+            
             NotifyAttackToEnemy(target, damage);
         }
         else
         {
-            NotifyAttackToPlayer(target, (int)weapon.damage);
+            var damage = weapon.damage;
+            
+            if (target.GetComponent<CharacterInfo>().isBlocking)
+            {
+                damage /= 2;
+            }
+            
+            NotifyAttackToPlayer(target, (int)damage);
         }
     }
 

@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterRange
       objectReference: {fileID: 0}
+    - target: {fileID: 6554189749673916096, guid: 44b754e2a7d4bd04885b3dad7f5a9a31, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9126842862016260027, guid: 44b754e2a7d4bd04885b3dad7f5a9a31, type: 3}
       propertyPath: m_RootOrder
       value: 6
