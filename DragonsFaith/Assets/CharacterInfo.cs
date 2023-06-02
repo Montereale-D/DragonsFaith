@@ -117,6 +117,11 @@ public class CharacterInfo : MonoBehaviour
         }
     }
 
+    public void Revive()
+    {
+        Heal(maxHealth/2);
+    }
+
     public bool UseMana(int value)
     {
         if (mana - value < 0) return false;

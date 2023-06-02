@@ -161,6 +161,9 @@ namespace Inventory
                 case Consumable.ConsumableType.PotionHealing:
                     CharacterManager.Instance.Heal(20);
                     break;
+                case Consumable.ConsumableType.Revival:
+                    CharacterManager.Instance.GiveRevive();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -367,6 +370,13 @@ namespace Inventory
         {
             inventorySlots = inventorySlots1;
             equipmentSlots = equipmentSlots1;
+        }
+
+        [ContextMenu("Add Revival")]
+        public void AddRevivalContextMenu()
+        {
+            var rev = ExchangeManager.Instance.CreateItem("e7c47347-fe3d-41e2-a56d-975f8636d149");
+            Debug.Log("AddItem request " + AddItem(rev));
         }
 
         [ContextMenu("Add Health Kit")]

@@ -40,6 +40,17 @@ namespace Player
             _characterInfo.Heal(value);
         }
 
+        public void GiveRevive()
+        {
+            CombatSystem.instance.PlayerReviveAction();
+            CombatSystem.instance.NotifyRevive();
+        }
+
+        public void ReceiveRevive()
+        {
+            _characterInfo.Revive();
+        }
+
         public void Damage(int value)
         {
             _characterInfo.Damage(value);

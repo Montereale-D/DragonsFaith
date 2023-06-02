@@ -16,7 +16,8 @@ namespace Inventory.Items
         public enum ConsumableType
         {
             PotionHealing,
-            PotionMana
+            PotionMana,
+            Revival
         }
 
         public override void PerformAction()
