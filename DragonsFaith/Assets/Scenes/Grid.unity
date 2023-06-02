@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterRange
       objectReference: {fileID: 0}
+    - target: {fileID: 6554189749673916096, guid: 44b754e2a7d4bd04885b3dad7f5a9a31, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9126842862016260027, guid: 44b754e2a7d4bd04885b3dad7f5a9a31, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -2977,6 +2981,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1754092425021754728, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
+      propertyPath: weapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 8ed71b7eab545b44eb79c7b27371698d, type: 2}
+    - target: {fileID: -1754092425021754728, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
+      propertyPath: agility
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3990144259735587781, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
       propertyPath: team
       value: 1

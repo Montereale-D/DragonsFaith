@@ -18,6 +18,7 @@ public class EnemyGridBehaviour : MonoBehaviour
     public int agility = 1;
     public int healthMax = 100;
     public Weapon weapon;
+    public bool skipTurn;
 
     private delegate void EnemyPlan(List<PlayerGridMovement> characterList);
 
@@ -47,7 +48,14 @@ public class EnemyGridBehaviour : MonoBehaviour
     private IEnumerator WaitAndPlan(List<PlayerGridMovement> characterList)
     {
         yield return new WaitForSecondsRealtime(2f);
-        _enemyPlan.Invoke(characterList);
+        if (skipTurn)
+        {
+            CombatSystem.instance.SkipTurn();
+        }
+        else
+        {
+            _enemyPlan.Invoke(characterList);
+        }
     }
 
     public void Damage(int damage)
@@ -64,7 +72,14 @@ public class EnemyGridBehaviour : MonoBehaviour
 
     private void Die()
     {
-        //todo
+        CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
+        Destroy(gameObject);
+    }
+
+    [ContextMenu("ForceDieDebug")]
+    public void ForceDieDebug()
+    {
+        CombatSystem.instance.NotifyAttackToEnemy(GetComponent<PlayerGridMovement>(), int.MaxValue);
     }
 
     #region MeleeBehaviour
@@ -108,6 +123,7 @@ public class EnemyGridBehaviour : MonoBehaviour
 
         reachable.RemoveAll(x => x.GetCharacter() != null);
 
+        //todo aggiungere solo attacco se sono già a portata del target
 
         if (reachable.Count == 0)
         {
