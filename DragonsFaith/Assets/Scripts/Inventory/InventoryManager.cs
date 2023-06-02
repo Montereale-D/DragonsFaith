@@ -142,7 +142,6 @@ namespace Inventory
                     OnConsumableUse(item);
                     break;
                 case ItemType.Weapon:
-                    //TODO add weapon function
                     break;
                 case ItemType.Head:
                     break;

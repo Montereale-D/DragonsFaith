@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
@@ -14,8 +13,8 @@ public class CombatSystem : NetworkBehaviour
 {
     public static CombatSystem instance;
     public List<PlayerGridMovement> characterList;
-
     private int _indexCharacterTurn = -1;
+    
     public PlayerGridMovement activeUnit { get; private set; }
     private bool _canMoveThisTurn;
     private bool _canAttackThisTurn;
@@ -74,6 +73,24 @@ public class CombatSystem : NetworkBehaviour
         _turnUI.NextTurn();
     }
 
+    public void CharacterDied(PlayerGridMovement character)
+    {
+        if (character.GetTeam() == PlayerGridMovement.Team.Players)
+        {
+            //todo update turnUI
+            //direi di rendere la UI grigia 
+            
+            //todo if->playerDied -> Skip
+            
+        }
+        else
+        {
+            //todo update turnUI
+            characterList.Remove(character);
+            _indexCharacterTurn = characterList.IndexOf(activeUnit);
+        }
+    }
+    
     private void ResetTurn()
     {
         activeUnit = GetNextActiveUnit();
@@ -424,13 +441,6 @@ public class CombatSystem : NetworkBehaviour
 
         activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
     }
-    
-    
-    
-    
-    
-    
-    
 
     public void ButtonCheckAction()
     {
@@ -546,12 +556,12 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
-    private void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
+    public void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
     {
+        var targetIndex = characterList.IndexOf(target);
         target.GetComponent<EnemyGridBehaviour>().Damage(damage);
         target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
 
-        var targetIndex = characterList.IndexOf(target);
         if (IsHost)
         {
             NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage);

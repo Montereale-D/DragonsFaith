@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory.Items;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -64,7 +65,14 @@ public class EnemyGridBehaviour : MonoBehaviour
 
     private void Die()
     {
-        //todo
+        CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
+        Destroy(gameObject);
+    }
+
+    [ContextMenu("ForceDieDebug")]
+    public void ForceDieDebug()
+    {
+        CombatSystem.instance.NotifyAttackToEnemy(GetComponent<PlayerGridMovement>(), int.MaxValue);
     }
 
     #region MeleeBehaviour
@@ -108,6 +116,7 @@ public class EnemyGridBehaviour : MonoBehaviour
 
         reachable.RemoveAll(x => x.GetCharacter() != null);
 
+        //todo aggiungere solo attacco se sono già a portata del target
 
         if (reachable.Count == 0)
         {
