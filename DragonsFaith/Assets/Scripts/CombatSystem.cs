@@ -78,8 +78,8 @@ public class CombatSystem : NetworkBehaviour
 
     private void SelectNextActiveUnit()
     {
-        _activeUnit = GetNextActiveUnit();
-        _turnUI.NextTurn();
+        _activeUnit = GetNextActiveUnit(); 
+        //_turnUI.NextTurn(); //TODO solo comment: qua dentro non va bene perché fa skippare alla UI il primo turno
 
         Debug.Log("Turn of " + _activeUnit.name);
 
@@ -249,7 +249,6 @@ public class CombatSystem : NetworkBehaviour
                 // Clicked on an Enemy of the current unit
                 var weapon = GetActiveUnitWeapon();
 
-                //TODO: test
                 if (!_canAttackThisTurn)
                 {
                     _playerUI.SetCombatPopUp(true, "Already attacked this turn.");
@@ -275,7 +274,6 @@ public class CombatSystem : NetworkBehaviour
         }
         else
         {
-            //TODO: test
             if (!_canMoveThisTurn)
             {
                 _playerUI.SetCombatPopUp(true, "Already moved this turn.");
@@ -587,14 +585,14 @@ public class CombatSystem : NetworkBehaviour
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            //_turnUI.NextTurn();
+            _turnUI.NextTurn();
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
             _playerUI.SetCombatPopUp(false);
-            //_turnUI.NextTurn();
+            _turnUI.NextTurn();
         }
     }
 
@@ -605,7 +603,7 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        //_turnUI.NextTurn();
+        _turnUI.NextTurn();
     }
 
     [ClientRpc]
@@ -615,7 +613,7 @@ public class CombatSystem : NetworkBehaviour
 
         SelectNextActiveUnit();
         //_playerUI.SetCombatPopUp(false);
-        //_turnUI.NextTurn();
+        _turnUI.NextTurn();
     }
 
 
@@ -642,16 +640,19 @@ public class CombatSystem : NetworkBehaviour
         {
             HostHasSkippedClientRpc();
             SelectNextActiveUnit();
-            
-            
+            _turnUI.NextTurn();
+
             //todo null se nemico è il primo _turnUI.NextTurn();
+            //TODO: perche?
         }
         else
         {
             ClientHasSkippedServerRpc();
             SelectNextActiveUnit();
-            
+            _turnUI.NextTurn();
+
             //todo null se nemico è il primo _turnUI.NextTurn();
+            //TODO: perche?
         }
     }
 

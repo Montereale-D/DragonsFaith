@@ -130,7 +130,7 @@ namespace UI
             
             newTurnUI.gameObject.SetActive(true);
             _currentCellIdx++;
-            _currentCellIdx %= 3;
+            _currentCellIdx %= _charList.Count;
             newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[_currentCellIdx].name;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
