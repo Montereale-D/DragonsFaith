@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Inventory.Items;
 using Player;
-using UI;
 using Unity.Netcode;
 
 public class PlayerGridMovement : MonoBehaviour
@@ -40,8 +38,9 @@ public class PlayerGridMovement : MonoBehaviour
 
     public void SetGridPosition()
     {
-        var playerStartPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        Dictionary<Vector2Int, Tile> map = MapHandler.instance.GetMap();
+        var position = transform.position;
+        var playerStartPosition = new Vector2Int((int)position.x, (int)position.y);
+        var map = MapHandler.instance.GetMap();
 
         SetTile(map[playerStartPosition]);
         GameHandler.instance.onChangeGameState.AddListener(OnChangeGameState);
@@ -200,7 +199,7 @@ public class PlayerGridMovement : MonoBehaviour
         }
     }
 
-    public void SetTile(Tile tile)
+    private void SetTile(Tile tile)
     {
         onTile = tile;
         transform.position = tile.transform.position;

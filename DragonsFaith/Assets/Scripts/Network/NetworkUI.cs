@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using SceneManager = Network.SceneManager;
 
 /// <summary>
 /// This class is used to handle connections in the lobby screen
@@ -185,7 +186,7 @@ public class NetworkUI : NetworkBehaviour
 
     private void ShowUI()
     {
-        var playerUI = PlayerUI.Instance;
+        var playerUI = PlayerUI.instance;
         if (playerUI)
         {
             playerUI.ShowUI(true);

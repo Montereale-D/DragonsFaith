@@ -27,6 +27,7 @@ public class EnemyGridBehaviour : MonoBehaviour
     private CharacterGridPopUpUI _popUpUI;
 
     private int _health;
+    private static readonly int Dead = Animator.StringToHash("Dead");
 
     private void Awake()
     {
@@ -72,7 +73,15 @@ public class EnemyGridBehaviour : MonoBehaviour
 
     private void Die()
     {
+        StartCoroutine(DeathCoroutine());
+    }
+
+    private IEnumerator DeathCoroutine()
+    {
         CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
+        // TODO: activate death animation
+        GetComponentInChildren<Animator>().SetTrigger(Dead);
+        yield return new WaitForSeconds(3f);
         Destroy(gameObject);
     }
 

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 using Debug = System.Diagnostics.Debug;
 
 namespace UI
@@ -19,9 +19,11 @@ namespace UI
         private List<GameObject> _cellList = new List<GameObject>();
 
         private Sprite _otherPlayerSprite;
-        private string _otherPlayerName;
         private PlayerGridMovement _localPlayer;
         private int _currentCellIdx;
+        private PlayerGridMovement _dead;
+        private bool _playerIsDead;
+        private bool _isUpdating;
 
         public float animFadeInDuration = 1;
         public float animFadeOutDuration = 1;
@@ -33,7 +35,12 @@ namespace UI
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
             Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
                 "CombatSystem.instance.otherPlayerSpriteIdx != null");
-            _otherPlayerSprite = PlayerUI.Instance.portraitSprites[(int)CombatSystem.instance.otherPlayerSpriteIdx];
+            _otherPlayerSprite = PlayerUI.instance.portraitSprites[(int)CombatSystem.instance.otherPlayerSpriteIdx];
+
+            foreach (var character in _charList.Where(character => character.GetTeam() == PlayerGridMovement.Team.Players))
+            {
+                character.SetTurnSprite(character == _localPlayer ? PlayerUI.instance.portrait.sprite : _otherPlayerSprite);
+            }
             
             if (_charList.Count < threshold)
             {
@@ -45,9 +52,9 @@ namespace UI
             for (var i = 0; i < _numberOfCells; i++)
             {
                 var newCell = Instantiate(cellPrefab, transform, true);
-                var cellSprite = newCell.GetComponent<Image>();
-                
-                if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
+                var cell = newCell.GetComponent<TurnUICell>();
+                cell.SetUnit(_charList[i % _charList.Count]);
+                /*if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
                     _charList[i % _charList.Count] == _localPlayer)
                 {
                     cellSprite.sprite = PlayerUI.Instance.portrait.sprite;
@@ -60,13 +67,13 @@ namespace UI
                 else
                 {
                     cellSprite.sprite = _charList[i % _charList.Count].turnSprite;
-                }
+                }*/
                 _cellList.Add(newCell);
             }
             
             newTurnUI.gameObject.SetActive(true);
-            _currentCellIdx = 0;
-            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[_currentCellIdx].name;
+            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = 
+                "Turn of " + _cellList[0].GetComponent<TurnUICell>().charName;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
 
@@ -82,7 +89,7 @@ namespace UI
 
         private void Update()
         {
-            if (_cellList.Count < threshold)
+            if (_cellList.Count < threshold && !_isUpdating)
             {
                 FetchNewCells();
             }
@@ -93,9 +100,14 @@ namespace UI
             for (var i = 0; i < _charList.Count; i++)
             {
                 var newCell = Instantiate(cellPrefab, transform, true);
-                var cellSprite = newCell.GetComponent<Image>();
-                
-                if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
+                var cell = newCell.GetComponent<TurnUICell>();
+                cell.SetUnit(_charList[i]);
+
+                if (_playerIsDead && _charList[i] == _dead)
+                {
+                    cell.ownImage.color = Color.gray;
+                }
+                /*if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
                     _charList[i % _charList.Count] == _localPlayer)
                 {
                     cellSprite.sprite = PlayerUI.Instance.portrait.sprite;
@@ -108,7 +120,7 @@ namespace UI
                 else
                 {
                     cellSprite.sprite = _charList[i % _charList.Count].turnSprite;
-                }
+                }*/
                 _cellList.Add(newCell);
             }
         }
@@ -119,9 +131,8 @@ namespace UI
             _cellList.RemoveAt(0);
             
             newTurnUI.gameObject.SetActive(true);
-            _currentCellIdx++;
-            _currentCellIdx %= _charList.Count;
-            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = "Turn of " + _charList[_currentCellIdx].name;
+            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text =
+                "Turn of " + _cellList[0].GetComponent<TurnUICell>().charName;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
         
@@ -143,6 +154,44 @@ namespace UI
         private void AnimComplete()
         {
             FadeOutElement(newTurnUI, animFadeOutDuration);
+        }
+
+        public void OnDeath(PlayerGridMovement unit)
+        {
+            var deadUnit = _charList.Find(x => x == unit);
+            if (deadUnit.GetTeam() == PlayerGridMovement.Team.Players)
+            {
+                _dead = deadUnit;
+                _playerIsDead = true;
+                foreach (var c in _cellList.Where(c => c.GetComponent<TurnUICell>().unit == _dead))
+                {
+                    c.GetComponent<TurnUICell>().ownImage.color = Color.gray;
+                }
+            }
+            else
+            {
+                _isUpdating = true;
+                var listLength = _cellList.Count; 
+                for (var i = listLength-1; i > 0; i--)
+                {
+                    if (_cellList[i].GetComponent<TurnUICell>().unit != deadUnit) continue;
+                    Destroy(_cellList[i]);
+                    _cellList.RemoveAt(i);
+                }
+
+                _charList.Remove(deadUnit);
+                _isUpdating = false;
+            }
+        }
+
+        public void OnRevive(PlayerGridMovement unit)
+        {
+            foreach (var cell in _cellList.Where(t => t.GetComponent<TurnUICell>().unit == unit))
+            {
+                cell.GetComponent<TurnUICell>().ownImage.color = Color.white;
+            }
+
+            _playerIsDead = false;
         }
     }
 }

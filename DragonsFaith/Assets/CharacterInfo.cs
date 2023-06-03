@@ -1,5 +1,4 @@
 using UI;
-using Unity.Netcode;
 using UnityEngine;
 
 public class CharacterInfo : MonoBehaviour
@@ -31,7 +30,7 @@ public class CharacterInfo : MonoBehaviour
     {
         if (isLocalPlayer)
         {
-            _playerUI = PlayerUI.Instance;
+            _playerUI = PlayerUI.instance;
             _playerUI.healthSlider.maxValue = maxHealth;
             _playerUI.manaSlider.maxValue = maxMana;
             _playerUI.UpdateHealthBar(maxHealth, maxHealth);

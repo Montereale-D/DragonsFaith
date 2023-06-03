@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 using Unity.Netcode;
-using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -46,8 +45,8 @@ namespace UI
             _turnUI.SetUpList(characterList);
 
             _moveOrAttackText = moveOrAttackButton.GetComponentInChildren<TextMeshProUGUI>();
-            var imgs = moveOrAttackButton.GetComponentsInChildren<Image>();
-            foreach (var img in imgs)
+            var images = moveOrAttackButton.GetComponentsInChildren<Image>();
+            foreach (var img in images)
             {
                 if (img.gameObject.GetInstanceID() != moveOrAttackButton.GetInstanceID())
                     _moveOrAttackImage = img;
@@ -79,7 +78,7 @@ namespace UI
             _turnUI.DestroyList();
         }
 
-        public void SetItemsTab()
+        private void SetItemsTab()
         {
             equippedItemsTab.SetActive(!equippedItemsTab.activeSelf);
         }

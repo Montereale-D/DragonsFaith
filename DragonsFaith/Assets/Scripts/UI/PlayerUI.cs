@@ -1,14 +1,9 @@
 using System;
-using System.Collections;
 using TMPro;
 using System.Collections.Generic;
-using System.Linq;
 using Inventory;
-using Player;
-using Save;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -105,7 +100,6 @@ namespace UI
         private float turnUIFadeOutTime = 0.5f;
         
         private OptionsManager _optionsManager;
-        private DataManager _dataManager;
 
         private UnityAction _moveOrAttackAction;
         private Image _moveOrAttackImage;
@@ -113,19 +107,19 @@ namespace UI
         [HideInInspector] public Sprite otherPlayerSprite;
         [HideInInspector] public int portraitIdx;
 
-        public static PlayerUI Instance { get; private set; }
+        public static PlayerUI instance { get; private set; }
 
         
         private void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (instance != null && instance != this)
             {
                 Destroy(this);
                 return;
             }
             else
             {
-                Instance = this;
+                instance = this;
                 DontDestroyOnLoad(this);
             }
 
@@ -134,7 +128,6 @@ namespace UI
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
             
-            _dataManager = DataManager.Instance;
             _optionsManager = OptionsManager.Instance;
             
             _optionsManager.SetDropdown(resolutionDropdown);
@@ -394,10 +387,10 @@ namespace UI
             LeanTween.alpha(rectTransform, 1f, fadeInDuration).setEase(LeanTweenType.linear);
         }
         
-        private void FadeOutElement(RectTransform rectTransform, float fadeOutDuration)
+        /*private void FadeOutElement(RectTransform rectTransform, float fadeOutDuration)
         {
             LeanTween.alpha(rectTransform, 0f, fadeOutDuration).setEase(LeanTweenType.linear);
-        }
+        }*/
 
         private void FaithTabAnimComplete()
         {

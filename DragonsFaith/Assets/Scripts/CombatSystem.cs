@@ -29,6 +29,9 @@ public class CombatSystem : NetworkBehaviour
     private PlayerUI _playerUI;
     private MapHandler _mapHandler;
     private TurnUI _turnUI;
+    private GameObject _localPlayer;
+    /*private float _turnDelay; //needs to be the same as the length of the turn UI animation
+    private float _turnDelayCounter;*/
 
     #region Core
 
@@ -42,8 +45,12 @@ public class CombatSystem : NetworkBehaviour
 
         instance = this;
 
-        _playerUI = PlayerUI.Instance;
+        _playerUI = PlayerUI.instance;
         _mapHandler = MapHandler.instance;
+        _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+
+        /*_turnDelay = 2.1f;
+        _turnDelayCounter = 0;*/
     }
 
     public void Setup(IEnumerable<PlayerGridMovement> characters)
@@ -56,7 +63,7 @@ public class CombatSystem : NetworkBehaviour
         StartCoroutine(SetUpTurns());
         StartCoroutine(WaitSetupToStart());
 
-        _isCombatReady = true;
+        //_isCombatReady = true;
     }
 
     private IEnumerator SetUpTurns()
@@ -74,21 +81,29 @@ public class CombatSystem : NetworkBehaviour
 
     private IEnumerator WaitSetupToStart()
     {
-        while (!_isCombatReady || !_isUIReady)
+        //while (!_isCombatReady || !_isUIReady)
+        while (!_isUIReady)
         {
             yield return new WaitForSeconds(0.2f);
         }
-
+        // here _isUIReady is true
         ResetTurnActions();
     }
 
     private void Update()
     {
         //wait for settings
-        if (!_isCombatReady || !_isUIReady) return;
+        //if (!_isCombatReady || !_isUIReady) return;
+        if (!_isUIReady) return;
 
         _mapHandler.HideAllTiles();
 
+        /*if (_turnDelayCounter > 0)
+        {
+            _turnDelayCounter -= Time.deltaTime;
+            return;
+        }*/
+        
         if (!_isThisPlayerTurn) return;
 
         if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
@@ -130,6 +145,7 @@ public class CombatSystem : NetworkBehaviour
     {
         ResetTurnActions();
         _turnUI.NextTurn();
+        /*_turnDelayCounter = _turnDelay;*/
     }
 
     private void ResetTurnActions()
@@ -168,7 +184,12 @@ public class CombatSystem : NetworkBehaviour
         if (candidate.GetTeam() == PlayerGridMovement.Team.Players &&
             !candidate.GetComponent<CharacterInfo>().IsAlive())
         {
-            Debug.Log("The selected player is not alive");
+            Debug.Log("The selected player is dead");
+            //TODO: this way, the dead player's turn is completely skipped, the animation too
+            // there needs to be added a delay so that the animation is still visible
+            _turnUI.NextTurn();
+            /*_turnDelayCounter = _turnDelay;
+            while (_turnDelayCounter > 0){}*/
             candidate = NextUnit(); //assert only a player can be dead
         }
         else
@@ -193,23 +214,17 @@ public class CombatSystem : NetworkBehaviour
 
     public void CharacterDied(PlayerGridMovement character)
     {
-        if (character.GetTeam() == PlayerGridMovement.Team.Players)
-        {
-            //todo update turnUI
-            //direi di rendere immagine player grigia perchè il player morto viene skippato
-        }
-        else
-        {
-            //todo update turnUI
-            characterList.Remove(character);
-            _indexCharacterTurn = characterList.IndexOf(activeUnit);
-        }
+        _turnUI.OnDeath(character);
+
+        if (character.GetTeam() == PlayerGridMovement.Team.Players) return;
+        characterList.Remove(character);
+        _indexCharacterTurn = characterList.IndexOf(activeUnit);
     }
     public void ReloadAction()
     {
-        var localPlayer =
-            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-        if (activeUnit != localPlayer) return;
+        /*var localPlayer =
+            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();*/
+        if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
         var weapon = GetActiveUnitWeapon();
         if (weapon.IsFullyLoaded())
         {
@@ -265,17 +280,17 @@ public class CombatSystem : NetworkBehaviour
 
     public void PlayerReviveAction()
     {
-        //todo update turnUI, questo viene chiamato solo dal player che usa l'oggetto
         var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
         var otherPlayer = players[0] == activeUnit ? players[1] : players[0];
         otherPlayer.GetComponent<CharacterInfo>().Revive();
+        _turnUI.OnRevive(otherPlayer);
         _canAttackThisTurn = false;
     }
 
     private void ReceiveRevive()
     {
-        //todo update turnUI, questo viene chiamato solo dal player che riceve il revive
         CharacterManager.Instance.ReceiveRevive();
+        _turnUI.OnRevive(_localPlayer.GetComponent<PlayerGridMovement>()); //TODO: test
     }
 
     public void NotifyRevive()
@@ -546,7 +561,7 @@ public class CombatSystem : NetworkBehaviour
     private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
     {
         var targetIndex = characterList.IndexOf(target);
-        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
 
         if (IsHost)
         {
@@ -557,10 +572,10 @@ public class CombatSystem : NetworkBehaviour
             NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage);
         }
 
-        if (target.gameObject == localPlayer)
+        if (target.gameObject == _localPlayer)
         {
             CharacterManager.Instance.Damage(damage);
-            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+            _localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
         else
         {
@@ -606,11 +621,11 @@ public class CombatSystem : NetworkBehaviour
     {
         if (!IsHost) return;
 
-        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-        if (characterList[targetIndex].gameObject == localPlayer)
+        //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        if (characterList[targetIndex].gameObject == _localPlayer)
         {
             CharacterManager.Instance.Damage(damage);
-            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+            _localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
         else
         {
@@ -623,11 +638,11 @@ public class CombatSystem : NetworkBehaviour
     {
         if (IsHost) return;
 
-        var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-        if (characterList[targetIndex].gameObject == localPlayer)
+        //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        if (characterList[targetIndex].gameObject == _localPlayer)
         {
             CharacterManager.Instance.Damage(damage);
-            localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+            _localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
         else
         {
@@ -677,7 +692,7 @@ public class CombatSystem : NetworkBehaviour
 
     #region TurnUI
 
-    public void SendPortraitSprite()
+    private void SendPortraitSprite()
     {
         if (IsHost)
         {
@@ -713,7 +728,7 @@ public class CombatSystem : NetworkBehaviour
 
     #region Helper
 
-    public bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
+    private bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
     {
         Debug.Log("Distance " + Vector2Int.Distance(activeUnit.onTile.mapPosition, target.onTile.mapPosition) +
                   ", WeaponRange " + weapon.range);
