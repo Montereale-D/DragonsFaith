@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,25 +8,27 @@ namespace Network
     public class SceneManager : NetworkBehaviour
     {
         public static SceneManager instance { get; private set; }
-        private Scene _loadedScene;
+        public Scene _loadedScene { get; private set; }
 
-        public override void OnNetworkSpawn()
+        private ClientNetworkTransform[] _players;
+
+        private void Awake()
         {
-            if (instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(this);
-                if (IsServer)
-                {
-                    NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
-                }
-
-                base.OnNetworkSpawn();
-            }
-            else
+            if (instance != null)
             {
                 Destroy(this);
                 return;
+            }
+            
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (IsServer)
+            {
+                NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
             }
         }
 
@@ -33,11 +36,36 @@ namespace Network
 
         public void LoadSceneSingle(string sceneName)
         {
+            //EnableInterpolation(false);
+
             if (!IsHost) return;
 
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
         }
+
+        private void LoadPlayers()
+        {
+            _players = FindObjectsOfType<ClientNetworkTransform>();
+        }
+
+        /*private void EnableInterpolation(bool b)
+        {
+            Debug.Log("EnableInterpolation " + b);
+            if (_players == null)
+                LoadPlayers();
+            
+            foreach (var player in _players)
+            {
+                player.Interpolate = b;
+            }
+        }*/
+
+        /*public void EnableInterpolation()
+        {
+            EnableInterpolation(true);
+            EnableInterpolationClientRpc();
+        }*/
 
         public void LoadSceneAdditive(string sceneName)
         {
@@ -86,14 +114,31 @@ namespace Network
                     break;
                 }
                 case SceneEventType.LoadEventCompleted:
-                case SceneEventType.UnloadEventCompleted:
                 {
-                    var loadUnload = sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted ? "Load" : "Unload";
-                    Debug.Log($"{loadUnload} event completed for the following client " +
+                    Debug.Log("Load event completed for the following client " +
                               $"identifiers:({sceneEvent.ClientsThatCompleted})");
                     if (sceneEvent.ClientsThatTimedOut.Count > 0)
                     {
-                        Debug.LogWarning($"{loadUnload} event timed out for the following client " +
+                        Debug.LogWarning("Load event timed out for the following client " +
+                                         $"identifiers:({sceneEvent.ClientsThatTimedOut})");
+                    }
+
+                    /*if (_loadedScene.name != "Grid")
+                    {
+                        Debug.Log("Notify interpolation active");
+                        EnableInterpolationClientRpc();
+                        EnableInterpolation(true);
+                    }*/
+
+                    break;
+                }
+                case SceneEventType.UnloadEventCompleted:
+                {
+                    Debug.Log("Unload event completed for the following client " +
+                              $"identifiers:({sceneEvent.ClientsThatCompleted})");
+                    if (sceneEvent.ClientsThatTimedOut.Count > 0)
+                    {
+                        Debug.LogWarning("Unload event timed out for the following client " +
                                          $"identifiers:({sceneEvent.ClientsThatTimedOut})");
                     }
 
@@ -101,6 +146,15 @@ namespace Network
                 }
             }
         }
+
+        /*[ClientRpc]
+        private void EnableInterpolationClientRpc()
+        {
+            Debug.Log("EnableInterpolationClientRpc");
+            if(IsHost) return;
+            
+            EnableInterpolation(true);
+        }*/
 
         public void UnloadScene()
         {
@@ -113,12 +167,6 @@ namespace Network
 
             var status = NetworkManager.SceneManager.UnloadScene(_loadedScene);
             CheckStatus(status, false);
-        }
-
-        [ContextMenu("Change to grid scene")]
-        public void LoadGrid()
-        {
-            LoadSceneSingle("Grid");
         }
     }
 }

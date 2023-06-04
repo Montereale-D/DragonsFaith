@@ -8,30 +8,20 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ChangeGameStateEvent : UnityEvent<GameState>
-{
-}
-
-public enum GameState
-{
-    FreeRoaming,
-    Battle
-}
-
 public class GameHandler : NetworkBehaviour
 {
     public static GameHandler instance { get; private set; }
     public Camera mainCamera { get; private set; }
-    public GameState state { get; private set; }
-    public ChangeGameStateEvent onChangeGameState = new ChangeGameStateEvent();
+    //public GameState state { get; private set; }
+    //public ChangeGameStateEvent onChangeGameState = new ChangeGameStateEvent();
 
     private PlayerGridMovement[] _characters;
 
-    private void SetGameState(GameState inState)
+    /*private void SetGameState(GameState inState)
     {
         state = inState;
-        onChangeGameState?.Invoke(state);
-    }
+        //onChangeGameState?.Invoke(state);
+    }*/
 
     private void Awake()
     {
@@ -49,8 +39,7 @@ public class GameHandler : NetworkBehaviour
         //Assign main camera
         mainCamera = Camera.main;
         if (mainCamera == null) Debug.LogError("No main camera assigned");
-
-        SetGameState(GameState.Battle);
+        
         CharacterManager.Instance.SetPlayerGridMode();
     }
 
@@ -61,17 +50,16 @@ public class GameHandler : NetworkBehaviour
         for (var i = 0; i < _characters.Length; i++)
         {
             var character = _characters[i];
-            character.SetGridPosition();
+            //character.SetGridPosition();
             if (!character.SetMovement())
             {
                 AskPlayerMovement(i);
             }
 
-            SetTileUnderCharacter(character);
+            //SetTileUnderCharacter(character);
         }
-
-        StartCoroutine(WaitCharacterSetupAndContinue(_characters));
-        //CombatSystem.instance.Setup(characters);
+        
+        StartCoroutine(WaitMovementInfo(_characters));
     }
 
     private void AskPlayerMovement(int askedIndex)
@@ -87,7 +75,7 @@ public class GameHandler : NetworkBehaviour
     }
 
 
-    private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
+    private IEnumerator WaitMovementInfo(PlayerGridMovement[] characters)
     {
         yield return null;
 
@@ -108,29 +96,22 @@ public class GameHandler : NetworkBehaviour
         CombatSystem.instance.Setup(characters);
     }
 
-    private static void SetTileUnderCharacter(PlayerGridMovement playerGridMovement)
-    {
-        if (playerGridMovement.onTile == null)
-        {
-            Debug.LogError("No c.onTile found");
-            return;
-        }
-
-        playerGridMovement.onTile.SetCharacterOnTile(playerGridMovement);
-    }
-
     public void GameOver()
     {
-        //todo testare gameover quando nemico target anche il player non morto
         Debug.Log("GAME OVER");
-        //todo show GameOver screen
+        //todo UI show GameOver screen
         //FindObjectOfType<SceneManager>().LoadSceneAdditive("Menu");
     }
 
     public void CombatWin()
     {
-        //todo
         Debug.Log("COMBAT WIN");
+        
+        foreach (var popUpUI in FindObjectsOfType<CharacterGridPopUpUI>())
+        {
+            popUpUI.HideUI();
+        }
+        
         CharacterManager.Instance.SetPlayerFreeMode();
         PlayerUI.instance.HideCombatUI();
         SceneManager.instance.LoadSceneSingle("Dungeon");

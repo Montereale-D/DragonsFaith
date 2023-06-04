@@ -29,7 +29,7 @@ namespace Interactable
             }
             else
             {
-                Debug.Log(gameObject.name + " OnNetworkSpawn");
+                //Debug.Log(gameObject.name + " OnNetworkSpawn");
             }
         }
 
@@ -61,7 +61,7 @@ namespace Interactable
 
         public override void OnDestroy()
         {
-            Debug.Log("GiftChest onDestroy " + name);
+            //Debug.Log("GiftChest onDestroy " + name);
             base.OnDestroy();
             
         }

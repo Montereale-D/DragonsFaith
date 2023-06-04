@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Network;
+using Save;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -25,7 +27,7 @@ namespace Enemy
 
         public void SetUp(EnemySpawnPoint spawnPoint)
         {
-            Debug.Log("Enemy spawned setup");
+            //Debug.Log("Enemy spawned setup");
 
             //Instantiated as a child of a EnemySpawnPoint, get params
             _spawnPoint = spawnPoint;
@@ -43,16 +45,15 @@ namespace Enemy
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            GetComponent<NetworkObject>().DestroyWithScene = true;
-            
-            if (DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
+            if (IsHost)
+            {
+                GetComponent<NetworkObject>().DestroyWithScene = true;
+            }
+
+            if (IsHost && DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
             {
                 Debug.Log(gameObject.name + " was already defeated");
                 Destroy(gameObject);
-            }
-            else
-            {
-                Debug.Log(gameObject.name + " OnNetworkSpawn");
             }
         }
 
@@ -134,22 +135,39 @@ namespace Enemy
 
         public override void OnDestroy()
         {
-            Debug.Log("Enemy OnDestroy");
+            //Debug.Log("Enemy OnDestroy");
             base.OnDestroy();
             
         }
 
         public override void OnNetworkDespawn()
         {
-            Debug.Log("Enemy OnNetworkDespawn");
+            //Debug.Log("Enemy OnNetworkDespawn");
             base.OnNetworkDespawn();
-            
         }
 
-        public void OnCombatStart()
+        public void OnCombatStart(Vector3 position)
         {
+            Debug.Log("OnCombatStart " + position);
             DungeonProgressManager.instance.EnemyDefeated(_saveId);
-            Destroy(gameObject);
+            DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
+            DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
+
+            if (IsHost)
+            {
+                OnCombatStartClientRpc(position);
+                Destroy(gameObject);
+                SceneManager.instance.LoadSceneSingle("Grid");
+            }
+        }
+
+        [ClientRpc]
+        private void OnCombatStartClientRpc(Vector3 position)
+        {
+            Debug.Log("OnCombatStartClientRpc " + position);
+            DungeonProgressManager.instance.EnemyDefeated(_saveId);
+            DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
+            DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
         }
     }
 }

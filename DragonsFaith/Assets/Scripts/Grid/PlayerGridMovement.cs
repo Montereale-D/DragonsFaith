@@ -40,10 +40,15 @@ public class PlayerGridMovement : MonoBehaviour
     {
         var position = transform.position;
         var playerStartPosition = new Vector2Int((int)position.x, (int)position.y);
+        SetGridPosition(playerStartPosition);
+    }
+    public void SetGridPosition(Vector2Int position)
+    {
         var map = MapHandler.instance.GetMap();
 
-        SetTile(map[playerStartPosition]);
-        GameHandler.instance.onChangeGameState.AddListener(OnChangeGameState);
+        var tile = map[position];
+        SetTile(tile);
+        tile.SetCharacterOnTile(this);
     }
 
     public bool SetMovement()
@@ -104,6 +109,7 @@ public class PlayerGridMovement : MonoBehaviour
         Debug.Log("Request movement to tile " + tile.mapPosition);
         MapHandler.instance.HideAllTiles();
         List<Tile> toExamine = MapHandler.instance.GetTilesInRange(onTile, movement);
+        Debug.Log("Path from " + onTile.mapPosition + " to " + tile.mapPosition);
         List<Tile> path = FindPath(onTile, tile, toExamine);
         StartCoroutine(MoveAlongPath(path));
     }
@@ -161,7 +167,7 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     // Return manhattan distance between two tiles
-    private int GetManhattanDistance(Tile start, Tile tile)
+    public static int GetManhattanDistance(Tile start, Tile tile)
     {
         return Mathf.Abs(start.mapPosition.x - tile.mapPosition.x) +
                Mathf.Abs(start.mapPosition.y - tile.mapPosition.y);
@@ -185,21 +191,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     #endregion
 
-    private void OnChangeGameState(GameState newState)
-    {
-        switch (newState)
-        {
-            case GameState.FreeRoaming:
-                break;
-            case GameState.Battle:
-                break;
-            default:
-                Debug.LogError("Game state changed to an invalid game state.");
-                break;
-        }
-    }
-
-    private void SetTile(Tile tile)
+    public void SetTile(Tile tile)
     {
         onTile = tile;
         transform.position = tile.transform.position;

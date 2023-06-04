@@ -43,7 +43,6 @@ namespace Network
 
         private void OnPlayersReady()
         {
-            //_sceneManager.LoadSceneSingle(sceneName);
             StartCoroutine(LoadScene());
         }
 
@@ -54,7 +53,16 @@ namespace Network
                 door.sprite = openDoorSprite;
                 yield return new WaitForSeconds(0.5f);
             }
-            _sceneManager.LoadSceneSingle(sceneName);
+
+            if (_sceneManager)
+            {
+                _sceneManager.LoadSceneSingle(sceneName);
+            }
+            else
+            {
+                Debug.LogWarning("Scene manager is null, Ok is appear in client");
+            }
+            
         }
     }
 }

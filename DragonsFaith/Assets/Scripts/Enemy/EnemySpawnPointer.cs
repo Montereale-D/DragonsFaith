@@ -79,7 +79,7 @@ public class EnemySpawnPointer : NetworkBehaviour
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objectIdToSet, out var objToSet);
         if (objToSet == null)
         {
-            Debug.LogError("Network object not found");
+            Debug.LogWarning("Network object not found, if the enemy was just defeated is ok");
             return;
         }
         
@@ -89,14 +89,14 @@ public class EnemySpawnPointer : NetworkBehaviour
     
     public override void OnDestroy()
     {
-        Debug.Log("SpawnPointer OnDestroy");
+        //Debug.Log("SpawnPointer OnDestroy");
         base.OnDestroy();
             
     }
 
     public override void OnNetworkDespawn()
     {
-        Debug.Log("SpawnPointer OnNetworkDespawn");
+        //Debug.Log("SpawnPointer OnNetworkDespawn");
         base.OnNetworkDespawn();
             
     }

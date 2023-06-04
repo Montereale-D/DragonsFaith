@@ -9373,7 +9373,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4801275646339573868, guid: 6aba750d5a96a9b4a995ca14a75fc3b5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6aba750d5a96a9b4a995ca14a75fc3b5, type: 3}
 --- !u!1 &857403887
 GameObject:
@@ -10398,14 +10399,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7839636692864282347, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 7839636692864282344, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
 --- !u!114 &926707751 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7839636692864282345, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
   m_PrefabInstance: {fileID: 926707750}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2099225239}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a4d9f1def0cc43498496f8b133d421c, type: 3}
@@ -25453,6 +25459,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097434914}
   m_CullTransparentMesh: 1
+--- !u!1 &2099225239 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7839636692864282347, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
+  m_PrefabInstance: {fileID: 926707750}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2099225242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099225239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2191718604
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &2101717628
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,6 +25,7 @@ namespace Interactable
             {
                 Debug.Log(gameObject.name + " was already activated");
                 _isUsed.Value = true;
+                SetActive(false);
             }
             else
             {
@@ -36,7 +37,6 @@ namespace Interactable
         {
             if (!_isUsed.Value)
             {
-                //try to add item to the inventory
                 if (!CharacterManager.Instance.AbilityCheck(abilityToCheck))
                 {
                     ShowNotAble();
@@ -44,6 +44,7 @@ namespace Interactable
                 }
 
                 DungeonProgressManager.instance.AbilityPassed(saveId);
+                
                 if (IsHost)
                 {
                     //direct change

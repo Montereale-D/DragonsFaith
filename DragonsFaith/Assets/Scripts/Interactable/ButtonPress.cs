@@ -29,25 +29,26 @@ namespace Interactable
         {
             //ensure isTrigger
             GetComponent<Collider2D>().isTrigger = true;
-        }
-
-        public override void OnNetworkSpawn()
-        {
+            
             //subscribe to status change event
             _isActive.OnValueChanged += OnButtonPressed;
 
             _netObj = GetComponent<NetworkObject>();
             _netObj.DestroyWithScene = true;
+        }
 
-            if(!IsHost) return;
+        public override void OnNetworkSpawn()
+        {
+            //if(!IsHost) return;
             
             if (standAloneMode)
             {
                 if (DungeonProgressManager.instance.IsButtonPressed(saveId))
                 {
                     Debug.Log(gameObject.name + " was already activated");
-                    openable.OpenAction();
+                    //openable.OpenAction();
                     //_isActive.Value = true;
+                    OnButtonPressed(false, true);
                 }
                 else
                 {
@@ -138,6 +139,12 @@ namespace Interactable
             {
                 _isActive.Value = isActive;
             }
+        }
+
+        [ClientRpc]
+        private void ChangeStatusProcedureClientRpc(bool isActive)
+        {
+            ChangeStatusProcedure(true);
         }
         
         [ContextMenu("Generate guid")]

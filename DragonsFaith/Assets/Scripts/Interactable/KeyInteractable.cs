@@ -36,17 +36,23 @@ namespace Interactable
             base.OnNetworkSpawn();
             
             //subscribe to status change event
-            _isUsed.OnValueChanged += (_, newValue) =>
-            {
-                _spriteRenderer.sprite = newValue ? usedSprite : unusedSprite;
+            _isUsed.OnValueChanged += SetActive;
+        }
 
-                //disable collider, no more needed
-                _collider.enabled = !newValue;
+        private void SetActive(bool oldValue, bool newValue)
+        {
+            SetActive(newValue);
+        }
+        protected void SetActive(bool newValue)
+        {
+            _spriteRenderer.sprite = newValue ? usedSprite : unusedSprite;
+
+            //disable collider, no more needed
+            _collider.enabled = !newValue;
                 
-                //turn off/on key UI
-                if(!newValue) _showKey.TurnOn();
-                else _showKey.TurnOff();
-            };
+            //turn off/on key UI
+            if(!newValue) _showKey.TurnOn();
+            else _showKey.TurnOff();
         }
     
         //Server receive a change status request -> client use the obj

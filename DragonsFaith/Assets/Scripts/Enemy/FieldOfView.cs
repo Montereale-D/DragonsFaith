@@ -38,8 +38,8 @@ public class FieldOfView : MonoBehaviour {
             } else {
                 // Hit object
                 vertex = raycastHit2D.point;
-                if(raycastHit2D.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
-                    Debug.Log("Enemy start combat!");
+                //if (raycastHit2D.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
+                //Debug.Log("Enemy start combat!");
             }
             vertices[vertexIndex] = vertex;
 

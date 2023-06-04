@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Interactable
@@ -19,25 +20,28 @@ namespace Interactable
 
         [SerializeField] private string saveId;
 
-        public override void OnNetworkSpawn()
+        private void Awake()
         {
             //subscribe to status change event
             _isActive.OnValueChanged += OnStateChange;
 
             _netObj = GetComponent<NetworkObject>();
             _netObj.DestroyWithScene = true;
+        }
 
+        public override void OnNetworkSpawn()
+        {
             if(!IsHost) return;
             
             if (DungeonProgressManager.instance.IsButtonPressed(saveId))
             {
                 Debug.Log(gameObject.name + " was already activated");
-                openable.OpenAction();
-                //_isActive.Value = true;
+                //openable.OpenAction();
+                _isActive.Value = true;
             }
             else
             {
-                Debug.Log(gameObject.name + " OnNetworkSpawn");
+                //Debug.Log(gameObject.name + " OnNetworkSpawn");
             }
         }
 

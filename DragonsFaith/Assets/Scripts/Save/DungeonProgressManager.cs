@@ -12,9 +12,9 @@ public class DungeonProgressManager : MonoBehaviour
     private Dictionary<string, bool> _buttonsData;
     private Dictionary<string, bool> _enemyData;
     private Dictionary<string, bool> _abilityData;
-    private Vector3 _hostPosition;
-    private Vector3 _clientPosition;
+    private Dictionary<GameData.PlayerType, Vector3> _spawnData;
 
+    //todo capire cosa ho modificato perché non funziona più
     private void Awake()
     {
         if (instance != null)
@@ -25,17 +25,13 @@ public class DungeonProgressManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(this);
+        SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
         _chestData = new Dictionary<string, bool>();
         _buttonsData = new Dictionary<string, bool>();
         _enemyData = new Dictionary<string, bool>();
         _abilityData = new Dictionary<string, bool>();
-    }
-
-    private void Start()
-    {
-        SceneManager.activeSceneChanged += OnActiveSceneChanged;
-        Debug.Log("Dungeon progress setup");
+        _spawnData = new Dictionary<GameData.PlayerType, Vector3>();
     }
 
     private void OnActiveSceneChanged(Scene current, Scene next)
@@ -43,25 +39,21 @@ public class DungeonProgressManager : MonoBehaviour
         if (next.name is "Grid" or "Dungeon") return;
 
         Debug.Log("Scene is not dungeon or grid, deleting dungeon data ...");
+        SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         Destroy(gameObject);
-    }
-
-    public void ResetData()
-    {
-        //useful?
     }
 
     public void ChestOpened(string uid)
     {
         CheckUid(uid);
-        Debug.Log("ChestOpened for " + uid);
+        //Debug.Log("ChestOpened for " + uid);
         _chestData.TryAdd(uid, true);
     }
 
     public bool IsChestOpened(string uid)
     {
         CheckUid(uid);
-        Debug.Log("IsChestOpened for " + uid);
+        //Debug.Log("IsChestOpened for " + uid);
         return _chestData.TryGetValue(uid, out _);
     }
 
@@ -81,47 +73,46 @@ public class DungeonProgressManager : MonoBehaviour
     
     public void AbilityPassed(string uid)
     {
+        //todo controllare che funzioni
         CheckUid(uid);
-        Debug.Log("AbilityPassed for " + uid);
-        _enemyData.TryAdd(uid, true);
+        var value = _abilityData.TryAdd(uid, true);
+        //Debug.Log("AbilityPassed for " + uid + " : " + value);
+        
     }
 
     public bool IsAbilityPassed(string uid)
     {
         CheckUid(uid);
-        Debug.Log("IsAbilityPassed for " + uid);
-        return _enemyData.TryGetValue(uid, out _);
+        _abilityData.TryGetValue(uid, out bool value);
+        //Debug.Log("IsAbilityPassed for " + uid + " : " + value);
+        return value;
     }
 
     public void EnemyDefeated(string uid)
     {
         CheckUid(uid);
-        Debug.Log("EnemyDefeated for " + uid);
+        //Debug.Log("EnemyDefeated for " + uid);
         _enemyData.TryAdd(uid, true);
     }
 
     public bool IsEnemyDefeated(string uid)
     {
         CheckUid(uid);
-        Debug.Log("IsEnemyDefeated for " + uid);
+        //Debug.Log("IsEnemyDefeated for " + uid);
         return _enemyData.TryGetValue(uid, out _);
     }
 
     public void UpdateSpawnPoint(Vector3 position, GameData.PlayerType playerType)
     {
-        if (playerType == GameData.PlayerType.Host)
-        {
-            _hostPosition = position;
-        }
-        else
-        {
-            _clientPosition = position;
-        }
+        Debug.Log("UpdateSpawnPoint " + position);
+        _spawnData.TryAdd(playerType, position);
     }
 
-    public Vector3 GetSpawnPoint(GameData.PlayerType playerType)
+    public Vector3? GetSpawnPoint(GameData.PlayerType playerType)
     {
-        return playerType == GameData.PlayerType.Host ? _hostPosition : _clientPosition;
+        var result = _spawnData.TryGetValue(playerType, out Vector3 value);
+        Debug.Log("GetSpawnPoint " + value);
+        return result ? value : null;
     }
     
     private void CheckUid(string uid)

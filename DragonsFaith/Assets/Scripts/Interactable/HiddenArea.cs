@@ -11,9 +11,14 @@ namespace Interactable
 
         public override bool OpenAction()
         {
-            if (!base.OpenAction()) return false;
+            if (!base.OpenAction())
+            {
+                Debug.Log("Hidden Area already opened");
+                return false;
+            }
             
-            animator.ActivateAnimatorProcedureClientRpc();
+            Debug.Log("Hidden Area start animation");
+            animator.StartAnimation();
             return true;
         }
 
