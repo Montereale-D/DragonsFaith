@@ -35473,7 +35473,7 @@ PrefabInstance:
       objectReference: {fileID: 2064330687}
     - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: sceneName
-      value: Grid
+      value: Dungeon
       objectReference: {fileID: 0}
     - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: openDoorSprite
@@ -35509,7 +35509,7 @@ PrefabInstance:
       objectReference: {fileID: 2064330688}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: sceneName
-      value: Grid
+      value: Dungeon
       objectReference: {fileID: 0}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: openDoorSprite

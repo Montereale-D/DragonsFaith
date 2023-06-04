@@ -15,18 +15,41 @@ namespace Interactable
         private readonly NetworkVariable<bool> _isActive = new(false, NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner);
 
+        private NetworkObject _netObj;
+
+        [SerializeField] private string saveId;
+
         public override void OnNetworkSpawn()
         {
             //subscribe to status change event
-            _isActive.OnValueChanged += (_, newValue) =>
-            {
-                if (newValue)
-                    openable.OpenAction();
-                else
-                    openable.CloseAction();
-            };
+            _isActive.OnValueChanged += OnStateChange;
+
+            _netObj = GetComponent<NetworkObject>();
+            _netObj.DestroyWithScene = true;
+
+            if(!IsHost) return;
             
-            GetComponent<NetworkObject>().DestroyWithScene = true;
+            if (DungeonProgressManager.instance.IsButtonPressed(saveId))
+            {
+                Debug.Log(gameObject.name + " was already activated");
+                openable.OpenAction();
+                //_isActive.Value = true;
+            }
+            else
+            {
+                Debug.Log(gameObject.name + " OnNetworkSpawn");
+            }
+        }
+
+        private void OnStateChange(bool previousValue, bool newValue)
+        {
+            if (newValue)
+            {
+                openable.OpenAction();
+                DungeonProgressManager.instance.ButtonChangeState(saveId, true);
+            }
+            else
+                openable.CloseAction();
         }
 
         public void OnButtonPressed()
@@ -43,7 +66,7 @@ namespace Interactable
         public void OnButtonRelease()
         {
             _buttonPressedCounter--;
-            
+
             //if both the buttons are active
             if (_buttonPressedCounter < 2)
             {
@@ -76,6 +99,12 @@ namespace Interactable
             {
                 _isActive.Value = isActive;
             }
+        }
+        
+        [ContextMenu("Generate guid")]
+        private void GenerateGuid()
+        {
+            saveId = System.Guid.NewGuid().ToString();
         }
     }
 }

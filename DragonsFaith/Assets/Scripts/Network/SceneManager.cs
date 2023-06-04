@@ -6,17 +6,27 @@ namespace Network
 {
     public class SceneManager : NetworkBehaviour
     {
+        public static SceneManager instance { get; private set; }
         private Scene _loadedScene;
 
         public override void OnNetworkSpawn()
         {
-            DontDestroyOnLoad(this);
-            if (IsServer /*&& !string.IsNullOrEmpty(_mSceneName)*/)
+            if (instance == null)
             {
-                NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
-            }
+                instance = this;
+                DontDestroyOnLoad(this);
+                if (IsServer)
+                {
+                    NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
+                }
 
-            base.OnNetworkSpawn();
+                base.OnNetworkSpawn();
+            }
+            else
+            {
+                Destroy(this);
+                return;
+            }
         }
 
         public bool sceneIsLoaded => _loadedScene.IsValid() && _loadedScene.isLoaded;

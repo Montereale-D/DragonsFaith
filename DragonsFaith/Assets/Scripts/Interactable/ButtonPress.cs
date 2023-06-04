@@ -22,6 +22,9 @@ namespace Interactable
         private readonly NetworkVariable<bool> _isActive = new(false, NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner);
 
+        private NetworkObject _netObj;
+        [SerializeField] private string saveId;
+
         private void Awake()
         {
             //ensure isTrigger
@@ -31,16 +34,41 @@ namespace Interactable
         public override void OnNetworkSpawn()
         {
             //subscribe to status change event
-            _isActive.OnValueChanged += (_, newValue) =>
-            {
-                ChangeSprite(newValue);
-                if (newValue)
-                    openable.OpenAction();
-                else
-                    openable.CloseAction();
-            };
+            _isActive.OnValueChanged += OnButtonPressed;
+
+            _netObj = GetComponent<NetworkObject>();
+            _netObj.DestroyWithScene = true;
+
+            if(!IsHost) return;
             
-            GetComponent<NetworkObject>().DestroyWithScene = true;
+            if (standAloneMode)
+            {
+                if (DungeonProgressManager.instance.IsButtonPressed(saveId))
+                {
+                    Debug.Log(gameObject.name + " was already activated");
+                    openable.OpenAction();
+                    //_isActive.Value = true;
+                }
+                else
+                {
+                    Debug.Log(gameObject.name + " OnNetworkSpawn");
+                }
+            }
+        }
+
+        private void OnButtonPressed(bool previousValue, bool newValue)
+        {
+            if (newValue)
+            {
+                ChangeSprite(true);
+                openable.OpenAction();
+                if (standAloneMode)
+                {
+                    DungeonProgressManager.instance.ButtonChangeState(saveId, true);
+                }
+            }
+            else
+                openable.CloseAction();
         }
 
         private void ChangeSprite(bool newValue)
@@ -110,6 +138,12 @@ namespace Interactable
             {
                 _isActive.Value = isActive;
             }
+        }
+        
+        [ContextMenu("Generate guid")]
+        private void GenerateGuid()
+        {
+            saveId = System.Guid.NewGuid().ToString();
         }
     }
 }

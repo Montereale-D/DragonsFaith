@@ -749,6 +749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d930b402971ebd144916e7532c56bf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyBehaviour: {fileID: 4941866682512185598}
 --- !u!1 &5278251633394017606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1262,6 +1263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed532d266d32f8428fa7012d644f577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveId: 
   _waitOnPatrolPosition: 2
   fieldOfView: {fileID: 8735649658286024878}
   speed: 5

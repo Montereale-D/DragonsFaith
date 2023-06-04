@@ -1,4 +1,5 @@
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,10 +9,27 @@ namespace Interactable
     {
         [SerializeField] private Attribute abilityToCheck;
         public UnityEvent onSuccess;
+        [SerializeField] private string saveId;
         protected override void Awake()
         {
             onKeyPressedEvent = CheckAbility;
             base.Awake();
+        }
+        
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            GetComponent<NetworkObject>().DestroyWithScene = true;
+            
+            if (DungeonProgressManager.instance.IsAbilityPassed(saveId))
+            {
+                Debug.Log(gameObject.name + " was already activated");
+                _isUsed.Value = true;
+            }
+            else
+            {
+                Debug.Log(gameObject.name + " OnNetworkSpawn");
+            }
         }
 
         private void CheckAbility(Collider2D col)
@@ -25,6 +43,7 @@ namespace Interactable
                     return;
                 }
 
+                DungeonProgressManager.instance.AbilityPassed(saveId);
                 if (IsHost)
                 {
                     //direct change
@@ -43,6 +62,13 @@ namespace Interactable
         private void ShowNotAble()
         {
             Debug.Log("Not enough ability!");
+        }
+        
+        
+        [ContextMenu("Generate guid")]
+        private void GenerateGuid()
+        {
+            saveId = System.Guid.NewGuid().ToString();
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Network;
 using Player;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -84,39 +86,6 @@ public class GameHandler : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void AskMovementServerRpc(int askedIndex)
-    {
-        if (!NetworkManager.Singleton.IsHost) return;
-
-        var movement = (int)CharacterManager.Instance.GetTotalAgi();
-        ReplyMovementClientRpc(askedIndex, movement);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void ReplyMovementServerRpc(int askedIndex, int movement)
-    {
-        if (!NetworkManager.Singleton.IsHost) return;
-        _characters[askedIndex].movement = movement;
-        Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
-    }
-
-    [ClientRpc]
-    private void AskMovementClientRpc(int askedIndex)
-    {
-        if (NetworkManager.Singleton.IsHost) return;
-
-        var movement = (int)CharacterManager.Instance.GetTotalAgi();
-        ReplyMovementServerRpc(askedIndex, movement);
-    }
-
-    [ClientRpc]
-    private void ReplyMovementClientRpc(int askedIndex, int movement)
-    {
-        if (NetworkManager.Singleton.IsHost) return;
-        _characters[askedIndex].movement = movement;
-        Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
-    }
 
     private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
     {
@@ -150,20 +119,54 @@ public class GameHandler : NetworkBehaviour
         playerGridMovement.onTile.SetCharacterOnTile(playerGridMovement);
     }
 
-    //the following method is just for bugging and testing, not used in the actual game: it allows to switch from FreeRoaming to Battle Mode at will
-    private void DebugChangeGameState()
+    public void GameOver()
     {
-        if (state == GameState.FreeRoaming)
-        {
-            SetGameState(GameState.Battle);
-            Debug.Log("Set game state to Battle Mode by debug controls");
-        }
-        else
-        {
-            SetGameState(GameState.FreeRoaming);
-            Debug.Log("Set game state to Free Roaming by debug controls");
-        }
+        //todo testare gameover quando nemico target anche il player non morto
+        Debug.Log("GAME OVER");
+        //todo show GameOver screen
+        //FindObjectOfType<SceneManager>().LoadSceneAdditive("Menu");
     }
-    
-    //todo settare GameOver and GameWin
+
+    public void CombatWin()
+    {
+        //todo
+        Debug.Log("COMBAT WIN");
+        CharacterManager.Instance.SetPlayerFreeMode();
+        PlayerUI.instance.HideCombatUI();
+        SceneManager.instance.LoadSceneSingle("Dungeon");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AskMovementServerRpc(int askedIndex)
+    {
+        if (!NetworkManager.Singleton.IsHost) return;
+
+        var movement = (int)CharacterManager.Instance.GetTotalAgi();
+        ReplyMovementClientRpc(askedIndex, movement);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ReplyMovementServerRpc(int askedIndex, int movement)
+    {
+        if (!NetworkManager.Singleton.IsHost) return;
+        _characters[askedIndex].movement = movement;
+        Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
+    }
+
+    [ClientRpc]
+    private void AskMovementClientRpc(int askedIndex)
+    {
+        if (NetworkManager.Singleton.IsHost) return;
+
+        var movement = (int)CharacterManager.Instance.GetTotalAgi();
+        ReplyMovementServerRpc(askedIndex, movement);
+    }
+
+    [ClientRpc]
+    private void ReplyMovementClientRpc(int askedIndex, int movement)
+    {
+        if (NetworkManager.Singleton.IsHost) return;
+        _characters[askedIndex].movement = movement;
+        Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
+    }
 }

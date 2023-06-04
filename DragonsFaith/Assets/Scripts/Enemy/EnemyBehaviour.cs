@@ -7,6 +7,7 @@ namespace Enemy
 {
     public class EnemyBehaviour : NetworkBehaviour
     {
+        private string _saveId;
         private EnemySpawnPoint _spawnPoint;
         private bool _patrol = true;
         public float _waitOnPatrolPosition = 2f;
@@ -31,6 +32,7 @@ namespace Enemy
             _patrol = _spawnPoint.patrol;
             _waitOnPatrolPosition = _spawnPoint.waitOnPatrolPosition;
             _patrolPositions = _spawnPoint.patrolPositions;
+            _saveId = spawnPoint.saveId;
 
             //Init
             _positionIndex = 1;
@@ -42,6 +44,16 @@ namespace Enemy
         {
             base.OnNetworkSpawn();
             GetComponent<NetworkObject>().DestroyWithScene = true;
+            
+            if (DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
+            {
+                Debug.Log(gameObject.name + " was already defeated");
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.Log(gameObject.name + " OnNetworkSpawn");
+            }
         }
 
         private void Update()
@@ -132,6 +144,12 @@ namespace Enemy
             Debug.Log("Enemy OnNetworkDespawn");
             base.OnNetworkDespawn();
             
+        }
+
+        public void OnCombatStart()
+        {
+            DungeonProgressManager.instance.EnemyDefeated(_saveId);
+            Destroy(gameObject);
         }
     }
 }

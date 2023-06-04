@@ -185,11 +185,13 @@ public class CombatSystem : NetworkBehaviour
             !candidate.GetComponent<CharacterInfo>().IsAlive())
         {
             Debug.Log("The selected player is dead");
+            
             //TODO: this way, the dead player's turn is completely skipped, the animation too
             // there needs to be added a delay so that the animation is still visible
             _turnUI.NextTurn();
             /*_turnDelayCounter = _turnDelay;
             while (_turnDelayCounter > 0){}*/
+            
             candidate = NextUnit(); //assert only a player can be dead
         }
         else
@@ -216,9 +218,24 @@ public class CombatSystem : NetworkBehaviour
     {
         _turnUI.OnDeath(character);
 
-        if (character.GetTeam() == PlayerGridMovement.Team.Players) return;
+        if (character.GetTeam() == PlayerGridMovement.Team.Players)
+        {
+            var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
+            if (players.Count(x => !x.GetComponent<CharacterInfo>().IsAlive()) > 1)
+            {
+                GameHandler.instance.GameOver();
+            }
+            
+            return;
+        }
+
         characterList.Remove(character);
         _indexCharacterTurn = characterList.IndexOf(activeUnit);
+
+        if (!characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Enemies).Any())
+        {
+            GameHandler.instance.CombatWin();
+        }
     }
     public void ReloadAction()
     {

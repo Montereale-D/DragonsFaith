@@ -7,6 +7,7 @@ namespace Interactable
 {
     public class GiftChest : KeyInteractable
     {
+        [SerializeField] private string saveId;
         [SerializeField] [Tooltip("Item inside the chest")]
         private Item item;
 
@@ -21,6 +22,15 @@ namespace Interactable
             base.OnNetworkSpawn();
             GetComponent<NetworkObject>().DestroyWithScene = true;
             
+            if (DungeonProgressManager.instance.IsChestOpened(saveId))
+            {
+                Debug.Log(gameObject.name + " was already activated");
+                _isUsed.Value = true;
+            }
+            else
+            {
+                Debug.Log(gameObject.name + " OnNetworkSpawn");
+            }
         }
 
         public void TryAddItem(Collider2D col)
@@ -35,6 +45,7 @@ namespace Interactable
             }
 
             Debug.Log("Item  picked up");
+            DungeonProgressManager.instance.ChestOpened(saveId);
 
             if (IsHost)
             {
@@ -53,6 +64,12 @@ namespace Interactable
             Debug.Log("GiftChest onDestroy " + name);
             base.OnDestroy();
             
+        }
+        
+        [ContextMenu("Generate guid")]
+        private void GenerateGuid()
+        {
+            saveId = System.Guid.NewGuid().ToString();
         }
     }
 }
