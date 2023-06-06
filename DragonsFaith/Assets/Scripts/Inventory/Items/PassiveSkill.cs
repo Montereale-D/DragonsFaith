@@ -5,6 +5,7 @@ namespace Inventory.Items
     [CreateAssetMenu(menuName = "ItemsType/PassiveSkill")]
     public class PassiveSkill : Skill
     {
+        [Header("Attribute section")]
         public float Str;
         public float Dex;
         public float Int;
@@ -15,5 +16,10 @@ namespace Inventory.Items
             base.PerformAction();
             
         }
+
+        /*public void OnActivation()
+        {
+            
+        }*/
     }
 }

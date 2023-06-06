@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using Inventory;
+using Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -68,12 +69,19 @@ namespace UI
         public TextMeshProUGUI healthText;
         public Slider manaSlider;
         public TextMeshProUGUI manaText;
+        public TextMeshProUGUI strengthText;
+        public TextMeshProUGUI agilityText;
+        public TextMeshProUGUI dexterityText;
+        public TextMeshProUGUI constitutionText;
+        public TextMeshProUGUI intelligenceText;
         
         [Header("Slots")]
         [Tooltip("Insert (in order) all the inventory slots, ...")]
         public InventorySlot[] inventorySlots;
         [Tooltip("Insert (in order) all the equipment slots, ...")]
         public InventorySlot[] equipmentSlots;
+        public InventorySlot activeSkillSlot;
+        public InventorySlot[] passiveSkillSlots;
 
         [Header("Pop Up")] [SerializeField] 
         private PopUpMessage popUpMessage;
@@ -147,7 +155,7 @@ namespace UI
 
         private void Start()
         {
-            InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots);
+            InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots, passiveSkillSlots);
         }
 
         private void Update()
@@ -355,6 +363,15 @@ namespace UI
         public void SetFire()
         {
             SetFaithSprite(Element.Fire);
+            var skill = ExchangeManager.Instance.CreateSkill("Fire Breath");
+            var passive1 = ExchangeManager.Instance.CreateSkill("Strength increase");
+            var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
+            InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
+            InventoryManager.Instance.SpawnNewItem(passive1, passiveSkillSlots[0], 1);
+            InventoryManager.Instance.SpawnNewItem(passive2, passiveSkillSlots[1], 1);
+            /*passiveSkillSlots[0].GetCurrentItem().image.color = Color.gray;
+            passiveSkillSlots[1].GetCurrentItem().image.color = Color.gray;*/
+            SetAllAttributeValues();
             CloseFaithTab();
             chosenFaith = Element.Fire;
         }
@@ -362,6 +379,15 @@ namespace UI
         public void SetAir()
         {
             SetFaithSprite(Element.Air);
+            var skill = ExchangeManager.Instance.CreateSkill("Thunder Bolt");
+            var passive1 = ExchangeManager.Instance.CreateSkill("Dexterity increase");
+            var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
+            InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
+            InventoryManager.Instance.SpawnNewItem(passive1, passiveSkillSlots[0], 1);
+            InventoryManager.Instance.SpawnNewItem(passive2, passiveSkillSlots[1], 1);
+            /*passiveSkillSlots[0].GetCurrentItem().image.color = Color.gray;
+            passiveSkillSlots[1].GetCurrentItem().image.color = Color.gray;*/
+            SetAllAttributeValues();
             CloseFaithTab();
             chosenFaith = Element.Air;
         }
@@ -426,6 +452,41 @@ namespace UI
             manaSlider.value = value;
             manaText.text = "Mana: " + value + "/" + maxValue;
         }
+
+        public void SetStrengthText(int value)
+        {
+            strengthText.text = "Strength: " + value;
+        }
+        
+        public void SetAgilityText(int value)
+        {
+            agilityText.text = "Agility: " + value;
+        }
+        
+        public void SetDexterityText(int value)
+        {
+            dexterityText.text = "Dexterity: " + value;
+        }
+        
+        public void SetConstitutionText(int value)
+        {
+            constitutionText.text = "Constitution: " + value;
+        }
+        
+        public void SetIntelligenceText(int value)
+        {
+            intelligenceText.text = "Intelligence: " + value;
+        }
+
+        public void SetAllAttributeValues()
+        {
+            SetStrengthText((int)CharacterManager.Instance.GetTotalStr());
+            SetAgilityText((int)CharacterManager.Instance.GetTotalAgi());
+            SetDexterityText((int)CharacterManager.Instance.GetTotalDex());
+            SetConstitutionText((int)CharacterManager.Instance.GetTotalConst());
+            SetIntelligenceText((int)CharacterManager.Instance.GetTotalInt());
+        }
+        
         public void SetBackgroundVolume(float value)
         {
             _optionsManager.SetBackgroundVolume(value);

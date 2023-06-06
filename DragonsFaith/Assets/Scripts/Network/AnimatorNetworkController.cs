@@ -1,36 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 
-public class AnimatorNetworkController : NetworkBehaviour
+namespace Network
 {
-    [SerializeField] private GameObject wall;
-    [SerializeField] private Animator animator;
-    private static readonly int Reveal = Animator.StringToHash("Reveal");
-    private static LTDescr delay;
-    
-    private readonly NetworkVariable<bool> _isActive = new(false, NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
-    
-    public override void OnNetworkSpawn()
+    public class AnimatorNetworkController : NetworkBehaviour
     {
-        //subscribe to status change event
-        _isActive.OnValueChanged += (_, _) =>
+        [SerializeField] private GameObject wall;
+        //[SerializeField] private Animator animator;
+        [SerializeField] private NetworkAnimator networkAnimator;
+        private static readonly int Reveal = Animator.StringToHash("Reveal");
+        //private static LTDescr delay;
+    
+        /*private readonly NetworkVariable<bool> _isActive = new(false, NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner);*/
+    
+        /*public override void OnNetworkSpawn()
         {
-            animator.SetTrigger(Reveal);
-            wall.SetActive(false);
-            delay = LeanTween.delayedCall(1f, () =>
+            //subscribe to status change event
+            _isActive.OnValueChanged += (_, _) =>
             {
-                gameObject.SetActive(false);
-            });
-        };
-    }
+                Debug.Log("value changed");
+                animator.SetTrigger(Reveal);
+                wall.SetActive(false);
+            };
+        }*/
     
-    [ClientRpc]
-    public void ActivateAnimatorProcedureClientRpc()
-    {
-        _isActive.Value = true;
+        public void ActivateAnimator()
+        {
+            Debug.Log("host animator activating");
+            //networkAnimator.SetTrigger(Reveal);
+            networkAnimator.Animator.SetTrigger(Reveal);
+            wall.SetActive(false);
+            ActivateAnimatorClientRpc();
+        }
+        
+        [ClientRpc]
+        public void ActivateAnimatorClientRpc()
+        {
+            if (!IsHost) return;
+            Debug.Log("client animator activating");
+            networkAnimator.SetTrigger(Reveal);
+            wall.SetActive(false);
+        }
     }
 }

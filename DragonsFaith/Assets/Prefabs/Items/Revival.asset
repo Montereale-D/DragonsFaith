@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9db5253304db4267902c1690a5c44d79, type: 3}
   m_Name: Revival
   m_EditorClassIdentifier: 
-  itemName: Revival
+  itemName: Revival Pack
   description: Revive one ally
   id: e7c47347-fe3d-41e2-a56d-975f8636d149
   tile: {fileID: 0}
-  image: {fileID: 21300000, guid: ab070fe17266e9d4fbe897af68624f88, type: 3}
+  image: {fileID: -289512708, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}
   consumableType: 2

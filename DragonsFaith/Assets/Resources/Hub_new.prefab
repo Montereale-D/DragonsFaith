@@ -48203,9 +48203,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 3073505798662018449}
     m_Modifications:
     - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+      propertyPath: door
+      value: 
+      objectReference: {fileID: 4492923141586812188}
+    - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+      propertyPath: isBlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
       propertyPath: sceneName
       value: Dungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+      propertyPath: openDoorSprite
+      value: 
+      objectReference: {fileID: -1414346319, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
     - target: {fileID: 1402427597265745990, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.82
@@ -48304,6 +48316,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+--- !u!212 &4492923141586812188 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2838696289501473706, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+  m_PrefabInstance: {fileID: 1819176033448728246}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8844221225250718720 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7170855058061890230, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
@@ -48390,6 +48407,10 @@ PrefabInstance:
       propertyPath: door
       value: 
       objectReference: {fileID: 1184524056993476385}
+    - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+      propertyPath: isBlocked
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
       propertyPath: sceneName
       value: Dungeon

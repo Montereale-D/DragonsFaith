@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d791264f82e4ccb86047417fa9903d5, type: 3}
+  m_Name: Agility increase
+  m_EditorClassIdentifier: 
+  itemName: Agility increase
+  description: Increases your agility attribute by 2.
+  id: 445ea771-1399-4bc4-b7d7-74719f4aa412
+  tile: {fileID: 0}
+  image: {fileID: 2115595229, guid: a8333e8efd30f314eafe9334e7740d9d, type: 3}
+  Str: 0
+  Dex: 0
+  Int: 0
+  Const: 0
+  Agi: 2

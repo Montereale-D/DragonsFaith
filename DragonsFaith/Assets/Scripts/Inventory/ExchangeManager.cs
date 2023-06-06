@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Linq;
 using Inventory.Items;
 using Unity.Netcode;
+using Random = UnityEngine.Random;
 
 namespace Inventory
 {
@@ -10,8 +11,9 @@ namespace Inventory
     /// </summary>
     public class ExchangeManager : NetworkBehaviour
     {
-        
-         [SerializeField] private Item[] itemList;
+        //TODO: add throwable weapons when they are implemented
+        [SerializeField] private Item[] itemList;
+        [SerializeField] private Item[] skillList;
 
         public static ExchangeManager Instance { get; private set; }
         private void Awake() 
@@ -33,6 +35,18 @@ namespace Inventory
         public Item CreateItem(string idOrName)
         {
             var item = itemList.First(item => (item.id == idOrName) || (item.name == idOrName));
+            if (item == null) Debug.LogError("Invalid name or id");
+            return item;
+        }
+
+        public Item GetRandomItem()
+        {
+            return itemList[Random.Range(0, itemList.Length)];
+        }
+        
+        public Item CreateSkill(string idOrName)
+        {
+            var item = skillList.First(item => (item.id == idOrName) || (item.name == idOrName));
             if (item == null) Debug.LogError("Invalid name or id");
             return item;
         }

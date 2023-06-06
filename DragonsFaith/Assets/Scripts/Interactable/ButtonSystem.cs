@@ -24,6 +24,8 @@ namespace Interactable
                     openable.OpenAction();
                 else
                     openable.CloseAction();
+                
+                Debug.Log("Button System Value changed");
             };
             
             GetComponent<NetworkObject>().DestroyWithScene = true;
@@ -33,6 +35,7 @@ namespace Interactable
         {
             _buttonPressedCounter++;
 
+            Debug.Log("button pressed");
             //if both the buttons are active
             if (_buttonPressedCounter == 2)
             {
@@ -44,6 +47,7 @@ namespace Interactable
         {
             _buttonPressedCounter--;
             
+            Debug.Log("button released");
             //if both the buttons are active
             if (_buttonPressedCounter < 2)
             {
@@ -57,11 +61,13 @@ namespace Interactable
             if (IsHost)
             {
                 //direct change
+                Debug.Log("changing value");
                 _isActive.Value = isActive;
             }
             else
             {
                 //ask host to change
+                Debug.Log("ask host to change");
                 ChangeStatusProcedureServerRpc(isActive);
             }
         }

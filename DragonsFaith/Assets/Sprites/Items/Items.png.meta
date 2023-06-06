@@ -537,13 +537,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Items_20
+      name: Revival Pack
       rect:
         serializedVersion: 2
-        x: 999
-        y: 110
-        width: 111
-        height: 110
+        x: 1010
+        y: 128
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -831,7 +831,6 @@ TextureImporter:
       Items_17: -267351125
       Items_18: 867234823
       Items_2: -1749904153
-      Items_20: -289512708
       Items_21: 404189165
       Items_23: -820113049
       Items_25: -144105510
@@ -844,6 +843,7 @@ TextureImporter:
       Items_5: -354977594
       Items_7: 1612210750
       Items_9: -1406135241
+      Revival Pack: -289512708
       boots: 2046885565
       bulletproof vest: 1178503075
       coat: 639920238

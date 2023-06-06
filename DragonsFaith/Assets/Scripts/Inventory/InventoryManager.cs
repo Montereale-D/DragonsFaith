@@ -17,6 +17,9 @@ namespace Inventory
 
         [SerializeField] [Tooltip("Insert (in order) all the equipment slots, ...")] [HideInInspector]
         private InventorySlot[] equipmentSlots;
+        
+        [SerializeField] [Tooltip("Insert (in order) all the equipment slots, ...")] [HideInInspector]
+        private InventorySlot[] passiveSkillSlots;
 
         [SerializeField] [Tooltip("Insert reference to the inventory item prefab")]
         private GameObject inventoryItemPrefab;
@@ -123,7 +126,7 @@ namespace Inventory
         /// <summary>
         /// Instantiate an item and add it to the slot
         /// </summary>
-        private void SpawnNewItem(Item item, InventorySlot slot, int quantity)
+        public void SpawnNewItem(Item item, InventorySlot slot, int quantity)
         {
             var newItemGameObject = Instantiate(inventoryItemPrefab, slot.transform);
             var inventoryItem = newItemGameObject.GetComponent<InventoryItem>();
@@ -258,14 +261,39 @@ namespace Inventory
                 var armor = inventoryItem.item as Armor;
                 if (armor)
                 {
-                    output += GetModifiers(armor, type);
+                    output += GetArmorModifiers(armor, type);
+                }
+            }
+            
+            foreach (var slot in passiveSkillSlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if (!inventoryItem) continue;
+                
+                var skill = inventoryItem.item as PassiveSkill;
+                if (skill)
+                {
+                    output += GetSkillModifiers(skill, type);
                 }
             }
             
             return output < 1 ? 1 : output;
         }
 
-        public static float GetModifiers(Armor item, AttributeType type)
+        public static float GetArmorModifiers(Armor item, AttributeType type)
+        {
+            return type switch
+            {
+                AttributeType.Strength => item.Str,
+                AttributeType.Intelligence => item.Int,
+                AttributeType.Agility => item.Agi,
+                AttributeType.Constitution => item.Const,
+                AttributeType.Dexterity => item.Dex,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+        }
+        
+        public static float GetSkillModifiers(PassiveSkill item, AttributeType type)
         {
             return type switch
             {
@@ -366,10 +394,11 @@ namespace Inventory
             }
         }
 
-        public void SetUpSlots(InventorySlot[] inventorySlots1, InventorySlot[] equipmentSlots1)
+        public void SetUpSlots(InventorySlot[] inventorySlots1, InventorySlot[] equipmentSlots1, InventorySlot[] passiveSkillSlots1)
         {
             inventorySlots = inventorySlots1;
             equipmentSlots = equipmentSlots1;
+            passiveSkillSlots = passiveSkillSlots1;
         }
 
         [ContextMenu("Add Revival")]

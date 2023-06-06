@@ -26,9 +26,11 @@ namespace Interactable
         public void TryAddItem(Collider2D col)
         {
             if (_isUsed.Value) return;
+
+            var loot = ExchangeManager.Instance.GetRandomItem();
             
             //try to add item to the inventory
-            if (!InventoryManager.Instance.AddItem(item))
+            if (!InventoryManager.Instance.AddItem(loot))
             {
                 Debug.Log("No space in the inventory!");
                 return;
