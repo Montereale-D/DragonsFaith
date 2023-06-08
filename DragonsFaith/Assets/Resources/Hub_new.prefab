@@ -48215,9 +48215,17 @@ PrefabInstance:
       value: Dungeon
       objectReference: {fileID: 0}
     - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+      propertyPath: toDungeon
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
       propertyPath: openDoorSprite
       value: 
       objectReference: {fileID: -1414346319, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
+    - target: {fileID: 1402427597265745989, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
+      propertyPath: numberOfDungeons
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1402427597265745990, guid: 5a78a734b72faa748a829be2ed5324ea, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.82
