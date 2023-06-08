@@ -135,7 +135,7 @@ namespace Interactable
                 else
                 {
                     //ask host to change
-                    //ChangeStatusProcedureServerRpc();
+                    ChangeStatusProcedureServerRpc();
                     OnStateChange(false, true);
                 }
             }
@@ -147,10 +147,7 @@ namespace Interactable
         {
             if (!IsHost) return;
 
-            //if (_isActive.Value != isActive)
-            //{
-                _isActive.Value = true;
-            //}
+            OnStateChange(false, true);
         }
         [ClientRpc]
         private void ChangeStatusProcedureClientRpc(bool isActive)

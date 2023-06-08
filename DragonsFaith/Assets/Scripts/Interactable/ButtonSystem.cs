@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Interactable
@@ -19,28 +20,32 @@ namespace Interactable
 
         [SerializeField] private string saveId;
 
-        public override void OnNetworkSpawn()
+        private void Awake()
         {
             //subscribe to status change event
             _isActive.OnValueChanged += OnStateChange;
 
             _netObj = GetComponent<NetworkObject>();
             _netObj.DestroyWithScene = true;
-            
-            if(!IsHost) return;
-            
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            //if(!IsHost) return;
+
             if (DungeonProgressManager.instance.IsButtonPressed(saveId))
             {
                 Debug.Log(gameObject.name + " was already activated");
                 //openable.OpenAction();
-                _isActive.Value = true;
+                //_isActive.Value = true;
+                ChangeStatusProcedure(true);
             }
             else
             {
                 //Debug.Log(gameObject.name + " OnNetworkSpawn");
             }
         }
-        
+
         private void OnStateChange(bool previousValue, bool newValue)
         {
             if (newValue)
@@ -67,7 +72,7 @@ namespace Interactable
         public void OnButtonRelease()
         {
             _buttonPressedCounter--;
-            
+
             Debug.Log("button released");
             //if both the buttons are active
             if (_buttonPressedCounter < 2)
@@ -79,18 +84,34 @@ namespace Interactable
         //Procedure to follow when the status change
         private void ChangeStatusProcedure(bool isActive)
         {
-            if (IsHost)
+            Debug.Log("ChangeStatusProcedure");
+            if (isActive)
             {
-                //direct change
-                Debug.Log("changing value");
-                _isActive.Value = isActive;
+                if (IsHost)
+                {
+                    //direct change
+                    _isActive.Value = true;
+                    ChangeStatusProcedureClientRpc(true);
+                }
+                else
+                {
+                    //ask host to change
+                    //ChangeStatusProcedureServerRpc();
+                    OnStateChange(false, true);
+                }
             }
-            else
-            {
-                //ask host to change
-                Debug.Log("ask host to change");
-                ChangeStatusProcedureServerRpc(isActive);
-            }
+        }
+        
+        [ClientRpc]
+        private void ChangeStatusProcedureClientRpc(bool isActive)
+        {
+            if (IsHost) return;
+
+            OnStateChange(false, true);
+            //if (_isActive.Value != isActive)
+            //{
+            //_isActive.Value = isActive;
+            //}
         }
 
         //Server receive a change status request from client
@@ -104,7 +125,7 @@ namespace Interactable
                 _isActive.Value = isActive;
             }
         }
-        
+
         [ContextMenu("Generate guid")]
         private void GenerateGuid()
         {
