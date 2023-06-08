@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Network
 {
@@ -11,15 +12,22 @@ namespace Network
     
         private SceneManager _sceneManager;
         [SerializeField] private string sceneName;
+        [SerializeField] private int numberOfDungeons;
         private int _playersReady;
         public SpriteRenderer door;
         public Sprite openDoorSprite;
         public bool isBlocked;
+        public bool toDungeon;
 
         private void Awake()
         {
             GetComponent<Collider2D>().isTrigger = true;
             _sceneManager = FindObjectOfType<SceneManager>();
+
+            if (toDungeon)
+            {
+                sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons+1);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D col)
@@ -70,7 +78,7 @@ namespace Network
             
         }
 
-        public void Unblock()
+        public void Unlock()
         {
             // To call when miniboss is killed
             isBlocked = false;

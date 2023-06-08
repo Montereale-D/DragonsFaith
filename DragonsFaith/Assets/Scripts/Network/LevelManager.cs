@@ -43,8 +43,8 @@ namespace Network
             mapIdx = Random.Range(0, _roomPool.Count);
             var map = Instantiate(_roomPool[mapIdx]);
             
-            map.GetComponent<NetworkObject>().Spawn();
-            //InstantiateMapClientRpc(mapIdx);
+            //map.GetComponent<NetworkObject>().Spawn();
+            InstantiateMapClientRpc(mapIdx);
 
             var objs = map.GetComponentsInChildren<NetworkObject>();
 
@@ -62,7 +62,7 @@ namespace Network
                 if (!obj.IsSpawned) obj.Spawn();
                 //obj.transform.position = position;
                 
-                GetComponent<EnemySpawnPointer>().SetUp(map.GetComponent<DungeonController>().enemySpawnPoints);
+                //GetComponent<EnemySpawnPointer>().SetUp(map.GetComponent<DungeonController>().enemySpawnPoints);
             }
 
             /*_spawnPoints = map.GetComponent<DungeonController>().spawnPoints;
@@ -82,13 +82,13 @@ namespace Network
             }*/
         }
     
-        /*[ClientRpc]
+        [ClientRpc]
         private void InstantiateMapClientRpc(int idx)
         {
             if (IsHost) return;
             
             Instantiate(_roomPool[idx]);
-        }*/
+        }
         
         public override void OnDestroy()
         {

@@ -19,15 +19,15 @@ public class EnemySpawnPointer : NetworkBehaviour
         base.OnNetworkSpawn();
         if (!IsHost) return;
 
-        /*if (useAllPoints || usePoints == spawnPoints.Count)
+        if (useAllPoints || usePoints == enemySpawnPoints.Count)
             SpawnAllPoints();
         else
-            SpawnSomePoints();*/
+            SpawnSomePoints();
 
         GetComponent<NetworkObject>().DestroyWithScene = true;
     }
 
-    public void SetUp(List<EnemySpawnPoint> spawnPoints)
+    /*public void SetUp(List<EnemySpawnPoint> spawnPoints)
     {
         enemySpawnPoints = spawnPoints;
         
@@ -37,7 +37,7 @@ public class EnemySpawnPointer : NetworkBehaviour
             SpawnAllPoints();
         else
             SpawnSomePoints();
-    }
+    }*/
 
     private void SpawnAllPoints()
     {
