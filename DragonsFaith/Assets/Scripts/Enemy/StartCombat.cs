@@ -11,6 +11,6 @@ public class StartCombat : MonoBehaviour
         if(!col.gameObject.CompareTag("Player")) return;
         
         Debug.Log("Player start combat!");
-        enemyBehaviour.OnCombatStart(transform.position);
+        GetComponentInParent<EnemyBehaviour>().OnCombatStart(transform.position);
     }
 }
