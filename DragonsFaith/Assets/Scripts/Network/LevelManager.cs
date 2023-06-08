@@ -62,7 +62,7 @@ namespace Network
                 if (!obj.IsSpawned) obj.Spawn();
                 //obj.transform.position = position;
                 
-                GetComponent<EnemySpawnPointer>().SetUp(map.GetComponent<DungeonController>().enemySpawnPoints);
+                //GetComponent<EnemySpawnPointer>().SetUp(map.GetComponent<DungeonController>().enemySpawnPoints);
             }
 
             /*_spawnPoints = map.GetComponent<DungeonController>().spawnPoints;
