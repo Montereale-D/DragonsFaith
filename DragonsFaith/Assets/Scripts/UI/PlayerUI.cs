@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using Inventory;
+using Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -33,43 +34,57 @@ namespace UI
             Water
         };
 
-        [Header("Tabs")] public GameObject menuTab;
+        [Header("Tabs")]
+        public GameObject menuTab;
         public GameObject inventoryTab;
         public GameObject skillsTab;
         public GameObject faithTab;
-
-        [Header("Option Screens")] public GameObject mainScreen;
+        
+        [Header("Option Screens")]
+        public GameObject mainScreen;
         public GameObject optionsScreen;
         public GameObject audioScreen;
         public GameObject graphicsScreen;
         public GameObject keybindingsScreen;
-
-        [Header("Graphics and Audio")] public Dropdown resolutionDropdown;
+        
+        [Header("Graphics and Audio")]
+        public Dropdown resolutionDropdown;
         public Slider playerVolumeSlider;
         public Slider enemyVolumeSlider;
         public Slider backgroundVolumeSlider;
 
-        [Header("Player UI")] public GameObject playerUI;
+        [Header("Player UI")] 
+        public GameObject playerUI;
         public GameObject settingsButton;
         public Image portrait;
         public Sprite[] portraitSprites;
-
-        [Header("CombatUI")] public RectTransform combatUI;
+        
+        [Header("CombatUI")]
+        public RectTransform combatUI;
         private CombatUI _combatUI;
 
-        [Header("Character Info")] public TextMeshProUGUI nameText;
+        [Header("Character Info")] 
+        public TextMeshProUGUI nameText;
         public Slider healthSlider;
         public TextMeshProUGUI healthText;
         public Slider manaSlider;
         public TextMeshProUGUI manaText;
-
-        [Header("Slots")] [Tooltip("Insert (in order) all the inventory slots, ...")]
+        public TextMeshProUGUI strengthText;
+        public TextMeshProUGUI agilityText;
+        public TextMeshProUGUI dexterityText;
+        public TextMeshProUGUI constitutionText;
+        public TextMeshProUGUI intelligenceText;
+        
+        [Header("Slots")]
+        [Tooltip("Insert (in order) all the inventory slots, ...")]
         public InventorySlot[] inventorySlots;
-
         [Tooltip("Insert (in order) all the equipment slots, ...")]
         public InventorySlot[] equipmentSlots;
+        public InventorySlot activeSkillSlot;
+        public InventorySlot[] passiveSkillSlots;
 
-        [Header("Pop Up")] [SerializeField] private PopUpMessage popUpMessage;
+        [Header("Pop Up")] [SerializeField] 
+        private PopUpMessage popUpMessage;
 
         [Header("Faiths")] public Image faith;
         public Sprite fire;
@@ -83,19 +98,15 @@ namespace UI
         private RectTransform _rectTransformFaithTab;
         private RectTransform _rectTransformTurnUI;
         private static LTDescr delay;
-
-        [SerializeField] [Tooltip("Faith tab fade in duration.")]
+        [SerializeField] [Tooltip("Faith tab fade in duration.")] 
         private float faithTabFadeInTime = 0.5f;
-
-        [SerializeField] [Tooltip("Faith tab fade out duration.")]
+        [SerializeField] [Tooltip("Faith tab fade out duration.")] 
         private float faithTabFadeOutTime = 0.5f;
-
-        [SerializeField] [Tooltip("Faith tab fade in duration.")]
+        [SerializeField] [Tooltip("Faith tab fade in duration.")] 
         private float turnUIFadeInTime = 0.5f;
-
-        [SerializeField] [Tooltip("Faith tab fade out duration.")]
+        [SerializeField] [Tooltip("Faith tab fade out duration.")] 
         private float turnUIFadeOutTime = 0.5f;
-
+        
         private OptionsManager _optionsManager;
 
         private UnityAction _moveOrAttackAction;
@@ -106,7 +117,7 @@ namespace UI
 
         public static PlayerUI instance { get; private set; }
 
-
+        
         private void Awake()
         {
             if (instance != null && instance != this)
@@ -124,19 +135,19 @@ namespace UI
             inventoryTab.SetActive(false);
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
-
+            
             _optionsManager = OptionsManager.Instance;
-
+            
             _optionsManager.SetDropdown(resolutionDropdown);
 
             nameText.text = _optionsManager.RetrievePlayerName();
-
+        
             playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
             enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
             backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
-
+            
             //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
-
+            
             //_rectTransformTurnUI = turnUI.GetComponent<RectTransform>();
             _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
             FadeInElement(_rectTransformFaithTab, faithTabFadeInTime);
@@ -144,14 +155,14 @@ namespace UI
 
         private void Start()
         {
-            InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots);
+            InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots, passiveSkillSlots);
         }
 
         private void Update()
         {
             if (!_faithChoiceDone) return;
             //if (_faithChoiceDone && faithTab.activeSelf) faithTab.SetActive(false);
-
+            
             if (Input.GetKeyDown(KeyCode.I))
             {
                 OpenInventory();
@@ -161,7 +172,7 @@ namespace UI
             {
                 OpenSkills();
             }
-
+            
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (inventoryTab.activeSelf)
@@ -193,18 +204,18 @@ namespace UI
                 ToggleCombatUI();
             }*/
         }
-
+        
         public void ShowMessage(string message)
         {
             popUpMessage.uiSettings.text.text = message;
             popUpMessage.StartOpen();
         }
-
+        
         public void ShowUI(bool b)
         {
             GetComponent<Canvas>().enabled = b;
         }
-
+        
         #region OpenTabFunctions
 
         private void SetMenu(Tab menu)
@@ -269,7 +280,7 @@ namespace UI
                     throw new ArgumentOutOfRangeException(nameof(menu), menu, null);
             }
         }
-
+        
         private void SetFaithSprite(Element element)
         {
             faith.sprite = element switch
@@ -309,27 +320,22 @@ namespace UI
             if (!_faithChoiceDone) return;
             SetMenu(Tab.Menu);
         }
-
         public void OpenMain()
         {
             SetMenu(Tab.Main);
         }
-
         public void OpenOptions()
         {
             SetMenu(Tab.Options);
         }
-
         public void OpenAudio()
         {
             SetMenu(Tab.Audio);
         }
-
         public void OpenGraphics()
         {
             SetMenu(Tab.Graphics);
         }
-
         public void OpenKeyBindings()
         {
             SetMenu(Tab.KeyBindings);
@@ -340,7 +346,6 @@ namespace UI
             if (!_faithChoiceDone) return;
             SetMenu(Tab.Inventory);
         }
-
         public void OpenSkills()
         {
             if (!_faithChoiceDone) return;
@@ -358,38 +363,56 @@ namespace UI
         public void SetFire()
         {
             SetFaithSprite(Element.Fire);
+            var skill = ExchangeManager.Instance.CreateSkill("Fire Breath");
+            var passive1 = ExchangeManager.Instance.CreateSkill("Strength increase");
+            var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
+            InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
+            InventoryManager.Instance.SpawnNewItem(passive1, passiveSkillSlots[0], 1);
+            InventoryManager.Instance.SpawnNewItem(passive2, passiveSkillSlots[1], 1);
+            /*passiveSkillSlots[0].GetCurrentItem().image.color = Color.gray;
+            passiveSkillSlots[1].GetCurrentItem().image.color = Color.gray;*/
+            SetAllAttributeValues();
             CloseFaithTab();
             chosenFaith = Element.Fire;
         }
-
+        
         public void SetAir()
         {
             SetFaithSprite(Element.Air);
+            var skill = ExchangeManager.Instance.CreateSkill("Thunder Bolt");
+            var passive1 = ExchangeManager.Instance.CreateSkill("Dexterity increase");
+            var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
+            InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
+            InventoryManager.Instance.SpawnNewItem(passive1, passiveSkillSlots[0], 1);
+            InventoryManager.Instance.SpawnNewItem(passive2, passiveSkillSlots[1], 1);
+            /*passiveSkillSlots[0].GetCurrentItem().image.color = Color.gray;
+            passiveSkillSlots[1].GetCurrentItem().image.color = Color.gray;*/
+            SetAllAttributeValues();
             CloseFaithTab();
             chosenFaith = Element.Air;
         }
-
+        
         public void SetEarth()
         {
             SetFaithSprite(Element.Earth);
             CloseFaithTab();
             chosenFaith = Element.Earth;
         }
-
+        
         public void SetWater()
         {
             SetFaithSprite(Element.Water);
             CloseFaithTab();
             chosenFaith = Element.Water;
         }
-
+        
         #endregion
 
         private void FadeInElement(RectTransform rectTransform, float fadeInDuration)
         {
             LeanTween.alpha(rectTransform, 1f, fadeInDuration).setEase(LeanTweenType.linear);
         }
-
+        
         /*private void FadeOutElement(RectTransform rectTransform, float fadeOutDuration)
         {
             LeanTween.alpha(rectTransform, 0f, fadeOutDuration).setEase(LeanTweenType.linear);
@@ -404,9 +427,9 @@ namespace UI
         {
             combatUI.gameObject.SetActive(false);
         }
-
+        
         #region UpdateValues
-
+        
         public void UpdateMaxHealth(int value)
         {
             healthSlider.maxValue = value;
@@ -424,49 +447,79 @@ namespace UI
             healthSlider.value = value;
             healthText.text = "Life: " + value + "/" + maxValue;
         }
-
         public void UpdateManaBar(int value, int maxValue)
         {
             manaSlider.value = value;
             manaText.text = "Mana: " + value + "/" + maxValue;
         }
 
+        public void SetStrengthText(int value)
+        {
+            strengthText.text = "Strength: " + value;
+        }
+        
+        public void SetAgilityText(int value)
+        {
+            agilityText.text = "Agility: " + value;
+        }
+        
+        public void SetDexterityText(int value)
+        {
+            dexterityText.text = "Dexterity: " + value;
+        }
+        
+        public void SetConstitutionText(int value)
+        {
+            constitutionText.text = "Constitution: " + value;
+        }
+        
+        public void SetIntelligenceText(int value)
+        {
+            intelligenceText.text = "Intelligence: " + value;
+        }
+
+        public void SetAllAttributeValues()
+        {
+            SetStrengthText((int)CharacterManager.Instance.GetTotalStr());
+            SetAgilityText((int)CharacterManager.Instance.GetTotalAgi());
+            SetDexterityText((int)CharacterManager.Instance.GetTotalDex());
+            SetConstitutionText((int)CharacterManager.Instance.GetTotalConst());
+            SetIntelligenceText((int)CharacterManager.Instance.GetTotalInt());
+        }
+        
         public void SetBackgroundVolume(float value)
         {
             _optionsManager.SetBackgroundVolume(value);
         }
-
         public void SetPlayerVolume(float value)
         {
             _optionsManager.SetPlayerVolume(value);
         }
-
         public void SetEnemyVolume(float value)
         {
             _optionsManager.SetEnemyVolume(value);
         }
-
+        
         public void SetQuality(int qualityIndex)
         {
             OptionsManager.SetQuality(qualityIndex);
         }
-
+        
         public void SetFullscreen(bool isFullscreen)
         {
             OptionsManager.SetFullscreen(isFullscreen);
         }
-
+        
         public void SetResolution(int resolutionIndex)
         {
             _optionsManager.SetResolution(resolutionIndex);
         }
-
         public void SetWeaponRangeUI(int value)
         {
             //weaponRange.text = "Weapon range: " + value;
             _combatUI.SetWeaponRangeUI(value);
         }
-
+        
         public void SetWeaponDamageUI(int value)
         {
             //weaponDamage.text = "Weapon damage: " + value;
@@ -488,19 +541,9 @@ namespace UI
         {
             return _combatUI;
         }
-
-        public void ShowCombatUI()
-        {
-            combatUI.gameObject.SetActive(true);
-        }
-
-        public void HideCombatUI()
-        {
-            combatUI.gameObject.SetActive(false);
-        }
-
+        
         #endregion
-
+        
         public void ToggleCombatUI(List<PlayerGridMovement> characterList)
         {
             if (!combatUI.gameObject.activeSelf)

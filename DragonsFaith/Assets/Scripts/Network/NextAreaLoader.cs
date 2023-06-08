@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Network
@@ -13,6 +14,7 @@ namespace Network
         private int _playersReady;
         public SpriteRenderer door;
         public Sprite openDoorSprite;
+        public bool isBlocked;
 
         private void Awake()
         {
@@ -23,6 +25,7 @@ namespace Network
         private void OnTriggerEnter2D(Collider2D col)
         {
             Debug.Log("TriggerEnter");
+            if (isBlocked) return;
 
             if (activateOnFirstTrigger)
             {
@@ -37,6 +40,8 @@ namespace Network
         private void OnTriggerExit2D(Collider2D other)
         {
             Debug.Log("TriggerExit");
+            if (isBlocked) return;
+            
             _playersReady--;
             if (_playersReady < 0) _playersReady = 0;
         }
@@ -63,6 +68,12 @@ namespace Network
                 Debug.LogWarning("Scene manager is null, Ok is appear in client");
             }
             
+        }
+
+        public void Unblock()
+        {
+            // To call when miniboss is killed
+            isBlocked = false;
         }
     }
 }

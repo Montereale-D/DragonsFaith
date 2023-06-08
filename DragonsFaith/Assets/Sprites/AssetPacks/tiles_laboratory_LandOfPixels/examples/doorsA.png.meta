@@ -158,6 +158,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: doors_side1
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 170
+        width: 11
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8462f2903f4dc3b44a0f1c493fb4f7ec
+      internalID: -904847348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: doorsA_2
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 304
+        width: 39
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a34ebd3a209c04f45958b9c1a2e9be26
+      internalID: -816613685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,6 +213,8 @@ TextureImporter:
     nameFileIdTable:
       doorsA_0: 1576147829
       doorsA_1: -528975873
+      doorsA_2: -816613685
+      doors_side1: -904847348
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

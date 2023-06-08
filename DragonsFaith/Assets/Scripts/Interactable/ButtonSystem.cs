@@ -19,17 +19,14 @@ namespace Interactable
 
         [SerializeField] private string saveId;
 
-        private void Awake()
+        public override void OnNetworkSpawn()
         {
             //subscribe to status change event
             _isActive.OnValueChanged += OnStateChange;
 
             _netObj = GetComponent<NetworkObject>();
             _netObj.DestroyWithScene = true;
-        }
-
-        public override void OnNetworkSpawn()
-        {
+            
             if(!IsHost) return;
             
             if (DungeonProgressManager.instance.IsButtonPressed(saveId))
@@ -43,7 +40,7 @@ namespace Interactable
                 //Debug.Log(gameObject.name + " OnNetworkSpawn");
             }
         }
-
+        
         private void OnStateChange(bool previousValue, bool newValue)
         {
             if (newValue)
@@ -59,6 +56,7 @@ namespace Interactable
         {
             _buttonPressedCounter++;
 
+            Debug.Log("button pressed");
             //if both the buttons are active
             if (_buttonPressedCounter == 2)
             {
@@ -69,7 +67,8 @@ namespace Interactable
         public void OnButtonRelease()
         {
             _buttonPressedCounter--;
-
+            
+            Debug.Log("button released");
             //if both the buttons are active
             if (_buttonPressedCounter < 2)
             {
@@ -83,11 +82,13 @@ namespace Interactable
             if (IsHost)
             {
                 //direct change
+                Debug.Log("changing value");
                 _isActive.Value = isActive;
             }
             else
             {
                 //ask host to change
+                Debug.Log("ask host to change");
                 ChangeStatusProcedureServerRpc(isActive);
             }
         }

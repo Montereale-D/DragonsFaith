@@ -43,8 +43,10 @@ namespace Interactable
         {
             if (_isUsed.Value) return;
 
+            var loot = ExchangeManager.Instance.GetRandomItem();
+            
             //try to add item to the inventory
-            if (!InventoryManager.Instance.AddItem(item))
+            if (!InventoryManager.Instance.AddItem(loot))
             {
                 Debug.Log("No space in the inventory!");
                 return;
@@ -96,7 +98,7 @@ namespace Interactable
 
         public override void OnDestroy()
         {
-            //Debug.Log("GiftChest onDestroy " + name);
+            Debug.Log("GiftChest onDestroy " + name);
             base.OnDestroy();
         }
 

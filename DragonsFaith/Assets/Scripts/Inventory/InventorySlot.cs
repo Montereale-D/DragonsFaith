@@ -143,5 +143,10 @@ namespace Inventory
         {
             UpdateItemQuantity(inventoryItem, -inventoryItem.count);
         }
+
+        public InventoryItem GetCurrentItem()
+        {
+            return GetComponentInChildren<InventoryItem>();
+        }
     }
 }
