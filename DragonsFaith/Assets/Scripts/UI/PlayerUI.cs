@@ -541,7 +541,17 @@ namespace UI
         {
             return _combatUI;
         }
-        
+
+        public void ShowCombatUI()
+        {
+            combatUI.gameObject.SetActive(true);
+        }
+
+        public void HideCombatUI()
+        {
+            combatUI.gameObject.SetActive(false);
+        }
+
         #endregion
         
         public void ToggleCombatUI(List<PlayerGridMovement> characterList)
