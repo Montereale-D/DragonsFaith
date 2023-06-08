@@ -26,7 +26,8 @@ namespace Network
 
             if (toDungeon)
             {
-                sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons+1);
+                //todo rimuovere sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons+1);
+                sceneName = "Dungeon_1";
             }
         }
 

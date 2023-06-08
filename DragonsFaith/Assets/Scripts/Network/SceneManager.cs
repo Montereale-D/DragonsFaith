@@ -37,7 +37,7 @@ namespace Network
         public void LoadSceneSingle(string sceneName)
         {
             //EnableInterpolation(false);
-            if (sceneName != "Grid" && sceneName != "Dungeon")
+            if (sceneName != "Grid" && !sceneName.Contains("Dungeon"))
             {
                 if (DungeonProgressManager.instance != null)
                 {
