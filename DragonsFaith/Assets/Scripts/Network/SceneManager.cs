@@ -37,6 +37,13 @@ namespace Network
         public void LoadSceneSingle(string sceneName)
         {
             //EnableInterpolation(false);
+            if (sceneName != "Grid" && sceneName != "Dungeon")
+            {
+                if (DungeonProgressManager.instance != null)
+                {
+                    DungeonProgressManager.instance.Reset();
+                }
+            }
 
             if (!IsHost) return;
 

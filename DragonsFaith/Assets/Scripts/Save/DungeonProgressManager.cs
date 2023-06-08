@@ -25,7 +25,7 @@ public class DungeonProgressManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(this);
-        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+        //SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
         _chestData = new Dictionary<string, bool>();
         _buttonsData = new Dictionary<string, bool>();
@@ -34,26 +34,33 @@ public class DungeonProgressManager : MonoBehaviour
         _spawnData = new Dictionary<GameData.PlayerType, Vector3>();
     }
 
-    private void OnActiveSceneChanged(Scene current, Scene next)
+    /*private void OnActiveSceneChanged(Scene current, Scene next)
     {
         if (next.name is "Grid" or "Dungeon") return;
 
         Debug.Log("Scene is not dungeon or grid, deleting dungeon data ...");
         SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         Destroy(gameObject);
+    }*/
+
+    public void Reset()
+    {
+        Debug.Log("Scene is not dungeon or grid, deleting dungeon data ...");
+        instance = null;
+        Destroy(gameObject);
     }
 
     public void ChestOpened(string uid)
     {
         CheckUid(uid);
-        //Debug.Log("ChestOpened for " + uid);
+        Debug.Log("ChestOpened for " + uid);
         _chestData.TryAdd(uid, true);
     }
 
     public bool IsChestOpened(string uid)
     {
         CheckUid(uid);
-        //Debug.Log("IsChestOpened for " + uid);
+        Debug.Log("IsChestOpened for " + uid);
         return _chestData.TryGetValue(uid, out _);
     }
 

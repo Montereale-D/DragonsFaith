@@ -45,9 +45,11 @@ namespace Interactable
         }
         protected void SetActive(bool newValue)
         {
+            Debug.Log("SetActive");
+            
             _spriteRenderer.sprite = newValue ? usedSprite : unusedSprite;
 
-            //disable collider, no more needed
+            //disable collider, no more needed 
             _collider.enabled = !newValue;
                 
             //turn off/on key UI

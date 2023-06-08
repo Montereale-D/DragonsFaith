@@ -1,7 +1,5 @@
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
-using UnityEngine.Android;
 
 namespace Interactable
 {
@@ -11,14 +9,16 @@ namespace Interactable
 
         public override bool OpenAction()
         {
-            if (!base.OpenAction())
+            //if (!base.OpenAction()) return false;
+            
+            Debug.Log("HiddenArea OpenAction");
+            
+            //animator.ActivateAnimatorProcedureClientRpc();
+            if (NetworkManager.Singleton.IsHost)
             {
-                Debug.Log("Hidden Area already opened");
-                return false;
+                animator.ActivateAnimatorProcedureServerRpc();
             }
             
-            Debug.Log("Hidden Area start animation");
-            animator.StartAnimation();
             return true;
         }
 

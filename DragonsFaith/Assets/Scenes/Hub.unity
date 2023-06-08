@@ -35384,7 +35384,7 @@ PrefabInstance:
       objectReference: {fileID: -1414346319, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
     - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: activateOnFirstTrigger
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2077917959861270530, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[144].m_Data
@@ -35420,7 +35420,7 @@ PrefabInstance:
       objectReference: {fileID: -1414346319, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: activateOnFirstTrigger
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_RootOrder

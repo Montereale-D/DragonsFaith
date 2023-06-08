@@ -27,11 +27,9 @@ namespace Interactable
 
         private void Awake()
         {
-            //ensure isTrigger
             GetComponent<Collider2D>().isTrigger = true;
-            
-            //subscribe to status change event
-            _isActive.OnValueChanged += OnButtonPressed;
+
+            _isActive.OnValueChanged += OnStateChange;
 
             _netObj = GetComponent<NetworkObject>();
             _netObj.DestroyWithScene = true;
@@ -39,37 +37,46 @@ namespace Interactable
 
         public override void OnNetworkSpawn()
         {
-            //if(!IsHost) return;
-            
-            if (standAloneMode)
+            if (!standAloneMode) return;
+            //if (!IsHost) return;
+
+            if (DungeonProgressManager.instance.IsButtonPressed(saveId))
             {
-                if (DungeonProgressManager.instance.IsButtonPressed(saveId))
-                {
-                    Debug.Log(gameObject.name + " was already activated");
-                    //openable.OpenAction();
-                    //_isActive.Value = true;
-                    OnButtonPressed(false, true);
-                }
-                else
-                {
-                    Debug.Log(gameObject.name + " OnNetworkSpawn");
-                }
+                Debug.Log(gameObject.name + " was already activated");
+                //openable.OpenAction();
+                //_isActive.Value = true;
+                ChangeStatusProcedure(true);
+                
+            }
+            else
+            {
+                //Debug.Log(gameObject.name + " OnNetworkSpawn");
             }
         }
-
-        private void OnButtonPressed(bool previousValue, bool newValue)
+        
+        private void OnStateChange(bool previousValue, bool newValue)
         {
+            Debug.Log("OnButtonPressed " + newValue);
+            /*if (newValue) {
+            ChangeSprite(newValue);
+            //openable.OpenAction();
+            if (standAloneMode)
+            {
+                openable.OpenAction();
+                DungeonProgressManager.instance.ButtonChangeState(saveId, true);
+                Notify();
+            }
+            }else openable.CloseAction();*/
+            
             if (newValue)
             {
-                ChangeSprite(true);
                 openable.OpenAction();
-                if (standAloneMode)
-                {
-                    DungeonProgressManager.instance.ButtonChangeState(saveId, true);
-                }
+                DungeonProgressManager.instance.ButtonChangeState(saveId, true);
             }
             else
                 openable.CloseAction();
+            
+            ChangeSprite(newValue);
         }
 
         private void ChangeSprite(bool newValue)
@@ -102,7 +109,9 @@ namespace Interactable
             if (_triggerCount == 0)
             {
                 if (standAloneMode)
-                    ChangeStatusProcedure(false);
+                {
+                    //ChangeStatusProcedure(false);
+                }
                 else
                 {
                     buttonSystem.OnButtonRelease();
@@ -114,39 +123,48 @@ namespace Interactable
         //Procedure to follow when standAloneMode is active
         private void ChangeStatusProcedure(bool isActive)
         {
-            if (standAloneMode)
+            Debug.Log("ChangeStatusProcedure");
+            if (standAloneMode && isActive)
             {
                 if (IsHost)
                 {
                     //direct change
-                    _isActive.Value = isActive;
+                    _isActive.Value = true;
+                    ChangeStatusProcedureClientRpc(true);
                 }
                 else
                 {
                     //ask host to change
-                    ChangeStatusProcedureServerRpc(isActive);
+                    //ChangeStatusProcedureServerRpc();
+                    OnStateChange(false, true);
                 }
             }
         }
 
         //Server receive a change status request from client
         [ServerRpc(RequireOwnership = false)]
-        private void ChangeStatusProcedureServerRpc(bool isActive)
+        private void ChangeStatusProcedureServerRpc()
         {
             if (!IsHost) return;
 
-            if (_isActive.Value != isActive)
-            {
-                _isActive.Value = isActive;
-            }
+            //if (_isActive.Value != isActive)
+            //{
+                _isActive.Value = true;
+            //}
         }
-
         [ClientRpc]
         private void ChangeStatusProcedureClientRpc(bool isActive)
         {
-            ChangeStatusProcedure(true);
+            if (IsHost) return;
+
+            OnStateChange(false, true);
+            //if (_isActive.Value != isActive)
+            //{
+            //_isActive.Value = isActive;
+            //}
         }
         
+
         [ContextMenu("Generate guid")]
         private void GenerateGuid()
         {

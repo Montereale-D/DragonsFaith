@@ -32,11 +32,13 @@ public class SpawnPointer : MonoBehaviour
 
         if (hostPos != null && clientPos != null)
         {
+            Debug.Log("Spawn from dungeon");
             _hostPos = (Vector3)hostPos;
             _clientPos = (Vector3)clientPos;
         }
         else
         {
+            Debug.Log("Spawn from default");
             _hostPos = spawnPointPlayer1.position;
             _clientPos = spawnPointPlayer2.position;
         }

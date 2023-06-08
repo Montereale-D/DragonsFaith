@@ -10,6 +10,8 @@ namespace Interactable
         [SerializeField] private Attribute abilityToCheck;
         public UnityEvent onSuccess;
         [SerializeField] private string saveId;
+        
+        
         protected override void Awake()
         {
             onKeyPressedEvent = CheckAbility;
@@ -24,8 +26,8 @@ namespace Interactable
             if (DungeonProgressManager.instance.IsAbilityPassed(saveId))
             {
                 Debug.Log(gameObject.name + " was already activated");
-                _isUsed.Value = true;
-                SetActive(false);
+                //_isUsed.Value = true;
+                SetActive(true);
             }
             else
             {
@@ -44,6 +46,7 @@ namespace Interactable
                 }
 
                 DungeonProgressManager.instance.AbilityPassed(saveId);
+                Notify();
                 
                 if (IsHost)
                 {
@@ -58,6 +61,34 @@ namespace Interactable
                 
                 onSuccess?.Invoke();
             }
+        }
+        
+        private void Notify()
+        {
+            if (IsHost)
+            {
+                AbilityPassedClientRpc();
+            }
+            else
+            {
+                AbilityPassedServerRpc();
+            }
+        }
+
+        [ClientRpc]
+        private void AbilityPassedClientRpc()
+        {
+            if(IsHost) return;
+            
+            DungeonProgressManager.instance.AbilityPassed(saveId);
+        }
+        
+        [ServerRpc (RequireOwnership = false)]
+        private void AbilityPassedServerRpc()
+        {
+            if(!IsHost) return;
+            
+            DungeonProgressManager.instance.AbilityPassed(saveId);
         }
 
         private void ShowNotAble()
