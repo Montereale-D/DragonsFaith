@@ -43,8 +43,8 @@ namespace Network
             mapIdx = Random.Range(0, _roomPool.Count);
             var map = Instantiate(_roomPool[mapIdx]);
             
-            map.GetComponent<NetworkObject>().Spawn();
-            //InstantiateMapClientRpc(mapIdx);
+            //map.GetComponent<NetworkObject>().Spawn();
+            InstantiateMapClientRpc(mapIdx);
 
             var objs = map.GetComponentsInChildren<NetworkObject>();
 
@@ -82,13 +82,13 @@ namespace Network
             }*/
         }
     
-        /*[ClientRpc]
+        [ClientRpc]
         private void InstantiateMapClientRpc(int idx)
         {
             if (IsHost) return;
             
             Instantiate(_roomPool[idx]);
-        }*/
+        }
         
         public override void OnDestroy()
         {
