@@ -162,6 +162,7 @@ public class MapHandler : MonoBehaviour
         List<Tile> tiles = GetTilesInRange(characterTile, movement);
         foreach (Tile tile in tiles)
         {
+            if(tile.navigable)
             tile.ShowTile();
         }
     }
