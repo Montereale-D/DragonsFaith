@@ -19,7 +19,7 @@ namespace Network
                 Destroy(this);
                 return;
             }
-            
+
             instance = this;
             DontDestroyOnLoad(this);
         }
@@ -34,18 +34,40 @@ namespace Network
 
         public bool sceneIsLoaded => _loadedScene.IsValid() && _loadedScene.isLoaded;
 
+        private void ResetDungeonProgress()
+        {
+            if (DungeonProgressManager.instance != null)
+            {
+                DungeonProgressManager.instance.Reset();
+            }
+
+            if (IsHost)
+            {
+                ResetDungeonProgressClientRpc();
+            }
+        }
+
+        [ClientRpc]
+        private void ResetDungeonProgressClientRpc()
+        {
+            if(IsHost) return;
+            
+            if (DungeonProgressManager.instance != null)
+            {
+                DungeonProgressManager.instance.Reset();
+            }
+        }
+
         public void LoadSceneSingle(string sceneName)
         {
             //EnableInterpolation(false);
-            if (sceneName != "Grid" && !sceneName.Contains("Dungeon"))
+            if (sceneName == "Hub")
             {
-                if (DungeonProgressManager.instance != null)
-                {
-                    DungeonProgressManager.instance.Reset();
-                }
+                ResetDungeonProgress();
             }
 
             if (!IsHost) return;
+
 
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
@@ -106,7 +128,6 @@ namespace Network
                         // *** IMPORTANT ***
                         // Keep track of the loaded scene, you need this to unload it
                         _loadedScene = sceneEvent.Scene;
-                    
                     }
 
                     Debug.Log($"Loaded the {sceneEvent.SceneName} scene on " +

@@ -48,18 +48,6 @@ public class SpawnPointer : MonoBehaviour
             var position = player.IsHost ? _hostPos : _clientPos;
             player.ForcePosition(position);
         }
-
-        //if (NetworkManager.Singleton.IsHost)
-        {
-            StartCoroutine(Notify());
-        }
-            
-    }
-
-    private IEnumerator Notify()
-    {
-        yield return new WaitForSecondsRealtime(1);
-        onPlayersSpawned.Invoke();
     }
 
     public Vector3 GetSpawnPoint(GameData.PlayerType playerType)

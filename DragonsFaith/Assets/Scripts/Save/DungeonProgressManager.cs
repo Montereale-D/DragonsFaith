@@ -112,7 +112,11 @@ public class DungeonProgressManager : MonoBehaviour
     public void UpdateSpawnPoint(Vector3 position, GameData.PlayerType playerType)
     {
         Debug.Log("UpdateSpawnPoint " + position);
-        _spawnData.TryAdd(playerType, position);
+        if (!_spawnData.TryAdd(playerType, position))
+        {
+            _spawnData.Remove(playerType);
+            _spawnData.Add(playerType, position);
+        }
     }
 
     public Vector3? GetSpawnPoint(GameData.PlayerType playerType)
