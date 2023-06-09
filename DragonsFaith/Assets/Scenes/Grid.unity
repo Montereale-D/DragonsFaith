@@ -2955,7 +2955,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1754092425021754728, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
       propertyPath: skipTurn
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3990144259735587781, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
       propertyPath: team
@@ -3007,11 +3007,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9126842862016260027, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9126842862016260027, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9126842862016260027, guid: e470d6b9566a49e44b835d42ec2c5bb4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3163,6 +3163,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterList: []
   obstacleList: []
+  coverLayerMaskHit:
+    serializedVersion: 2
+    m_Bits: 904
 --- !u!114 &1993676594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3260,11 +3263,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: spawnPointEnemies.Array.data[0].x
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: spawnPointEnemies.Array.data[0].y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: onPlayersSpawned.m_PersistentCalls.m_Calls.Array.size

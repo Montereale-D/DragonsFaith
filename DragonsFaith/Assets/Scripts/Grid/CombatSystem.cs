@@ -13,8 +13,8 @@ using UnityEngine.EventSystems;
 public class CombatSystem : NetworkBehaviour
 {
     public static CombatSystem instance;
-    public List<PlayerGridMovement> characterList;
-    public List<Obstacle> obstacleList;
+    [HideInInspector] public List<PlayerGridMovement> characterList;
+    [HideInInspector] public List<Obstacle> obstacleList;
     private int _indexCharacterTurn = -1;
 
     public PlayerGridMovement activeUnit { get; private set; }
@@ -33,6 +33,8 @@ public class CombatSystem : NetworkBehaviour
     private TurnUI _turnUI;
 
     private GameObject _localPlayer;
+
+    [SerializeField] private LayerMask coverLayerMaskHit;
     /*private float _turnDelay; //needs to be the same as the length of the turn UI animation
     private float _turnDelayCounter;*/
 
@@ -708,17 +710,27 @@ public class CombatSystem : NetworkBehaviour
         Debug.Log("Enemy layer is " + targetLayer);
         
         
-        var layerMask = LayerMask.GetMask(targetLayer, "Walls", "Obstacles");
+        //var layerMask = LayerMask.GetMask(targetLayer, "Walls", "Obstacles");
+        
         /*layerMask |= (1 << LayerMask.GetMask("Obstacles"));
         layerMask |= (1 << LayerMask.GetMask("Walls"));
         layerMask |= (1 << target.gameObject.layer);*/
-        
 
-        var hit = Physics2D.Raycast(from, to, Mathf.Infinity, layerMask);
+        var hit = Physics2D.Raycast(from, to, Mathf.Infinity, coverLayerMaskHit);
+
+        if (!hit)
+        {
+            Debug.Log("RayCast is null");
+            return false;
+        }
+        if (hit.transform)
+        {
+            Debug.Log("Hit " + hit.transform.name);
+        }
 
         if (!hit.collider)
         {
-            Debug.Log("RayCast is null");
+            Debug.Log("Hit has no collider");
             return false;
         }
 
