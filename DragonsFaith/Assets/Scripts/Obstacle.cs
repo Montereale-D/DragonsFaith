@@ -9,9 +9,13 @@ public class Obstacle : MonoBehaviour
     public void SetGridPosition()
     {
         var obstaclePosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+        SetGridPosition(obstaclePosition);
+    }
+    public void SetGridPosition(Vector2Int position)
+    {
         Dictionary<Vector2Int, Tile> map = MapHandler.instance.GetMap();
 
-        var tile = map[obstaclePosition];
+        var tile = map[position];
         SetTile(tile);
         tile.SetObstacleOnTile(this);
     }

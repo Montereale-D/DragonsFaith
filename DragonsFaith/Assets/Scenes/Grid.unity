@@ -432,11 +432,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3227906415324043455, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3227906415324043455, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3227906415324043455, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3162,6 +3162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterList: []
+  obstacleList: []
 --- !u!114 &1993676594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3251,6 +3252,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: spawnPointEnemies.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
+      propertyPath: spawnPointObstacles.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}

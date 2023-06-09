@@ -99,13 +99,16 @@ public class CombatSystem : NetworkBehaviour
         var clientPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client);
         var enemiesPos = SpawnPointerGrid.instance.GetEnemySpawnPoint();
         var enemyPosIndex = 0;
+        var obstaclesPos = SpawnPointerGrid.instance.GetObstaclesSpawnPoint();
+        var obstaclePosIndex = 0;
 
         foreach (var obstacle in obstacleList)
         {
-            obstacle.SetGridPosition();
+            obstacle.SetGridPosition(obstaclesPos[obstaclePosIndex]);
+            obstaclePosIndex++;
         }
-        
-        
+
+
         foreach (var character in characterList)
         {
             if (character.GetTeam() == PlayerGridMovement.Team.Enemies)
@@ -129,7 +132,7 @@ public class CombatSystem : NetworkBehaviour
         _mapHandler.HideAllTiles();
         ResetTurnActions();
     }
-    
+
     public static void SetTileUnderCharacter(PlayerGridMovement playerGridMovement)
     {
         if (!playerGridMovement.onTile)
@@ -659,11 +662,18 @@ public class CombatSystem : NetworkBehaviour
             _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
         }
 
+        var isCovered = IsTargetCovered(target);
+
         if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
         {
             var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
 
             if (target.GetComponent<CharacterInfo>().isBlocking)
+            {
+                damage /= 2;
+            }
+
+            if (isCovered)
             {
                 damage /= 2;
             }
@@ -679,8 +689,58 @@ public class CombatSystem : NetworkBehaviour
                 damage /= 2;
             }
 
+            if (isCovered)
+            {
+                damage /= 2;
+            }
+
             NotifyAttackToPlayer(target, (int)damage);
         }
+    }
+
+    private bool IsTargetCovered(PlayerGridMovement target)
+    {
+        Vector2 from = activeUnit.onTile.transform.position;
+        Vector2 to = target.onTile.transform.position;
+        Debug.Log("Raycast from " + from + " to " + to);
+        
+        var targetLayer = LayerMask.LayerToName(target.gameObject.layer);
+        Debug.Log("Enemy layer is " + targetLayer);
+        
+        
+        var layerMask = LayerMask.GetMask(targetLayer, "Walls", "Obstacles");
+        /*layerMask |= (1 << LayerMask.GetMask("Obstacles"));
+        layerMask |= (1 << LayerMask.GetMask("Walls"));
+        layerMask |= (1 << target.gameObject.layer);*/
+        
+
+        var hit = Physics2D.Raycast(from, to, Mathf.Infinity, layerMask);
+
+        if (!hit.collider)
+        {
+            Debug.Log("RayCast is null");
+            return false;
+        }
+
+        if (hit.transform.gameObject.layer == target.gameObject.layer)
+        {
+            Debug.Log("RayCast hit target: " + gameObject.name + " with layer " + LayerMask.LayerToName(gameObject.layer));
+            return false;
+        }
+
+        Debug.Log("RayCast hit " + hit.transform.gameObject.name);
+        var adjObstaclesPos = new Vector2(hit.transform.position.x, hit.transform.position.y);
+        var adjTargetPos = new Vector2(target.transform.position.x, target.transform.position.y);
+
+        if (Vector2.Distance(adjObstaclesPos, adjTargetPos) < 1.5f)
+        {
+            Debug.Log("RayCastHit distance to target is < 1.5f");
+            return true;
+        }
+        
+        Debug.Log("IsCovered return false");
+        
+        return false;
     }
 
     private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)

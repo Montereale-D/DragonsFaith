@@ -12,6 +12,7 @@ public class SpawnPointerGrid : MonoBehaviour
     [SerializeField] private Vector2Int spawnPointPlayer1;
     [SerializeField] private Vector2Int spawnPointPlayer2;
     [SerializeField] private List<Vector2Int> spawnPointEnemies;
+    [SerializeField] private List<Vector2Int> spawnPointObstacles;
     public UnityEvent onPlayersSpawned;
 
     private List<PlayerMovement> _players;
@@ -58,5 +59,10 @@ public class SpawnPointerGrid : MonoBehaviour
     public List<Vector2Int> GetEnemySpawnPoint()
     {
         return spawnPointEnemies;
+    }
+
+    public List<Vector2Int> GetObstaclesSpawnPoint()
+    {
+        return spawnPointObstacles;
     }
 }
