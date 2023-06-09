@@ -22,6 +22,9 @@ namespace Enemy
         private Vector3 _nextPosition;
         private int _positionIndex;
         private bool _keepMoving = true;
+
+        //use this in order to avoid unwanted collision with player on scene reloading
+        private bool _isReadyToFight;
         
         //private readonly NetworkVariable<bool> _setUpDone = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -54,7 +57,16 @@ namespace Enemy
             {
                 Debug.Log(gameObject.name + " was already defeated");
                 Destroy(gameObject);
+                return;
             }
+
+            StartCoroutine(WaitToFight());
+        }
+
+        private IEnumerator WaitToFight()
+        {
+            yield return new WaitForSecondsRealtime(2f);
+            _isReadyToFight = true;
         }
 
         private void Update()
@@ -152,6 +164,12 @@ namespace Enemy
         }
         public void OnCombatStart(Vector3 position)
         {
+            if (!_isReadyToFight)
+            {
+                Debug.Log("Not ready to CombatStart");
+                return;
+            }
+            
             Debug.Log("OnCombatStart " + position);
             DungeonProgressManager.instance.EnemyDefeated(_saveId);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
