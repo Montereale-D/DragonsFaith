@@ -146,6 +146,10 @@ namespace Enemy
             base.OnNetworkDespawn();
         }
 
+        public void OnCombatStart()
+        {
+            OnCombatStart(characterTransform.position);
+        }
         public void OnCombatStart(Vector3 position)
         {
             Debug.Log("OnCombatStart " + position);
