@@ -11,6 +11,7 @@ public class Tile : MonoBehaviour
     public Tile previous;
     private PlayerGridMovement _characterOnTile;
     public Vector2Int mapPosition;
+    private Obstacle _obstacleOnTile;
 
     //comment or rename => g,h,f
     public int g;
@@ -23,6 +24,7 @@ public class Tile : MonoBehaviour
 
     private void Awake()
     {
+        navigable = true;
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -59,15 +61,28 @@ public class Tile : MonoBehaviour
     public void SetCharacterOnTile(PlayerGridMovement c)
     {
         _characterOnTile = c;
+        //navigable = false;
     }
 
     public void ClearTile()
     {
         SetCharacterOnTile(null);
+        //navigable = true;
     }
 
     public PlayerGridMovement GetCharacter()
     {
         return _characterOnTile;
+    }
+
+    public void SetObstacleOnTile(Obstacle o)
+    {
+        _obstacleOnTile = o;
+        navigable = false;
+    }
+
+    public Obstacle GetObstacle()
+    {
+        return _obstacleOnTile;
     }
 }

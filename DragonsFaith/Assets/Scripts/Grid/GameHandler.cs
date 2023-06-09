@@ -12,16 +12,11 @@ public class GameHandler : NetworkBehaviour
 {
     public static GameHandler instance { get; private set; }
     public Camera mainCamera { get; private set; }
-    //public GameState state { get; private set; }
-    //public ChangeGameStateEvent onChangeGameState = new ChangeGameStateEvent();
-
+    
     private PlayerGridMovement[] _characters;
 
-    /*private void SetGameState(GameState inState)
-    {
-        state = inState;
-        //onChangeGameState?.Invoke(state);
-    }*/
+    private Obstacle[] _obstacles;
+    
 
     private void Awake()
     {
@@ -39,13 +34,22 @@ public class GameHandler : NetworkBehaviour
         //Assign main camera
         mainCamera = Camera.main;
         if (mainCamera == null) Debug.LogError("No main camera assigned");
-        
+
+        SetGameState(GameState.Battle);
         CharacterManager.Instance.SetPlayerGridMode();
     }
 
     //Find and setup all characters, then setup the CombatSystem
     public void Setup()
     {
+        _obstacles = FindObjectsOfType<Obstacle>();
+        for (var i = 0; i < _obstacles.Length; i++)
+        {
+            var obstacle = _obstacles[i];
+            obstacle.SetGridPosition();
+            SetTileUnderObstacle(obstacle);
+        }
+
         _characters = FindObjectsOfType<PlayerGridMovement>();
         for (var i = 0; i < _characters.Length; i++)
         {
@@ -150,5 +154,48 @@ public class GameHandler : NetworkBehaviour
         if (NetworkManager.Singleton.IsHost) return;
         _characters[askedIndex].movement = movement;
         Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
+    }
+
+    private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
+    {
+        yield return null;
+
+        var charactersReady = false;
+        while (!charactersReady)
+        {
+            if (characters.Any(x => x.movement == 0))
+            {
+                yield return new WaitForSecondsRealtime(1f);
+            }
+            else
+            {
+                charactersReady = true;
+            }
+        }
+
+
+        CombatSystem.instance.Setup(characters);
+    }
+    
+    private static void SetTileUnderObstacle(Obstacle o)
+    {
+        if (o.onTile == null)
+        {
+            Debug.LogError("No c.onTile found");
+            return;
+        }
+
+        o.onTile.SetObstacleOnTile(o);
+    }
+
+    private static void SetTileUnderCharacter(PlayerGridMovement playerGridMovement)
+    {
+        if (playerGridMovement.onTile == null)
+        {
+            Debug.LogError("No c.onTile found");
+            return;
+        }
+
+        playerGridMovement.onTile.SetCharacterOnTile(playerGridMovement);
     }
 }
