@@ -34,8 +34,7 @@ public class GameHandler : NetworkBehaviour
         //Assign main camera
         mainCamera = Camera.main;
         if (mainCamera == null) Debug.LogError("No main camera assigned");
-
-        SetGameState(GameState.Battle);
+        
         CharacterManager.Instance.SetPlayerGridMode();
     }
 
@@ -43,12 +42,12 @@ public class GameHandler : NetworkBehaviour
     public void Setup()
     {
         _obstacles = FindObjectsOfType<Obstacle>();
-        for (var i = 0; i < _obstacles.Length; i++)
+        /*for (var i = 0; i < _obstacles.Length; i++)
         {
             var obstacle = _obstacles[i];
             obstacle.SetGridPosition();
             SetTileUnderObstacle(obstacle);
-        }
+        }*/
 
         _characters = FindObjectsOfType<PlayerGridMovement>();
         for (var i = 0; i < _characters.Length; i++)
@@ -63,7 +62,7 @@ public class GameHandler : NetworkBehaviour
             //SetTileUnderCharacter(character);
         }
         
-        StartCoroutine(WaitMovementInfo(_characters));
+        StartCoroutine(WaitMovementInfo(_characters, _obstacles));
     }
 
     private void AskPlayerMovement(int askedIndex)
@@ -79,7 +78,7 @@ public class GameHandler : NetworkBehaviour
     }
 
 
-    private IEnumerator WaitMovementInfo(PlayerGridMovement[] characters)
+    private IEnumerator WaitMovementInfo(PlayerGridMovement[] characters, Obstacle[] obstacles)
     {
         yield return null;
 
@@ -97,7 +96,7 @@ public class GameHandler : NetworkBehaviour
         }
 
 
-        CombatSystem.instance.Setup(characters);
+        CombatSystem.instance.Setup(characters, obstacles);
     }
 
     public void GameOver()
@@ -156,7 +155,7 @@ public class GameHandler : NetworkBehaviour
         Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }
 
-    private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
+    /*private IEnumerator WaitCharacterSetupAndContinue(PlayerGridMovement[] characters)
     {
         yield return null;
 
@@ -174,8 +173,8 @@ public class GameHandler : NetworkBehaviour
         }
 
 
-        CombatSystem.instance.Setup(characters);
-    }
+        CombatSystem.instance.Setup(characters, _obstacles);
+    }*/
     
     private static void SetTileUnderObstacle(Obstacle o)
     {

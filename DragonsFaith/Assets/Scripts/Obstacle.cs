@@ -11,7 +11,9 @@ public class Obstacle : MonoBehaviour
         var obstaclePosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
         Dictionary<Vector2Int, Tile> map = MapHandler.instance.GetMap();
 
-        SetTile(map[obstaclePosition]);
+        var tile = map[obstaclePosition];
+        SetTile(tile);
+        tile.SetObstacleOnTile(this);
     }
 
     public void SetTile(Tile tile)

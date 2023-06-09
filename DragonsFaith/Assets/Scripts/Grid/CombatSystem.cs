@@ -14,6 +14,7 @@ public class CombatSystem : NetworkBehaviour
 {
     public static CombatSystem instance;
     public List<PlayerGridMovement> characterList;
+    public List<Obstacle> obstacleList;
     private int _indexCharacterTurn = -1;
 
     public PlayerGridMovement activeUnit { get; private set; }
@@ -55,12 +56,14 @@ public class CombatSystem : NetworkBehaviour
         _turnDelayCounter = 0;*/
     }
 
-    public void Setup(IEnumerable<PlayerGridMovement> characters)
+    public void Setup(IEnumerable<PlayerGridMovement> characters, IEnumerable<Obstacle> obstacles)
     {
         characterList = characters.OrderByDescending(x => x.movement)
             .ThenBy(x => x.name)
             .ThenBy(x => x.GetHashCode())
             .ToList();
+
+        obstacleList = obstacles.ToList();
 
         StartCoroutine(SetUpUITurns());
         StartCoroutine(WaitSetupToStart());
@@ -96,6 +99,12 @@ public class CombatSystem : NetworkBehaviour
         var clientPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client);
         var enemiesPos = SpawnPointerGrid.instance.GetEnemySpawnPoint();
         var enemyPosIndex = 0;
+
+        foreach (var obstacle in obstacleList)
+        {
+            obstacle.SetGridPosition();
+        }
+        
         
         foreach (var character in characterList)
         {
@@ -520,6 +529,12 @@ public class CombatSystem : NetworkBehaviour
         if (!_canMoveThisTurn)
         {
             //_playerUI.ShowMessage("Already moved this turn.");
+            return false;
+        }
+
+        if (!toTile.navigable)
+        {
+            Debug.Log("You cannot go there because of obstacle");
             return false;
         }
 
