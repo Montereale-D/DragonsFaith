@@ -144,7 +144,7 @@ public class PlayerGridMovement : MonoBehaviour
             List<Tile> neighbourTiles = MapHandler.instance.GetNeighbourTiles(current, searchableTiles);
             foreach (Tile tile in neighbourTiles)
             {
-                if (tile.ShouldBlockCharacter(this) || closedList.Contains(tile))
+                if ( !tile.navigable ||  closedList.Contains(tile))
                     continue;
 
                 tile.g = GetManhattanDistance(start, tile);

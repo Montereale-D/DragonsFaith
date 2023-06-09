@@ -25,6 +25,8 @@ public class GameHandler : NetworkBehaviour
 
     private PlayerGridMovement[] _characters;
 
+    private Obstacle[] _obstacles;
+
     private void SetGameState(GameState inState)
     {
         state = inState;
@@ -55,6 +57,14 @@ public class GameHandler : NetworkBehaviour
     //Find and setup all characters, then setup the CombatSystem
     public void Setup()
     {
+        _obstacles = FindObjectsOfType<Obstacle>();
+        for (var i = 0; i < _obstacles.Length; i++)
+        {
+            var obstacle = _obstacles[i];
+            obstacle.SetGridPosition();
+            SetTileUnderObstacle(obstacle);
+        }
+
         _characters = FindObjectsOfType<PlayerGridMovement>();
         for (var i = 0; i < _characters.Length; i++)
         {
@@ -148,6 +158,17 @@ public class GameHandler : NetworkBehaviour
         }
 
         playerGridMovement.onTile.SetCharacterOnTile(playerGridMovement);
+    }
+
+    private static void SetTileUnderObstacle(Obstacle o)
+    {
+        if (o.onTile == null)
+        {
+            Debug.LogError("No c.onTile found");
+            return;
+        }
+
+        o.onTile.SetObstacleOnTile(o);
     }
 
     //the following method is just for bugging and testing, not used in the actual game: it allows to switch from FreeRoaming to Battle Mode at will
