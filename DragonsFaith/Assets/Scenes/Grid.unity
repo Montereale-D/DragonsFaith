@@ -426,6 +426,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1605838062364132009, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
+      propertyPath: destroyable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3227906415324043455, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -3162,6 +3166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterList: []
+  obstacleList: []
 --- !u!114 &1993676594
 MonoBehaviour:
   m_ObjectHideFlags: 0
