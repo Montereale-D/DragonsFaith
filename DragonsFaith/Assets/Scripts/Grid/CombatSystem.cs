@@ -405,6 +405,7 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile.SelectTile();
 
         var character = _selectedTile.GetCharacter();
+        var obstacle = _selectedTile.GetObstacle();
         if (character)
         {
             if (character != activeUnit)
@@ -440,6 +441,13 @@ public class CombatSystem : NetworkBehaviour
                     _target = character;
                     _playerUI.ToggleMoveAttackButton("Attack");
                 }
+            }
+        }
+        else if (obstacle){
+            if (obstacle.destroyable)
+            {
+                Destroy(obstacle);
+                _selectedTile.ClearTile();
             }
         }
         else
