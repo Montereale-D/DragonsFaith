@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Player
@@ -7,12 +8,17 @@ namespace Player
     {
         [SerializeField] private float speed = 3f;
         [SerializeField] private float fastSpeed = 6f;
+        private Animator _animator;
 
         private float _speed;
+        private static readonly int IsMoving = Animator.StringToHash("isMoving");
+        private static readonly int IsRunning = Animator.StringToHash("isRunning");
+        private float _previousDir;
 
         private void Awake()
         {
             _speed = speed;
+            _animator = GetComponent<Animator>();
         }
 
         public void ForcePosition(Vector3 position)
@@ -36,6 +42,19 @@ namespace Player
             _speed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : speed;
 
             transform.position += moveDir * (_speed * Time.deltaTime);
+            //TODO: test
+            if (moveDir != Vector3.zero)
+            {
+                _animator.SetBool(IsRunning, Math.Abs(_speed - fastSpeed) < 0.1f);
+                _animator.SetBool(IsMoving, true);
+            }
+            else
+            {
+                _animator.SetBool(IsMoving, false);
+                _animator.SetBool(IsRunning, false);
+            }
+            if (_previousDir != 0) _animator.SetFloat("x", _previousDir);
+            _previousDir = moveDir.x;
         }
 
         public override void OnNetworkSpawn()

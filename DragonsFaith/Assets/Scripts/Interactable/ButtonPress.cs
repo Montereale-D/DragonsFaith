@@ -15,6 +15,9 @@ namespace Interactable
         [Header("System section")] [Tooltip("Reference to button system")] [SerializeField]
         private ButtonSystem buttonSystem;
 
+        public Sprite spriteOn;
+        public Sprite spriteOff;
+
         //counter of collision at the moment
         private int _triggerCount;
 
@@ -81,7 +84,8 @@ namespace Interactable
 
         private void ChangeSprite(bool newValue)
         {
-            GetComponent<SpriteRenderer>().color = newValue ? Color.green : Color.red;
+            //GetComponent<SpriteRenderer>().color = newValue ? Color.green : Color.red;
+            GetComponent<SpriteRenderer>().sprite = newValue ? spriteOn : spriteOff;
         }
 
         private void OnTriggerEnter2D(Collider2D col)
@@ -96,7 +100,8 @@ namespace Interactable
                 else
                 {
                     buttonSystem.OnButtonPressed();
-                    GetComponent<SpriteRenderer>().color = Color.green;
+                    //GetComponent<SpriteRenderer>().color = Color.green;
+                    GetComponent<SpriteRenderer>().sprite = spriteOn;
                 }
             }
         }
@@ -115,7 +120,8 @@ namespace Interactable
                 else
                 {
                     buttonSystem.OnButtonRelease();
-                    GetComponent<SpriteRenderer>().color = Color.red;
+                    //GetComponent<SpriteRenderer>().color = Color.red;
+                    GetComponent<SpriteRenderer>().sprite = spriteOff;
                 }
             }
         }
