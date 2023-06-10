@@ -466,8 +466,7 @@ public class CombatSystem : NetworkBehaviour
                 else
                 {
                     _playerUI.SetCombatPopUp(true,
-                        "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
-                        "Strike object to destroy it");
+                        "This obstacle can't be destroyed");
                 }
             }
         }

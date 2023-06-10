@@ -428,7 +428,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1605838062364132009, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
       propertyPath: destroyable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3227906415324043455, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
       propertyPath: m_RootOrder
