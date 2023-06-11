@@ -753,13 +753,6 @@ public class CombatSystem : NetworkBehaviour
         var targetLayer = LayerMask.LayerToName(target.gameObject.layer);
         Debug.Log("Enemy layer is " + targetLayer);
 
-
-        //var layerMask = LayerMask.GetMask(targetLayer, "Walls", "Obstacles");
-
-        /*layerMask |= (1 << LayerMask.GetMask("Obstacles"));
-        layerMask |= (1 << LayerMask.GetMask("Walls"));
-        layerMask |= (1 << target.gameObject.layer);*/
-
         var hit = Physics2D.Raycast(from, (to - from).normalized, Mathf.Infinity, coverLayerMaskHit);
 
         if (!hit)
@@ -898,12 +891,58 @@ public class CombatSystem : NetworkBehaviour
         DestroyObstacle(_selectedTile.GetObstacle());
     }
 
-    public void DestroyObstacle(Obstacle o)
+    private void DestroyObstacle(Obstacle obstacle)
     {
-        if (o == null) Debug.Log("Something went wrong");
-        o.onTile.ClearTile();
+        if (!obstacle)
+        {
+            Debug.LogError("Selected tile has no obstacle");
+            return;
+        }
+        
+        NotifyDestroyedObstacle(obstacle);
+        obstacle.onTile.ClearTile();
+        Destroy(obstacle.gameObject);
+
         _canAttackThisTurn = false;
-        Destroy(o.gameObject);
+    }
+
+    private void NotifyDestroyedObstacle(Obstacle obstacle)
+    {
+        var pos = obstacle.onTile.mapPosition;
+        if (IsHost)
+        {
+            DestroyedObstacleClientRpc(pos.x, pos.y);
+        }
+        else
+        {
+            DestroyedObstacleServerRpc(pos.x, pos.y);
+        }
+    }
+
+    [ClientRpc]
+    private void DestroyedObstacleClientRpc(int x, int y)
+    {
+        if(IsHost) return;
+        
+        var toPosition = new Vector2Int(x, y);
+        var tile = _mapHandler.GetMap()[toPosition];
+
+        var obstacle = tile.GetObstacle();
+        tile.ClearTile();
+        Destroy(obstacle.gameObject);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void DestroyedObstacleServerRpc(int x, int y)
+    {
+        if(!IsHost) return;
+        
+        var toPosition = new Vector2Int(x, y);
+        var tile = _mapHandler.GetMap()[toPosition];
+        
+        var obstacle = tile.GetObstacle();
+        tile.ClearTile();
+        Destroy(obstacle.gameObject);
     }
 
     #endregion
