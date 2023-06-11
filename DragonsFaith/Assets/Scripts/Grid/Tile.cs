@@ -26,6 +26,8 @@ public class Tile : MonoBehaviour
     {
         navigable = true;
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        gameObject.layer = LayerMask.NameToLayer("Tiles");
+        
     }
 
     public void ShowTile()

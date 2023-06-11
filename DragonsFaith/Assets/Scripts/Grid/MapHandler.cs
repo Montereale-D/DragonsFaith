@@ -9,6 +9,7 @@ public class MapHandler : MonoBehaviour
     public static MapHandler instance { get; private set; }
 
     [SerializeReference] private Tile tileClass;
+    private LayerMask _layerMask;
 
     private Dictionary<Vector2Int, Tile> map = new Dictionary<Vector2Int, Tile>();
 
@@ -34,6 +35,7 @@ public class MapHandler : MonoBehaviour
 
     private void Start()
     {
+        _layerMask = LayerMask.GetMask("Tiles");
         container = new GameObject("OverlayContainer");
         Tilemap tileMap = gameObject.GetComponentInChildren<Tilemap>();
         BoundsInt bounds = tileMap.cellBounds;
@@ -67,7 +69,7 @@ public class MapHandler : MonoBehaviour
 
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 mousePosition2d = new Vector2(mousePosition.x, mousePosition.y);
-        RaycastHit2D[] hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero);
+        var hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero, Mathf.Infinity, _layerMask);
         if (hitResult.Length > 0)
         {
             return hitResult.OrderByDescending(i => i.collider.transform.position.z).First();
