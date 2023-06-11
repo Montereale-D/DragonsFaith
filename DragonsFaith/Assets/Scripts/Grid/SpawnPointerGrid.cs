@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Player;
 using Save;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class SpawnPointerGrid : MonoBehaviour
 {
@@ -12,7 +10,7 @@ public class SpawnPointerGrid : MonoBehaviour
     [SerializeField] private Vector2Int spawnPointPlayer1;
     [SerializeField] private Vector2Int spawnPointPlayer2;
     [SerializeField] private List<Vector2Int> spawnPointEnemies;
-    public UnityEvent onPlayersSpawned;
+    [SerializeField] private List<Vector2Int> spawnPointObstacles;
 
     private List<PlayerMovement> _players;
 
@@ -26,6 +24,7 @@ public class SpawnPointerGrid : MonoBehaviour
 
         instance = this;
     }
+
     private void Start()
     {
         _players = FindObjectsOfType<PlayerMovement>().ToList();
@@ -35,19 +34,7 @@ public class SpawnPointerGrid : MonoBehaviour
             player.ForcePosition(new Vector3(position.x, position.y, 0));
         }
 
-        //if (NetworkManager.Singleton.IsHost)
-        {
-            StartCoroutine(Notify());
-        }
-            
-    }
-
-    private IEnumerator Notify()
-    {
-        yield return new WaitForSecondsRealtime(1);
-
         GameHandler.instance.Setup();
-        onPlayersSpawned.Invoke();
     }
 
     public Vector2Int GetPlayerSpawnPoint(GameData.PlayerType playerType)
@@ -58,5 +45,10 @@ public class SpawnPointerGrid : MonoBehaviour
     public List<Vector2Int> GetEnemySpawnPoint()
     {
         return spawnPointEnemies;
+    }
+
+    public List<Vector2Int> GetObstaclesSpawnPoint()
+    {
+        return spawnPointObstacles;
     }
 }

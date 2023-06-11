@@ -13,8 +13,8 @@ using UnityEngine.EventSystems;
 public class CombatSystem : NetworkBehaviour
 {
     public static CombatSystem instance;
-    public List<PlayerGridMovement> characterList;
-    public List<Obstacle> obstacleList;
+    [HideInInspector] public List<PlayerGridMovement> characterList;
+    [HideInInspector] public List<Obstacle> obstacleList;
     private int _indexCharacterTurn = -1;
 
     public PlayerGridMovement activeUnit { get; private set; }
@@ -33,6 +33,8 @@ public class CombatSystem : NetworkBehaviour
     private TurnUI _turnUI;
 
     private GameObject _localPlayer;
+
+    [SerializeField] private LayerMask coverLayerMaskHit;
     /*private float _turnDelay; //needs to be the same as the length of the turn UI animation
     private float _turnDelayCounter;*/
 
@@ -99,13 +101,16 @@ public class CombatSystem : NetworkBehaviour
         var clientPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client);
         var enemiesPos = SpawnPointerGrid.instance.GetEnemySpawnPoint();
         var enemyPosIndex = 0;
+        var obstaclesPos = SpawnPointerGrid.instance.GetObstaclesSpawnPoint();
+        var obstaclePosIndex = 0;
 
         foreach (var obstacle in obstacleList)
         {
-            obstacle.SetGridPosition();
+            obstacle.SetGridPosition(obstaclesPos[obstaclePosIndex]);
+            obstaclePosIndex++;
         }
-        
-        
+
+
         foreach (var character in characterList)
         {
             if (character.GetTeam() == PlayerGridMovement.Team.Enemies)
@@ -129,7 +134,7 @@ public class CombatSystem : NetworkBehaviour
         _mapHandler.HideAllTiles();
         ResetTurnActions();
     }
-    
+
     public static void SetTileUnderCharacter(PlayerGridMovement playerGridMovement)
     {
         if (!playerGridMovement.onTile)
@@ -291,9 +296,12 @@ public class CombatSystem : NetworkBehaviour
 
     public void ReloadAction()
     {
-        /*var localPlayer =
-            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();*/
-        if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
+        if (!_canAttackThisTurn)
+        {
+            _playerUI.ShowMessage("Action already done");
+            return;
+        }
+
         var weapon = GetActiveUnitWeapon();
         if (weapon.IsFullyLoaded())
         {
@@ -302,17 +310,28 @@ public class CombatSystem : NetworkBehaviour
         }
 
         weapon.Reload();
-        _playerUI.SetAmmoCounter(weapon.GetAmmo());
-        SkipTurn();
+
+        if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
+        {
+            _playerUI.SetAmmoCounter(weapon.GetAmmo());
+        }
+
+        _canAttackThisTurn = false;
     }
 
     #region BlockAction
 
     public void BlockAction()
     {
+        if (!_canAttackThisTurn)
+        {
+            _playerUI.ShowMessage("Action already done");
+            return;
+        }
+        
         NotifyBlock();
         activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
-        SkipTurn();
+        _canAttackThisTurn = false;
     }
 
     private void NotifyBlock()
@@ -405,6 +424,7 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile.SelectTile();
 
         var character = _selectedTile.GetCharacter();
+        var obstacle = _selectedTile.GetObstacle();
         if (character)
         {
             if (character != activeUnit)
@@ -439,6 +459,34 @@ public class CombatSystem : NetworkBehaviour
 
                     _target = character;
                     _playerUI.ToggleMoveAttackButton("Attack");
+                }
+            }
+        }
+        //clicked on an obstacle
+        else if (obstacle)
+        {
+            var weapon = GetActiveUnitWeapon();
+            if (!_canAttackThisTurn)
+            {
+                _playerUI.SetCombatPopUp(true, "Already attacked this turn.");
+            }
+            else if (!IsWithinRange(obstacle, weapon))
+            {
+                _playerUI.SetCombatPopUp(true, "Target outside weapon range.");
+            }
+            else
+            {
+                if (obstacle.destroyable)
+                {
+                    _playerUI.SetCombatPopUp(true,
+                        "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
+                        "Strike object to destroy it");
+                    _playerUI.ToggleMoveAttackButton("Destroy");
+                }
+                else
+                {
+                    _playerUI.SetCombatPopUp(true,
+                        "This obstacle can't be destroyed");
                 }
             }
         }
@@ -596,6 +644,7 @@ public class CombatSystem : NetworkBehaviour
         CheckAction(_target);
     }
 
+
     //// <returns>false if no action has been performed</returns>
     public void CheckAction(PlayerGridMovement target, Tile fromTile = null)
     {
@@ -659,11 +708,18 @@ public class CombatSystem : NetworkBehaviour
             _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
         }
 
+        var isCovered = IsTargetCovered(target);
+
         if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
         {
             var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
 
             if (target.GetComponent<CharacterInfo>().isBlocking)
+            {
+                damage /= 2;
+            }
+
+            if (isCovered)
             {
                 damage /= 2;
             }
@@ -679,8 +735,63 @@ public class CombatSystem : NetworkBehaviour
                 damage /= 2;
             }
 
+            if (isCovered)
+            {
+                damage /= 2;
+            }
+
             NotifyAttackToPlayer(target, (int)damage);
         }
+    }
+
+    private bool IsTargetCovered(PlayerGridMovement target)
+    {
+        Vector2 from = activeUnit.onTile.transform.position;
+        Vector2 to = target.onTile.transform.position;
+        Debug.Log("Raycast from " + from + " to " + to);
+
+        var targetLayer = LayerMask.LayerToName(target.gameObject.layer);
+        Debug.Log("Enemy layer is " + targetLayer);
+
+        var hit = Physics2D.Raycast(from, (to - from).normalized, Mathf.Infinity, coverLayerMaskHit);
+
+        if (!hit)
+        {
+            Debug.Log("RayCast is null");
+            return false;
+        }
+
+        if (hit.transform)
+        {
+            Debug.Log("Hit " + hit.transform.name);
+        }
+
+        if (!hit.collider)
+        {
+            Debug.Log("Hit has no collider");
+            return false;
+        }
+
+        if (hit.transform.gameObject.layer == target.gameObject.layer)
+        {
+            Debug.Log("RayCast hit target: " + gameObject.name + " with layer " +
+                      LayerMask.LayerToName(gameObject.layer));
+            return false;
+        }
+
+        Debug.Log("RayCast hit " + hit.transform.gameObject.name);
+        var adjObstaclesPos = new Vector2(hit.transform.position.x, hit.transform.position.y);
+        var adjTargetPos = new Vector2(target.transform.position.x, target.transform.position.y);
+
+        if (Vector2.Distance(adjObstaclesPos, adjTargetPos) < 1.5f)
+        {
+            Debug.Log("RayCastHit distance to target is < 1.5f");
+            return true;
+        }
+
+        Debug.Log("IsCovered return false");
+
+        return false;
     }
 
     private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
@@ -775,6 +886,65 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
+    public void ButtonDestroyAction()
+    {
+        DestroyObstacle(_selectedTile.GetObstacle());
+    }
+
+    private void DestroyObstacle(Obstacle obstacle)
+    {
+        if (!obstacle)
+        {
+            Debug.LogError("Selected tile has no obstacle");
+            return;
+        }
+        
+        NotifyDestroyedObstacle(obstacle);
+        obstacle.onTile.ClearTile();
+        Destroy(obstacle.gameObject);
+
+        _canAttackThisTurn = false;
+    }
+
+    private void NotifyDestroyedObstacle(Obstacle obstacle)
+    {
+        var pos = obstacle.onTile.mapPosition;
+        if (IsHost)
+        {
+            DestroyedObstacleClientRpc(pos.x, pos.y);
+        }
+        else
+        {
+            DestroyedObstacleServerRpc(pos.x, pos.y);
+        }
+    }
+
+    [ClientRpc]
+    private void DestroyedObstacleClientRpc(int x, int y)
+    {
+        if(IsHost) return;
+        
+        var toPosition = new Vector2Int(x, y);
+        var tile = _mapHandler.GetMap()[toPosition];
+
+        var obstacle = tile.GetObstacle();
+        tile.ClearTile();
+        Destroy(obstacle.gameObject);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    private void DestroyedObstacleServerRpc(int x, int y)
+    {
+        if(!IsHost) return;
+        
+        var toPosition = new Vector2Int(x, y);
+        var tile = _mapHandler.GetMap()[toPosition];
+        
+        var obstacle = tile.GetObstacle();
+        tile.ClearTile();
+        Destroy(obstacle.gameObject);
+    }
+
     #endregion
 
     #region SkipAction
@@ -854,6 +1024,13 @@ public class CombatSystem : NetworkBehaviour
     #region Helper
 
     private bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
+    {
+        Debug.Log("Distance " + PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, target.onTile) +
+                  ", WeaponRange " + weapon.range);
+        return PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, target.onTile) <= weapon.range;
+    }
+
+    private bool IsWithinRange(Obstacle target, Weapon weapon)
     {
         Debug.Log("Distance " + PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, target.onTile) +
                   ", WeaponRange " + weapon.range);

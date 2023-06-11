@@ -26,6 +26,8 @@ public class Tile : MonoBehaviour
     {
         navigable = true;
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        gameObject.layer = LayerMask.NameToLayer("Tiles");
+        
     }
 
     public void ShowTile()
@@ -67,7 +69,8 @@ public class Tile : MonoBehaviour
     public void ClearTile()
     {
         SetCharacterOnTile(null);
-        //navigable = true;
+        SetObstacleOnTile(null);
+        navigable = true;
     }
 
     public PlayerGridMovement GetCharacter()

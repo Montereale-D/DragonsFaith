@@ -18,9 +18,9 @@ TagManager:
   - UI
   - PlayerInteractable
   - Walls
-  - 
-  - 
-  - 
+  - Obstacles
+  - Enemy
+  - Tiles
   - 
   - 
   - 

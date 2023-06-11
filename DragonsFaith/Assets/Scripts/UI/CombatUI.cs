@@ -133,6 +133,14 @@ namespace UI
                     moveOrAttackButton.GetComponent<TooltipTrigger>().content = "Move to the selected cell.";
                     moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonCheckMovement);
                     break;
+                case "Destroy":
+                    moveOrAttackButton.onClick.RemoveAllListeners();
+                    _moveOrAttackImage.sprite = attackSprite;
+                    _moveOrAttackText.text = "Destroy";
+                    moveOrAttackButton.GetComponent<TooltipTrigger>().header = "Destroy";
+                    moveOrAttackButton.GetComponent<TooltipTrigger>().content = "Destroy the selected obstacle";
+                    moveOrAttackButton.onClick.AddListener(CombatSystem.instance.ButtonDestroyAction);
+                    break;
             }
         }
     }
