@@ -67,7 +67,8 @@ public class Tile : MonoBehaviour
     public void ClearTile()
     {
         SetCharacterOnTile(null);
-        //navigable = true;
+        SetObstacleOnTile(null);
+        navigable = true;
     }
 
     public PlayerGridMovement GetCharacter()

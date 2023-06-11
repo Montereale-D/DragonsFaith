@@ -5,6 +5,7 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour
 {
     public Tile onTile;
+    public bool destroyable; 
 
     public void SetGridPosition()
     {

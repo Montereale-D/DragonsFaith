@@ -410,6 +410,7 @@ public class CombatSystem : NetworkBehaviour
         _selectedTile.SelectTile();
 
         var character = _selectedTile.GetCharacter();
+        var obstacle = _selectedTile.GetObstacle();
         if (character)
         {
             if (character != activeUnit)
@@ -444,6 +445,33 @@ public class CombatSystem : NetworkBehaviour
 
                     _target = character;
                     _playerUI.ToggleMoveAttackButton("Attack");
+                }
+            }
+        }
+        //clicked on an obstacle
+        else if (obstacle){
+            var weapon = GetActiveUnitWeapon();
+            if (!_canAttackThisTurn)
+            {
+                _playerUI.SetCombatPopUp(true, "Already attacked this turn.");
+            }
+            else if (!IsWithinRange(obstacle, weapon))
+            {
+                _playerUI.SetCombatPopUp(true, "Target outside weapon range.");
+            }
+            else
+            {
+                if (obstacle.destroyable)
+                {
+                    _playerUI.SetCombatPopUp(true,
+                        "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
+                        "Strike object to destroy it");
+                    _playerUI.ToggleMoveAttackButton("Destroy");
+                }
+                else
+                {
+                    _playerUI.SetCombatPopUp(true,
+                        "This obstacle can't be destroyed");
                 }
             }
         }
@@ -600,6 +628,7 @@ public class CombatSystem : NetworkBehaviour
     {
         CheckAction(_target);
     }
+
 
     //// <returns>false if no action has been performed</returns>
     public void CheckAction(PlayerGridMovement target, Tile fromTile = null)
@@ -846,6 +875,17 @@ public class CombatSystem : NetworkBehaviour
             characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
         }
     }
+    public void ButtonDestroyAction()
+    {
+        DestroyObstacle(_selectedTile.GetObstacle());
+    }
+    public void DestroyObstacle(Obstacle o)
+    {
+        if (o == null) Debug.Log("Something went wrong");
+        o.onTile.ClearTile();
+        _canAttackThisTurn = false;
+        Destroy(o.gameObject);
+    }
 
     #endregion
 
@@ -926,6 +966,13 @@ public class CombatSystem : NetworkBehaviour
     #region Helper
 
     private bool IsWithinRange(PlayerGridMovement target, Weapon weapon)
+    {
+        Debug.Log("Distance " + PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, target.onTile) +
+                  ", WeaponRange " + weapon.range);
+        return PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, target.onTile) <= weapon.range;
+    }
+
+    private bool IsWithinRange(Obstacle target, Weapon weapon)
     {
         Debug.Log("Distance " + PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, target.onTile) +
                   ", WeaponRange " + weapon.range);
