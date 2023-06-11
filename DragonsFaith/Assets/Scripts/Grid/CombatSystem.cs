@@ -296,9 +296,12 @@ public class CombatSystem : NetworkBehaviour
 
     public void ReloadAction()
     {
-        /*var localPlayer =
-            NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();*/
-        if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
+        if (!_canAttackThisTurn)
+        {
+            _playerUI.ShowMessage("Action already done");
+            return;
+        }
+
         var weapon = GetActiveUnitWeapon();
         if (weapon.IsFullyLoaded())
         {
@@ -307,17 +310,28 @@ public class CombatSystem : NetworkBehaviour
         }
 
         weapon.Reload();
-        _playerUI.SetAmmoCounter(weapon.GetAmmo());
-        SkipTurn();
+
+        if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
+        {
+            _playerUI.SetAmmoCounter(weapon.GetAmmo());
+        }
+
+        _canAttackThisTurn = false;
     }
 
     #region BlockAction
 
     public void BlockAction()
     {
+        if (!_canAttackThisTurn)
+        {
+            _playerUI.ShowMessage("Action already done");
+            return;
+        }
+        
         NotifyBlock();
         activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
-        SkipTurn();
+        _canAttackThisTurn = false;
     }
 
     private void NotifyBlock()
@@ -449,7 +463,8 @@ public class CombatSystem : NetworkBehaviour
             }
         }
         //clicked on an obstacle
-        else if (obstacle){
+        else if (obstacle)
+        {
             var weapon = GetActiveUnitWeapon();
             if (!_canAttackThisTurn)
             {
@@ -734,24 +749,25 @@ public class CombatSystem : NetworkBehaviour
         Vector2 from = activeUnit.onTile.transform.position;
         Vector2 to = target.onTile.transform.position;
         Debug.Log("Raycast from " + from + " to " + to);
-        
+
         var targetLayer = LayerMask.LayerToName(target.gameObject.layer);
         Debug.Log("Enemy layer is " + targetLayer);
-        
-        
+
+
         //var layerMask = LayerMask.GetMask(targetLayer, "Walls", "Obstacles");
-        
+
         /*layerMask |= (1 << LayerMask.GetMask("Obstacles"));
         layerMask |= (1 << LayerMask.GetMask("Walls"));
         layerMask |= (1 << target.gameObject.layer);*/
 
-        var hit = Physics2D.Raycast(from, to, Mathf.Infinity, coverLayerMaskHit);
+        var hit = Physics2D.Raycast(from, (to - from).normalized, Mathf.Infinity, coverLayerMaskHit);
 
         if (!hit)
         {
             Debug.Log("RayCast is null");
             return false;
         }
+
         if (hit.transform)
         {
             Debug.Log("Hit " + hit.transform.name);
@@ -765,7 +781,8 @@ public class CombatSystem : NetworkBehaviour
 
         if (hit.transform.gameObject.layer == target.gameObject.layer)
         {
-            Debug.Log("RayCast hit target: " + gameObject.name + " with layer " + LayerMask.LayerToName(gameObject.layer));
+            Debug.Log("RayCast hit target: " + gameObject.name + " with layer " +
+                      LayerMask.LayerToName(gameObject.layer));
             return false;
         }
 
@@ -778,9 +795,9 @@ public class CombatSystem : NetworkBehaviour
             Debug.Log("RayCastHit distance to target is < 1.5f");
             return true;
         }
-        
+
         Debug.Log("IsCovered return false");
-        
+
         return false;
     }
 
@@ -875,10 +892,12 @@ public class CombatSystem : NetworkBehaviour
             characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
         }
     }
+
     public void ButtonDestroyAction()
     {
         DestroyObstacle(_selectedTile.GetObstacle());
     }
+
     public void DestroyObstacle(Obstacle o)
     {
         if (o == null) Debug.Log("Something went wrong");

@@ -178,6 +178,16 @@ public class EnemyGridBehaviour : MonoBehaviour
     private void RangedPlan(List<PlayerGridMovement> characterList)
     {
         Debug.Log("Ranged Enemy turn");
+
+        if (weapon.GetAmmo() <= 0)
+        {
+            Debug.Log("No ammo, reloading ...");
+            CombatSystem.instance.ReloadAction();
+            CombatSystem.instance.SkipTurn();
+            return;
+        }
+        
+        
         var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
         PlayerGridMovement target;
 
