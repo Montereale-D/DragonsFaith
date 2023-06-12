@@ -53,11 +53,12 @@ public class CharacterGridPopUpUI : MonoBehaviour
         ui.SetActive(false);
     }
 
-    public void ShowDamageCounter(int value)
+    public void ShowDamageCounter(int value, bool heal)
     {
         damageCounter.SetActive(true);
         damageCounterText.transform.position = startPoint.position;
         damageCounterText.text = value.ToString();
+        damageCounterText.color = heal ? Color.green : Color.red;
         _isOpening = true;
     }
 

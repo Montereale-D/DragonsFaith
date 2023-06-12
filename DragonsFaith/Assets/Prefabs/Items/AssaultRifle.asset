@@ -21,3 +21,4 @@ MonoBehaviour:
   range: 5
   damage: 2
   capacity: 3
+  weaponObject: {fileID: 7563764566049780249, guid: 33c21b990a352f442b51f512f1d3c786, type: 3}

@@ -108,10 +108,10 @@ TextureImporter:
       name: robot_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 432
-        width: 468
-        height: 443
+        x: 70
+        y: 546
+        width: 349
+        height: 329
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
