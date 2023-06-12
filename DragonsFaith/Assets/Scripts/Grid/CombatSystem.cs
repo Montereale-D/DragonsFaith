@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
@@ -854,8 +855,16 @@ public class CombatSystem : NetworkBehaviour
     private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage)
     {
         if (IsHost) return;
-        characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-        characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+
+        try
+        {
+            characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
 

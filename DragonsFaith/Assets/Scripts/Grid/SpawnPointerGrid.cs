@@ -19,10 +19,8 @@ public class SpawnPointerGrid : NetworkBehaviour
     private List<Vector2Int> spawnPointObstacles;
     private List<PlayerMovement> _players;
     
-    public GameObject characterMelee;
-    public GameObject characterRanged;
-    public GameObject destroyableObject;
-    public GameObject undestroyableObject;
+    public GameObject[] enemyPrefabs;
+    public GameObject[] obstaclePrefabs;
 
     private void Awake()
     {
@@ -33,12 +31,10 @@ public class SpawnPointerGrid : NetworkBehaviour
         }
 
         instance = this;
-       
-        //GenerateEnemies();
+        
         spawnPointEnemies = new List<Vector2Int>();
         spawnPointObstacles = new List<Vector2Int>();
     }
-    
 
     public override void OnNetworkSpawn()
     {
@@ -54,7 +50,7 @@ public class SpawnPointerGrid : NetworkBehaviour
         if (!IsHost) return;
         Debug.Log("SpawnPointerGrid OnNetworkSpawn");
         
-        GenerateEnemies();
+        PopulateGrid();
         
         OnReadyClientRpc();
         GameHandler.instance.Setup();
@@ -68,37 +64,55 @@ public class SpawnPointerGrid : NetworkBehaviour
         GameHandler.instance.Setup();
     }
 
-    private void GenerateEnemies()
+    private void PopulateGrid()
     {
         var enemyCount = Random.Range(1, 4);
-        //DestroyRandomFromList(enemyGameObjects, 4 - enemyCount);
-        
-        //var obstaclesCount = Random.Range(4, 7);
-        //DestroyRandomFromList(obstacleGameObjects, 7 - obstaclesCount);
+        var obstaclesCount = Random.Range(4, 7);
 
         var topLeft = new Vector2Int(-halfWidthMap, halfHeightMap);
         var topMiddle = new Vector2Int(0, halfHeightMap);
         var bottomRight = new Vector2Int(halfWidthMap, -halfHeightMap);
         
-        spawnPointEnemies = GenerateSpawnPoints(enemyCount, topMiddle, bottomRight);
-        //spawnPointObstacles = GenerateSpawnPoints(obstaclesCount, topLeft, bottomRight);
+        SpawnEnemy(topMiddle, bottomRight, enemyCount);
+        SpawnObstacle(topLeft, bottomRight, obstaclesCount);
+    }
 
+    private void SpawnObstacle(Vector2Int topLeft, Vector2Int bottomRight, int obstaclesCount)
+    {
+        spawnPointObstacles = GenerateSpawnPoints(obstaclesCount, topLeft, bottomRight);
+        
+        for (var i = 0; i < obstaclesCount; i++)
+        {
+            var spawnPoint = spawnPointObstacles[i];
+            var position = new Vector3(spawnPoint.x, spawnPoint.y, -1);
+            var randomPrefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)];
+            var go = Instantiate(randomPrefab, position, Quaternion.identity);
+            var networkObject = go.GetComponent<NetworkObject>();
+            
+            networkObject.Spawn(true);
+            SetUpObstacleClientRpc(networkObject.NetworkObjectId, position);
+        }
+    }
+
+    private void SpawnEnemy(Vector2Int topLeft, Vector2Int bottomRight, int enemyCount)
+    {
+        spawnPointEnemies = GenerateSpawnPoints(enemyCount, topLeft, bottomRight);
+        
         for (var i = 0; i < enemyCount; i++)
         {
             var spawnPoint = spawnPointEnemies[i];
             var position = new Vector3(spawnPoint.x, spawnPoint.y, 0);
-            //var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
-            var go = Instantiate(characterMelee, position, Quaternion.identity);
-            //go.GetComponent<EnemyBehaviour>().SetUp(spawnPoint);
+            var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+            var go = Instantiate(randomPrefab, position, Quaternion.identity);
             var networkObject = go.GetComponent<NetworkObject>();
             
-            networkObject.Spawn();
+            networkObject.Spawn(true);
             SetUpEnemyClientRpc(networkObject.NetworkObjectId, position);
         }
     }
     
     [ClientRpc]
-    public void SetUpEnemyClientRpc(ulong objectIdToSet, Vector3 position)
+    private void SetUpEnemyClientRpc(ulong objectIdToSet, Vector3 position)
     {
         if(IsHost) return;
         
@@ -112,16 +126,21 @@ public class SpawnPointerGrid : NetworkBehaviour
 
         objToSet.transform.position = position;
     }
-
-    private void DestroyRandomFromList(List<GameObject> gameObjects, int destroyCount)
+    
+    [ClientRpc]
+    private void SetUpObstacleClientRpc(ulong objectIdToSet, Vector3 position)
     {
-        for (int i = 0; i < destroyCount; i++)
+        if(IsHost) return;
+        
+        spawnPointObstacles.Add(new Vector2Int((int)position.x, (int)position.y));
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objectIdToSet, out var objToSet);
+        if (objToSet == null)
         {
-            var randomIndex = Random.Range(0, gameObjects.Count - 1);
-            var go = gameObjects[randomIndex];
-            gameObjects.RemoveAt(randomIndex);
-            DestroyImmediate(go);
+            Debug.LogWarning("Network object not found, if the enemy was just defeated is ok");
+            return;
         }
+
+        objToSet.transform.position = position;
     }
 
     private List<Vector2Int> GenerateSpawnPoints(int n, Vector2Int topLeft, Vector2Int bottomRight)

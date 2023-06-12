@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory.Items;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -79,10 +80,13 @@ public class EnemyGridBehaviour : MonoBehaviour
     private IEnumerator DeathCoroutine()
     {
         CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
-        // TODO: activate death animation
         GetComponentInChildren<Animator>().SetTrigger(Dead);
         yield return new WaitForSeconds(3f);
-        Destroy(gameObject);
+
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Destroy(gameObject);
+        }
     }
 
     [ContextMenu("ForceDieDebug")]

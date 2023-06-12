@@ -13,8 +13,7 @@ public class DungeonProgressManager : MonoBehaviour
     private Dictionary<string, bool> _enemyData;
     private Dictionary<string, bool> _abilityData;
     private Dictionary<GameData.PlayerType, Vector3> _spawnData;
-
-    //todo capire cosa ho modificato perché non funziona più
+    
     private void Awake()
     {
         if (instance != null)
