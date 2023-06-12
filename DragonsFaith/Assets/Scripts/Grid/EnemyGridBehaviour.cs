@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Enemy;
 using Inventory.Items;
+using Unity.Netcode;
 using Network;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -95,7 +96,11 @@ public class EnemyGridBehaviour : MonoBehaviour
         CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
         _animator.SetTrigger(Dead);
         yield return new WaitForSeconds(3f);
-        Destroy(gameObject);
+
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Destroy(gameObject);
+        }
     }
 
     [ContextMenu("ForceDieDebug")]

@@ -24,7 +24,7 @@ public class Obstacle : MonoBehaviour
     public void SetTile(Tile tile)
     {
         onTile = tile;
-        transform.position = tile.transform.position;
+        transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y, transform.position.z);
     }
 
 }

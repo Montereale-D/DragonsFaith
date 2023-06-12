@@ -653,6 +653,7 @@ GameObject:
   - component: {fileID: -1754092425021754728}
   - component: {fileID: -3303874697613722726}
   - component: {fileID: 8105661979939268855}
+  - component: {fileID: 7553198070928314876}
   m_Layer: 0
   m_Name: CharacterMelee
   m_TagString: Untagged
@@ -801,6 +802,22 @@ MonoBehaviour:
   startPoint: {fileID: 9119792484572937000}
   endPoint: {fileID: 8389527621306976018}
   speed: 1
+--- !u!114 &7553198070928314876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554189749673916096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &6607194972100973179
 GameObject:
   m_ObjectHideFlags: 0

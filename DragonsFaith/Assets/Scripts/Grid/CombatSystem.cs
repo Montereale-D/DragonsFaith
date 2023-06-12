@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
@@ -60,6 +61,8 @@ public class CombatSystem : NetworkBehaviour
 
     public void Setup(IEnumerable<PlayerGridMovement> characters, IEnumerable<Obstacle> obstacles)
     {
+        Debug.Log("CombatSystem setup init");
+        
         characterList = characters.OrderByDescending(x => x.movement)
             .ThenBy(x => x.name)
             .ThenBy(x => x.GetHashCode())
@@ -88,11 +91,14 @@ public class CombatSystem : NetworkBehaviour
 
     private IEnumerator WaitSetupToStart()
     {
+        Debug.Log("CombatSystem WaitSetupToStart");
         //while (!_isCombatReady || !_isUIReady)
         while (!_isUIReady)
         {
             yield return new WaitForSeconds(0.2f);
         }
+        
+        Debug.Log("CombatSystem WaitSetupToStart");
 
         var localPlayer =
             NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
@@ -115,7 +121,9 @@ public class CombatSystem : NetworkBehaviour
         {
             if (character.GetTeam() == PlayerGridMovement.Team.Enemies)
             {
-                character.SetGridPosition(enemiesPos[enemyPosIndex]);
+                Debug.Log(character.name);
+                var enemyPos = enemiesPos[enemyPosIndex];
+                character.SetGridPosition(enemyPos);
                 enemyPosIndex++;
             }
             else
@@ -893,8 +901,16 @@ public class CombatSystem : NetworkBehaviour
     private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage)
     {
         if (IsHost) return;
-        characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-        characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+
+        try
+        {
+            characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
 
