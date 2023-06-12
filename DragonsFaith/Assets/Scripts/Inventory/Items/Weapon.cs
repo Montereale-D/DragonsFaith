@@ -10,6 +10,8 @@ namespace Inventory.Items
         public float damage = 1;
         public int capacity = 1;
         private int _ammo;
+
+        public GameObject weaponObject;
         
         public Weapon()
         {

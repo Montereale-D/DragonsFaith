@@ -1,3 +1,4 @@
+using Grid;
 using UI;
 using UnityEngine;
 
@@ -117,6 +118,7 @@ public class CharacterInfo : MonoBehaviour
         else
         {
             _characterUI.UpdateHealth(health);
+            GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(heal, true);
         }
     }
 
