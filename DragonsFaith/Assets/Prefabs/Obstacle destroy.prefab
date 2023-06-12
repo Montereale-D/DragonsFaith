@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1605838062364132009}
   - component: {fileID: 4806164760140281616}
   - component: {fileID: -6975937075485273883}
-  - component: {fileID: -561184530814589674}
+  - component: {fileID: 3115170147758402514}
   m_Layer: 8
-  m_Name: Obstacle
+  m_Name: Obstacle destroy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onTile: {fileID: 0}
-  destroyable: 0
+  destroyable: 1
 --- !u!212 &4806164760140281616
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &-561184530814589674
+--- !u!114 &3115170147758402514
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

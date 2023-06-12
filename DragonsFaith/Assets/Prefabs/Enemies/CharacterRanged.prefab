@@ -614,6 +614,7 @@ GameObject:
   - component: {fileID: 8321177729637560450}
   - component: {fileID: 5112907475707427200}
   - component: {fileID: 7255278749443468013}
+  - component: {fileID: 6726206115353635992}
   m_Layer: 0
   m_Name: CharacterRanged
   m_TagString: Untagged
@@ -762,6 +763,22 @@ MonoBehaviour:
   startPoint: {fileID: 7656954751435733298}
   endPoint: {fileID: 6971400532354876680}
   speed: 1
+--- !u!114 &6726206115353635992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5631713877944055002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5720571974992564321
 GameObject:
   m_ObjectHideFlags: 0
