@@ -9,7 +9,7 @@ namespace Player
     {
         [SerializeField] private float speed = 3f;
         [SerializeField] private float fastSpeed = 6f;
-        [SerializeField] private Animator animator;
+        private Animator _animator;
 
         private float _speed;
         private static readonly int IsMoving = Animator.StringToHash("isMoving");
@@ -20,7 +20,7 @@ namespace Player
         private void Awake()
         {
             _speed = speed;
-            //_animator = GetComponent<Animator>();
+            _animator = GetComponentInChildren<Animator>();
         }
 
         public void ForcePosition(Vector3 position)
@@ -47,15 +47,15 @@ namespace Player
             //TODO: interrupt animation when entering combat
             if (moveDir != Vector3.zero)
             {
-                animator.SetBool(IsRunning, Math.Abs(_speed - fastSpeed) < 0.1f);
-                animator.SetBool(IsMoving, true);
+                _animator.SetBool(IsRunning, Math.Abs(_speed - fastSpeed) < 0.1f);
+                _animator.SetBool(IsMoving, true);
             }
             else
             {
-                animator.SetBool(IsMoving, false);
-                animator.SetBool(IsRunning, false);
+                _animator.SetBool(IsMoving, false);
+                _animator.SetBool(IsRunning, false);
             }
-            if (_previousDir != 0) animator.SetFloat(X, _previousDir);
+            if (_previousDir != 0) _animator.SetFloat(X, _previousDir);
             _previousDir = moveDir.x;
         }
 
@@ -74,8 +74,8 @@ namespace Player
 
         public void InterruptAnimations()
         {
-            animator.SetBool(IsMoving, false);
-            animator.SetBool(IsRunning, false);
+            _animator.SetBool(IsMoving, false);
+            _animator.SetBool(IsRunning, false);
         }
     }
 }
