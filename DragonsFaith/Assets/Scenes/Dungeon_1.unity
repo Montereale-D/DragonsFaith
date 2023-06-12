@@ -448,6 +448,10 @@ PrefabInstance:
       propertyPath: saveId
       value: 49885601-a3ad-4ef0-ab4d-d687dd59cb13
       objectReference: {fileID: 0}
+    - target: {fileID: 1308369935379681371, guid: 51fcb4d8f52bb0a4e86370f49e1e1dd2, type: 3}
+      propertyPath: isMiniboss
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1331926680568447996, guid: 51fcb4d8f52bb0a4e86370f49e1e1dd2, type: 3}
       propertyPath: m_RootOrder
       value: 2

@@ -13,6 +13,7 @@ public class DungeonProgressManager : MonoBehaviour
     private Dictionary<string, bool> _enemyData;
     private Dictionary<string, bool> _abilityData;
     private Dictionary<GameData.PlayerType, Vector3> _spawnData;
+    private bool _isMinibossDefeated;
     
     private void Awake()
     {
@@ -123,6 +124,11 @@ public class DungeonProgressManager : MonoBehaviour
         var result = _spawnData.TryGetValue(playerType, out Vector3 value);
         Debug.Log("GetSpawnPoint " + value);
         return result ? value : null;
+    }
+
+    public void MinibossDefeated()
+    {
+        _isMinibossDefeated = true;
     }
     
     private void CheckUid(string uid)

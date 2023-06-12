@@ -517,6 +517,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 128637233
       objectReference: {fileID: 0}
+    - target: {fileID: 5416685498008394258, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: isMiniboss
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5937524463422525035, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2637752563
