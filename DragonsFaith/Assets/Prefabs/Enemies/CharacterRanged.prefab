@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5443257883402750039}
   - component: {fileID: 4151190422598366557}
   - component: {fileID: 6515629686619556780}
+  - component: {fileID: 7247785166705605845}
   m_Layer: 0
   m_Name: AssaultSoldier
   m_TagString: Enemy
@@ -76,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -885795555, guid: 26cbba54ff8b6eb45806daf486fba3f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -138,6 +139,44 @@ CapsuleCollider2D:
   m_Offset: {x: -0.20000005, y: 1.5213408}
   m_Size: {x: 2, y: 2.9573183}
   m_Direction: 0
+--- !u!114 &7247785166705605845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660106522546789724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 1740614436
+    TransitionDuration: 0
+    TriggerNameHash: 1740614436
+    TransitionIndex: 0
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 1273568435
+    TransitionDuration: 0
+    TriggerNameHash: 237393061
+    TransitionIndex: 2
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -1525363869
+    TransitionDuration: 0
+    TriggerNameHash: -1525363869
+    TransitionIndex: 3
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -608183251
+    TransitionDuration: 0
+    TriggerNameHash: -1864224364
+    TransitionIndex: 4
+  m_Animator: {fileID: 5443257883402750039}
 --- !u!1 &2299332687858514034
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +346,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0008301735, y: -0.0008600056}
   m_SizeDelta: {x: -0.09912, y: -0.08715}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -383,9 +422,9 @@ RectTransform:
   m_Father: {fileID: 4475260555902038262}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 2.25, y: -0.46}
   m_SizeDelta: {x: 4, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3048279803081060493
@@ -677,7 +716,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_Sprite: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
   m_Color: {r: 0, g: 0.2891395, b: 1, a: 1}
   m_FlipX: 0
@@ -688,7 +727,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!114 &2186516572479738661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -798,9 +837,9 @@ RectTransform:
   m_Father: {fileID: 4475260555902038262}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 2.25, y: -1.0400001}
   m_SizeDelta: {x: 4, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7722725912169566317
@@ -1101,7 +1140,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 4.61}
+  m_AnchoredPosition: {x: 0, y: 3.25}
   m_SizeDelta: {x: 4.5, y: 1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1536290508494931085

@@ -18,12 +18,15 @@ public class CharacterInfo : MonoBehaviour
 
     public bool isBlocking;
 
+    private PlayerGridMovement _gridMovement;
+
     private void Awake()
     {
         health = maxHealth;
         mana = maxMana;
         _characterUI = GetComponent<CharacterGridPopUpUI>();
         _characterUI.SetUI(characterName, maxHealth);
+        _gridMovement = GetComponent<PlayerGridMovement>();
     }
 
     public void SetUp()
@@ -89,7 +92,8 @@ public class CharacterInfo : MonoBehaviour
     
     private void Die()
     {
-        CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
+        CombatSystem.instance.CharacterDied(_gridMovement);
+        _gridMovement.OnDeath();
     }
 
     public bool IsAlive()
@@ -119,6 +123,7 @@ public class CharacterInfo : MonoBehaviour
     public void Revive()
     {
         Heal(maxHealth/2);
+        _gridMovement.OnRevive();
     }
 
     public bool UseMana(int value)

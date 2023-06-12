@@ -16,6 +16,8 @@ MonoBehaviour:
   description: Short range weapon that deals TOT damage points per hit.
   id: 3785c742-f8ff-4016-a374-81d62dc75746
   tile: {fileID: 0}
-  image: {fileID: 21300000, guid: cbf5771f4813ddb4aa68fb652a5b5a0d, type: 3}
+  image: {fileID: -10514552, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
   range: 3
+  damage: 1
+  capacity: 1

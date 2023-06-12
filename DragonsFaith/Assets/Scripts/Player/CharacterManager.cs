@@ -140,6 +140,7 @@ namespace Player
         public void SetPlayerGridMode()
         {
             var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().InterruptAnimations();
             localPlayer.GetComponent<PlayerMovement>().enabled = false;
             localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;

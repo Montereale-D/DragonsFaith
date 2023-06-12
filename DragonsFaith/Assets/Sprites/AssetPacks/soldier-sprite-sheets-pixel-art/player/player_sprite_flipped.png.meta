@@ -1281,13 +1281,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_56
+      name: downedFlipped
       rect:
         serializedVersion: 2
         x: 0
-        y: 6.125
+        y: 0
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1333,6 +1333,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      downedFlipped: 332065703
       player_sprite_flipped_0: -1710512990
       player_sprite_flipped_1: 1147538496
       player_sprite_flipped_10: 1581196872
@@ -1385,7 +1386,6 @@ TextureImporter:
       player_sprite_flipped_53: -483058996
       player_sprite_flipped_54: 1090135409
       player_sprite_flipped_55: -1281955758
-      player_sprite_flipped_56: 332065703
       player_sprite_flipped_57: 1701349124
       player_sprite_flipped_6: -1878662126
       player_sprite_flipped_7: 826197126

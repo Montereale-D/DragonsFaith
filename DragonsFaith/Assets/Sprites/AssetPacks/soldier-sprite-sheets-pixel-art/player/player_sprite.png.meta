@@ -1155,7 +1155,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_50
+      name: downed
       rect:
         serializedVersion: 2
         x: 315
@@ -1186,6 +1186,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      downed: 1739326843
       player_sprite_0: 171353471
       player_sprite_1: -1689285877
       player_sprite_10: 400731666
@@ -1232,7 +1233,6 @@ TextureImporter:
       player_sprite_48: 805965245
       player_sprite_49: -679006703
       player_sprite_5: 476541367
-      player_sprite_50: 1739326843
       player_sprite_6: 235969186
       player_sprite_7: -808605328
       player_sprite_8: 1660746865

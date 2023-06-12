@@ -768,6 +768,14 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1347156682
       objectReference: {fileID: 0}
+    - target: {fileID: 5655446632266836304, guid: 51fcb4d8f52bb0a4e86370f49e1e1dd2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -39.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 5655446632266836304, guid: 51fcb4d8f52bb0a4e86370f49e1e1dd2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.94
+      objectReference: {fileID: 0}
     - target: {fileID: 5698373514309794956, guid: 51fcb4d8f52bb0a4e86370f49e1e1dd2, type: 3}
       propertyPath: saveId
       value: ae2c6b34-8e94-4380-a95d-7e4dc4ec84dd

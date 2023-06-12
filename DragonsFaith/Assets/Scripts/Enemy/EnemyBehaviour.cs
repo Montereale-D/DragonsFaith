@@ -26,6 +26,12 @@ namespace Enemy
         //use this in order to avoid unwanted collision with player on scene reloading
         private bool _isReadyToFight;
         
+        private SpriteRenderer _spriteRenderer;
+        private Animator _animator;
+        private static readonly int Moving = Animator.StringToHash("isMoving");
+        private static readonly int X = Animator.StringToHash("x");
+        private float _previousDir;
+
         //private readonly NetworkVariable<bool> _setUpDone = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public void SetUp(EnemySpawnPoint spawnPoint)
@@ -51,6 +57,8 @@ namespace Enemy
             if (IsHost)
             {
                 GetComponent<NetworkObject>().DestroyWithScene = true;
+                _animator = GetComponentInChildren<Animator>();
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
 
             if (IsHost && DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
@@ -85,10 +93,15 @@ namespace Enemy
             
             characterTransform.position = Vector3.MoveTowards(charPos, _nextPosition,
                 speed * 0.003f /*Time.deltaTime*/ );
+            _animator.SetBool(Moving, true);
+            //_spriteRenderer.flipX = (_nextPosition - charPos).normalized == Vector3.left;
+            if (_previousDir != 0) _animator.SetFloat(X, _previousDir);
+            _previousDir = (_nextPosition - charPos).normalized.x;
 
             if (IsPositionReached())
             {
                 _keepMoving = false;
+                _animator.SetBool(Moving, false);
                 StartCoroutine(WaitOnPosition());
             }
         }

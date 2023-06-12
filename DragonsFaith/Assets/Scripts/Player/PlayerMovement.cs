@@ -13,6 +13,7 @@ namespace Player
         private float _speed;
         private static readonly int IsMoving = Animator.StringToHash("isMoving");
         private static readonly int IsRunning = Animator.StringToHash("isRunning");
+        private static readonly int X = Animator.StringToHash("x");
         private float _previousDir;
 
         private void Awake()
@@ -42,7 +43,7 @@ namespace Player
             _speed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : speed;
 
             transform.position += moveDir * (_speed * Time.deltaTime);
-            //TODO: test
+            //TODO: interrupt animation when entering combat
             if (moveDir != Vector3.zero)
             {
                 _animator.SetBool(IsRunning, Math.Abs(_speed - fastSpeed) < 0.1f);
@@ -53,7 +54,7 @@ namespace Player
                 _animator.SetBool(IsMoving, false);
                 _animator.SetBool(IsRunning, false);
             }
-            if (_previousDir != 0) _animator.SetFloat("x", _previousDir);
+            if (_previousDir != 0) _animator.SetFloat(X, _previousDir);
             _previousDir = moveDir.x;
         }
 
@@ -68,6 +69,12 @@ namespace Player
             {
                 gameObject.name = IsHost ? "Player_Client" : "Player_Host" ;
             }
+        }
+
+        public void InterruptAnimations()
+        {
+            _animator.SetBool(IsMoving, false);
+            _animator.SetBool(IsRunning, false);
         }
     }
 }

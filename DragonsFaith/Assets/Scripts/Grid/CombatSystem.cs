@@ -276,6 +276,7 @@ public class CombatSystem : NetworkBehaviour
 
         if (character.GetTeam() == PlayerGridMovement.Team.Players)
         {
+            //character.OnDeath();
             var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
             if (players.Count(x => !x.GetComponent<CharacterInfo>().IsAlive()) > 1)
             {
@@ -294,6 +295,7 @@ public class CombatSystem : NetworkBehaviour
         }
     }
 
+    #region ReloadAction
     public void ReloadAction()
     {
         if (!_canAttackThisTurn)
@@ -315,9 +317,43 @@ public class CombatSystem : NetworkBehaviour
         {
             _playerUI.SetAmmoCounter(weapon.GetAmmo());
         }
+        else if (activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies)
+        {
+            NotifyEnemyReload();
+        }
 
         _canAttackThisTurn = false;
     }
+
+    private void NotifyEnemyReload()
+    {
+        activeUnit.GetComponent<EnemyGridBehaviour>().TriggerReloadAnimation();
+        
+        if (IsHost)
+        {
+            NotifyEnemyReloadToPlayerClientRpc();
+        }
+        else
+        {
+            NotifyEnemyReloadToPlayerServerRpc();
+        }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyEnemyReloadToPlayerServerRpc()
+    {
+        if (!IsHost) return;
+        activeUnit.GetComponent<EnemyGridBehaviour>().TriggerReloadAnimation();
+    }
+
+    [ClientRpc]
+    private void NotifyEnemyReloadToPlayerClientRpc()
+    {
+        if (IsHost) return;
+        activeUnit.GetComponent<EnemyGridBehaviour>().TriggerReloadAnimation();
+    }
+    
+    #endregion
 
     #region BlockAction
 
@@ -371,6 +407,7 @@ public class CombatSystem : NetworkBehaviour
         var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
         var otherPlayer = players[0] == activeUnit ? players[1] : players[0];
         otherPlayer.GetComponent<CharacterInfo>().Revive();
+        //otherPlayer.OnRevive();
         _turnUI.OnRevive(otherPlayer);
         _canAttackThisTurn = false;
     }
@@ -378,6 +415,7 @@ public class CombatSystem : NetworkBehaviour
     private void ReceiveRevive()
     {
         CharacterManager.Instance.ReceiveRevive();
+        //_localPlayer.GetComponent<PlayerGridMovement>().OnRevive();
         _turnUI.OnRevive(_localPlayer.GetComponent<PlayerGridMovement>());
     }
 
@@ -422,6 +460,9 @@ public class CombatSystem : NetworkBehaviour
 
         _selectedTile = tile;
         _selectedTile.SelectTile();
+        
+        // Turns character toward the selected tile
+        activeUnit.TurnTowardTile(_selectedTile);
 
         var character = _selectedTile.GetCharacter();
         var obstacle = _selectedTile.GetObstacle();
@@ -433,6 +474,7 @@ public class CombatSystem : NetworkBehaviour
                 if (character.GetTeam() == PlayerGridMovement.Team.Players)
                 {
                     _playerUI.ToggleMoveAttackButton("Move");
+                    _playerUI.SetCombatPopUp(true, "Target is an ally.");
                 }
                 else
                 {
@@ -651,6 +693,7 @@ public class CombatSystem : NetworkBehaviour
         // Clicked on top of a Unit
         if (!activeUnit.IsOppositeTeam(target))
         {
+            //TODO: this code is never executed
             Debug.Log("Target is an ally of active unit");
             //_playerUI.ShowMessage("Cannot attack an ally");
             return;
@@ -705,13 +748,15 @@ public class CombatSystem : NetworkBehaviour
         if (weapon.weaponType == Weapon.WeaponType.Range)
         {
             weapon.UseAmmo();
-            _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
+            //TODO: test
+            if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>()) _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
         }
 
         var isCovered = IsTargetCovered(target);
 
         if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
         {
+            //TODO: change depending weather the equipped weapon is melee or ranged
             var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
 
             if (target.GetComponent<CharacterInfo>().isBlocking)
@@ -739,7 +784,7 @@ public class CombatSystem : NetworkBehaviour
             {
                 damage /= 2;
             }
-
+            
             NotifyAttackToPlayer(target, (int)damage);
         }
     }
@@ -798,7 +843,7 @@ public class CombatSystem : NetworkBehaviour
     {
         var targetIndex = characterList.IndexOf(target);
         //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-
+        activeUnit.GetComponent<EnemyGridBehaviour>().TriggerAttackAnimation(target);
         if (IsHost)
         {
             NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage);
@@ -811,12 +856,13 @@ public class CombatSystem : NetworkBehaviour
         if (target.gameObject == _localPlayer)
         {
             CharacterManager.Instance.Damage(damage);
-            _localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+            //_localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
         else
         {
             target.GetComponent<CharacterInfo>().Damage(damage);
         }
+        target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
     }
 
     public void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
@@ -858,15 +904,18 @@ public class CombatSystem : NetworkBehaviour
         if (!IsHost) return;
 
         //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        activeUnit.GetComponent<EnemyGridBehaviour>().TriggerAttackAnimation(characterList[targetIndex]);
+
         if (characterList[targetIndex].gameObject == _localPlayer)
         {
             CharacterManager.Instance.Damage(damage);
-            _localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+            //_localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
         else
         {
             characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
         }
+        characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
     }
 
     [ClientRpc]
@@ -875,15 +924,18 @@ public class CombatSystem : NetworkBehaviour
         if (IsHost) return;
 
         //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+        activeUnit.GetComponent<EnemyGridBehaviour>().TriggerAttackAnimation(characterList[targetIndex]);
+
         if (characterList[targetIndex].gameObject == _localPlayer)
         {
             CharacterManager.Instance.Damage(damage);
-            _localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
+            //_localPlayer.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
         }
         else
         {
             characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
         }
+        characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage);
     }
 
     public void ButtonDestroyAction()
