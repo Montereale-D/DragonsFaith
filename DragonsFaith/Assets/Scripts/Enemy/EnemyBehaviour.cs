@@ -10,6 +10,7 @@ namespace Enemy
     public class EnemyBehaviour : NetworkBehaviour
     {
         private string _saveId;
+        private bool _isMiniboss;
         private EnemySpawnPoint _spawnPoint;
         private bool _patrol = true;
         public float _waitOnPatrolPosition = 2f;
@@ -39,6 +40,7 @@ namespace Enemy
             //Debug.Log("Enemy spawned setup");
 
             //Instantiated as a child of a EnemySpawnPoint, get params
+            _isMiniboss = spawnPoint.isMiniboss;
             _spawnPoint = spawnPoint;
             _patrol = _spawnPoint.patrol;
             _waitOnPatrolPosition = _spawnPoint.waitOnPatrolPosition;
@@ -188,12 +190,35 @@ namespace Enemy
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
 
+            if (_isMiniboss)
+            {
+                MinibossDefeated();
+
+                if (IsHost)
+                {
+                    MinibossDefeatedClientRpc();
+                }
+            }
+
             if (IsHost)
             {
                 OnCombatStartClientRpc(position);
                 Destroy(gameObject);
                 SceneManager.instance.LoadSceneSingle("Grid");
             }
+        }
+
+        [ClientRpc]
+        private void MinibossDefeatedClientRpc()
+        {
+            if(IsHost) return;
+            MinibossDefeated();
+        }
+
+        private void MinibossDefeated()
+        {
+            DungeonProgressManager.instance.MinibossDefeated();
+            HubProgressManager.keyCounter++;
         }
 
         [ClientRpc]
