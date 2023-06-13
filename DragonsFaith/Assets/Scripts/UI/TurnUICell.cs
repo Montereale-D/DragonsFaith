@@ -18,7 +18,11 @@ namespace UI
         {
             unit = character;
             ownImage.sprite = character.turnSprite;
-            charName = character.name;
+            //charName = character.name;
+            charName = character.GetTeam() == PlayerGridMovement.Team.Enemies ? 
+                character.GetComponent<EnemyGridBehaviour>().enemyName : 
+                character.charName;
+            /*charName = character.charName;*/
         }
     }
 }

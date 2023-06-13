@@ -4,6 +4,7 @@ using Inventory;
 using Player;
 using Save;
 using UI;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -79,9 +80,60 @@ namespace Network
 
             if (!IsHost) return;
 
+            StartCoroutine(StartTransition(sceneName));
+            /*var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            CheckStatus(status);*/
+        }
+        
+        private IEnumerator StartTransition(string sceneName)
+        {
+            TransitionBackground.instance.FadeOut();
+            if (IsHost)
+            {
+                StartTransitionClientRpc();
+            }
+            else
+            {
+                StartTransitionServerRpc();
+            }
 
+            yield return new WaitForSeconds(1f);
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
+            
+            TransitionBackground.instance.FadeIn();
+            if (IsHost)
+            {
+                EndTransitionClientRpc();
+            }
+            else
+            {
+                EndTransitionServerRpc();
+            }
+        }
+
+        [ClientRpc]
+        private void StartTransitionClientRpc()
+        {
+            TransitionBackground.instance.FadeOut();
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        private void StartTransitionServerRpc()
+        {
+            TransitionBackground.instance.FadeOut();
+        }
+        
+        [ClientRpc]
+        private void EndTransitionClientRpc()
+        {
+            TransitionBackground.instance.FadeIn();
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        private void EndTransitionServerRpc()
+        {
+            TransitionBackground.instance.FadeIn();
         }
 
         public void ReturnToMainMenu(bool notifyClient)

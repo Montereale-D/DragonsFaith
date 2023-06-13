@@ -17,12 +17,13 @@ public class PlayerGridMovement : MonoBehaviour
     public bool isMoving;
 
     public Sprite turnSprite;
+
+    public string charName;
     
     private Animator _animator;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
     private static readonly int IsRunning = Animator.StringToHash("isRunning");
     private static readonly int X = Animator.StringToHash("x");
-    private float _previousDir;
     private static readonly int Downed = Animator.StringToHash("downed");
     private static readonly int Revive = Animator.StringToHash("revive");
 

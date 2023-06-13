@@ -30,6 +30,7 @@ namespace Grid
         private PlayerGridMovement _target;
 
         public int? otherPlayerSpriteIdx;
+        public string otherPlayerName;
         private PlayerUI _playerUI;
         private MapHandler _mapHandler;
         private TurnUI _turnUI;
@@ -78,6 +79,7 @@ namespace Grid
         private IEnumerator SetUpUITurns()
         {
             SendPortraitSprite();
+            SendPlayerName();
             while (otherPlayerSpriteIdx == null)
             {
                 yield return new WaitForSeconds(0.2f);
@@ -96,8 +98,7 @@ namespace Grid
                 yield return new WaitForSeconds(0.2f);
             }
 
-            var localPlayer =
-                NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
+            var localPlayer = _localPlayer.GetComponent<PlayerGridMovement>();
 
             var hostPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Host);
             var clientPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client);
@@ -118,6 +119,7 @@ namespace Grid
                 if (character.GetTeam() == PlayerGridMovement.Team.Enemies)
                 {
                     character.SetGridPosition(enemiesPos[enemyPosIndex]);
+                    //character.GetComponent<EnemyGridBehaviour>().SetUI();
                     enemyPosIndex++;
                 }
                 else
@@ -125,6 +127,8 @@ namespace Grid
                     if (character == localPlayer)
                     {
                         character.SetGridPosition(NetworkManager.Singleton.IsHost ? hostPos : clientPos);
+                        NotifyPopUpInfoToPlayer(character.GetComponent<CharacterInfo>().characterName,
+                            character.GetComponent<CharacterInfo>().GetMaxHealth());
                     }
                     else
                     {
@@ -135,6 +139,42 @@ namespace Grid
 
             _mapHandler.HideAllTiles();
             ResetTurnActions();
+        }
+
+        private void NotifyPopUpInfoToPlayer(string charName, int health)
+        {
+            if (IsHost)
+            {
+                NotifyPopUpInfoToPlayerClientRpc(charName, health);
+            }
+            else
+            {
+                NotifyPopUpInfoToPlayerServerRpc(charName, health);
+            }
+        }
+    
+        [ServerRpc(RequireOwnership = false)]
+        private void NotifyPopUpInfoToPlayerServerRpc(string charName, int health)
+        {
+            if (!IsHost) return;
+            var players = 
+                characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
+            foreach (var player in players.Where(player => player != _localPlayer.GetComponent<PlayerGridMovement>()))
+            {
+                player.GetComponent<CharacterGridPopUpUI>().SetUI(charName, health);
+            }
+        }
+
+        [ClientRpc]
+        private void NotifyPopUpInfoToPlayerClientRpc(string charName, int health)
+        {
+            if (IsHost) return;
+            var players = 
+                characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
+            foreach (var player in players.Where(player => player != _localPlayer.GetComponent<PlayerGridMovement>()))
+            {
+                player.GetComponent<CharacterGridPopUpUI>().SetUI(charName, health);
+            }
         }
 
         public static void SetTileUnderCharacter(PlayerGridMovement playerGridMovement)
@@ -216,6 +256,7 @@ namespace Grid
             _canAttackThisTurn = true;
             _selectedTile = null;
             activeUnit.GetComponent<CharacterInfo>().isBlocking = false;
+            activeUnit.GetComponent<CharacterGridPopUpUI>().HideShield();
 
             if (activeUnit.GetTeam() == PlayerGridMovement.Team.Players &&
                 activeUnit.GetComponent<NetworkObject>().IsLocalPlayer)
@@ -298,11 +339,18 @@ namespace Grid
         }
 
         #region ReloadAction
+        
+        public void ButtonReloadAction()
+        {
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
+            ReloadAction();
+        }
+        
         public void ReloadAction()
         {
             if (!_canAttackThisTurn)
             {
-                _playerUI.ShowMessage("Action already done");
+                _playerUI.ShowMessage("Already performed action.");
                 return;
             }
 
@@ -314,7 +362,8 @@ namespace Grid
             }
 
             weapon.Reload();
-
+            _playerUI.ShowMessage("Weapon reloaded.");
+            
             if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
             {
                 _playerUI.SetAmmoCounter(weapon.GetAmmo());
@@ -359,13 +408,20 @@ namespace Grid
 
         #region BlockAction
 
-        public void BlockAction()
+        public void ButtonBlockAction()
+        {
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
+            BlockAction();
+        }
+
+        private void BlockAction()
         {
             if (!_canAttackThisTurn)
             {
-                _playerUI.ShowMessage("Action already done");
+                _playerUI.ShowMessage("Already performed action.");
                 return;
             }
+            activeUnit.GetComponent<CharacterGridPopUpUI>().ShowShield();
         
             NotifyBlock();
             activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
@@ -389,6 +445,7 @@ namespace Grid
         {
             if (!IsHost) return;
 
+            activeUnit.GetComponent<CharacterGridPopUpUI>().ShowShield();
             activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
         }
 
@@ -397,6 +454,7 @@ namespace Grid
         {
             if (IsHost) return;
 
+            activeUnit.GetComponent<CharacterGridPopUpUI>().ShowShield();
             activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
         }
 
@@ -482,10 +540,13 @@ namespace Grid
                     {
                         // Clicked on an Enemy of the current unit
                         var weapon = GetActiveUnitWeapon();
+                        var text = weapon.weaponType == Weapon.WeaponType.Melee ? 
+                            (int)(weapon.damage + CharacterManager.Instance.GetTotalStr()) :
+                            (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
 
                         if (!_canAttackThisTurn)
                         {
-                            _playerUI.SetCombatPopUp(true, "Already attacked this turn.");
+                            _playerUI.SetCombatPopUp(true, "Already performed action in this turn.");
                         }
                         else if (!IsWithinRange(character, weapon))
                         {
@@ -497,8 +558,7 @@ namespace Grid
                         {
                             _playerUI.SetCombatPopUp(true,
                                 "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
-                                "Strike target and deal " + (weapon.damage + CharacterManager.Instance.GetTotalStr()) +
-                                " DMG.");
+                                "Strike target and deal " + text + " DMG.");
                         }
 
                         _target = character;
@@ -512,7 +572,7 @@ namespace Grid
                 var weapon = GetActiveUnitWeapon();
                 if (!_canAttackThisTurn)
                 {
-                    _playerUI.SetCombatPopUp(true, "Already attacked this turn.");
+                    _playerUI.SetCombatPopUp(true, "Already performed action in this turn.");
                 }
                 else if (!IsWithinRange(obstacle, weapon))
                 {
@@ -704,8 +764,8 @@ namespace Grid
             // Can Attack Enemy
             if (!_canAttackThisTurn)
             {
-                Debug.Log("Already attacked in this turn");
-                //_playerUI.ShowMessage("Already attacked in this turn.");
+                Debug.Log("Already performed action in this turn.");
+                _playerUI.ShowMessage("Already performed action in this turn.");
                 return;
             }
 
@@ -750,7 +810,6 @@ namespace Grid
             if (weapon.weaponType == Weapon.WeaponType.Range)
             {
                 weapon.UseAmmo();
-                //TODO: test
                 if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>()) _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
             }
 
@@ -759,15 +818,19 @@ namespace Grid
             if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
             {
                 //TODO: change depending weather the equipped weapon is melee or ranged
-                var damage = (int)(weapon.damage + CharacterManager.Instance.GetTotalStr());
+                var damage = weapon.weaponType == Weapon.WeaponType.Melee ? 
+                        (int)(weapon.damage + CharacterManager.Instance.GetTotalStr()) :
+                        (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
 
                 if (target.GetComponent<CharacterInfo>().isBlocking)
                 {
+                    //Debug.Log("target is blocking");
                     damage /= 2;
                 }
 
                 if (isCovered)
                 {
+                    //Debug.Log("target is covered");
                     damage /= 2;
                 }
 
@@ -1003,19 +1066,47 @@ namespace Grid
 
         #region SkipAction
 
+        public void ButtonSkipTurn()
+        {
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
+            SkipTurn();
+        }
+
         public void SkipTurn()
         {
             if (IsHost)
             {
+                //UnselectTile();
+                _playerUI.SetCombatPopUp(false);
+                // hides the ui of the selected char when skipping the turn
+                if (activeUnit.GetTeam() != PlayerGridMovement.Team.Enemies && _selectedTile)
+                {
+                    var character = _selectedTile.GetCharacter();
+                    if (character && character != activeUnit)
+                    {
+                        // hides the UI of the enemies on deselection of the cell
+                        character.GetComponent<CharacterGridPopUpUI>().HideUI();
+                    }
+                }
                 HostHasSkippedClientRpc();
                 SelectNextActiveUnit();
-                _playerUI.SetCombatPopUp(false);
             }
             else
             {
+                //UnselectTile();
+                _playerUI.SetCombatPopUp(false);
+                // hides the ui of the selected char when skipping the turn
+                if (activeUnit.GetTeam() != PlayerGridMovement.Team.Enemies && _selectedTile)
+                {
+                    var character = _selectedTile.GetCharacter();
+                    if (character && character != activeUnit)
+                    {
+                        // hides the UI of the enemies on deselection of the cell
+                        character.GetComponent<CharacterGridPopUpUI>().HideUI();
+                    }
+                }
                 ClientHasSkippedServerRpc();
                 SelectNextActiveUnit();
-                _playerUI.SetCombatPopUp(false);
             }
         }
 
@@ -1034,7 +1125,6 @@ namespace Grid
             if (IsHost) return;
 
             SelectNextActiveUnit();
-            //_playerUI.SetCombatPopUp(false);
         }
 
         #endregion
@@ -1059,18 +1149,40 @@ namespace Grid
         private void SendPortraitSpriteServerRpc(int portraitIdx)
         {
             if (!IsHost) return;
-            //Debug.Log("I'm host and i received: " + portraitIdx);
             otherPlayerSpriteIdx = portraitIdx;
-            //Debug.Log("host: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
         }
 
         [ClientRpc]
         private void SendPortraitSpriteClientRpc(int portraitIdx)
         {
             if (IsHost) return;
-            //Debug.Log("I'm client and i received: " + portraitIdx);
             otherPlayerSpriteIdx = portraitIdx;
-            //Debug.Log("client: my portraitIdx=" + _playerUI.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
+        }
+        
+        private void SendPlayerName()
+        {
+            if (IsHost)
+            {
+                SendPlayerNameClientRpc(_playerUI.nameText.text);
+            }
+            else
+            {
+                SendPlayerNameServerRpc(_playerUI.nameText.text);
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SendPlayerNameServerRpc(string playerName)
+        {
+            if (!IsHost) return;
+            otherPlayerName = playerName;
+        }
+
+        [ClientRpc]
+        private void SendPlayerNameClientRpc(string playerName)
+        {
+            if (IsHost) return;
+            otherPlayerName = playerName;
         }
 
         #endregion

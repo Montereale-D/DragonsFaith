@@ -57,16 +57,26 @@ namespace Network
 
         private void OnPlayersReady()
         {
-            StartCoroutine(LoadScene());
+            if (door)
+            {
+                door.sprite = openDoorSprite;
+            }
+            if (_sceneManager)
+            {
+                _sceneManager.LoadSceneSingle(sceneName);
+            }
+            else
+            {
+                Debug.LogWarning("Scene manager is null, Ok is appear in client");
+            }
+            //StartCoroutine(LoadScene());
         }
 
         private IEnumerator LoadScene()
         {
-            if (door)
-            {
-                door.sprite = openDoorSprite;
-                yield return new WaitForSeconds(0.5f);
-            }
+            TransitionBackground.instance.FadeOut();
+            yield return new WaitForSeconds(1f);
+            //TransitionBackground.instance.FadeIn();
 
             if (_sceneManager)
             {

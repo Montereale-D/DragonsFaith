@@ -86,13 +86,13 @@ namespace UI
 
         public void SavePlayerName(string str)
         {
-            _playerName = str;
+            PlayerPrefs.SetString("playerName", str);
         }
         
-        public string RetrievePlayerName()
+        /*public string RetrievePlayerName()
         {
             return _playerName;
-        }
+        }*/
         
         //TODO: add audio sources
         public void SetPlayerVolume(float value)
