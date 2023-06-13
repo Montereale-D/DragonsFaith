@@ -2,7 +2,9 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using Inventory;
+using Network;
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -580,6 +582,16 @@ namespace UI
         public void ToggleMoveAttackButton(string mode)
         {
             _combatUI.ToggleMoveAttackButton(mode);
+        }
+
+        public void ReturnToMainMenu()
+        {
+            SceneManager.instance.ReturnToMainMenu();
+        }
+
+        private void OnDestroy()
+        {
+            instance = null;
         }
     }
 }

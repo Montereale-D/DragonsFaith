@@ -1,4 +1,9 @@
 using System;
+using Grid;
+using Inventory;
+using Player;
+using Save;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,7 +34,14 @@ namespace Network
             if (IsServer)
             {
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
+        }
+
+        private void OnClientDisconnect(ulong clientId)
+        {
+            NetworkManager.Singleton.Shutdown();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
 
         public bool sceneIsLoaded => _loadedScene.IsValid() && _loadedScene.isLoaded;
@@ -50,8 +62,8 @@ namespace Network
         [ClientRpc]
         private void ResetDungeonProgressClientRpc()
         {
-            if(IsHost) return;
-            
+            if (IsHost) return;
+
             if (DungeonProgressManager.instance != null)
             {
                 DungeonProgressManager.instance.Reset();
@@ -71,6 +83,79 @@ namespace Network
 
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
+        }
+
+        public void ReturnToMainMenu()
+        {
+            if (PlayerUI.instance != null)
+            {
+                Destroy(PlayerUI.instance.gameObject);
+            }
+            if (CharacterManager.Instance != null)
+            {
+                Destroy(CharacterManager.Instance.gameObject);
+            }
+            if (InventoryManager.Instance != null)
+            {
+                Destroy(InventoryManager.Instance.gameObject);
+            }
+            if (SceneManager.instance != null)
+            {
+                Destroy(SceneManager.instance.gameObject);
+            }
+            if (OptionsManager.Instance != null)
+            {
+                Destroy(OptionsManager.Instance.gameObject);
+            }
+            if (GameHandler.instance != null)
+            {
+                Destroy(GameHandler.instance.gameObject);
+            }
+            if (MapHandler.instance != null)
+            {
+                Destroy(MapHandler.instance.gameObject);
+            }
+            if (CombatSystem.instance != null)
+            {
+                Destroy(CombatSystem.instance.gameObject);
+            }
+            if (SpawnPointerGrid.instance != null)
+            {
+                Destroy(SpawnPointerGrid.instance.gameObject);
+            }
+            if (HubProgressManager.instance != null)
+            {
+                Destroy(HubProgressManager.instance.gameObject);
+            }
+            if (ExchangeManager.Instance != null)
+            {
+                Destroy(ExchangeManager.Instance.gameObject);
+            }
+            if (DungeonProgressManager.instance != null)
+            {
+                Destroy(DungeonProgressManager.instance.gameObject);
+            }
+            if (DataManager.Instance != null)
+            {
+                Destroy(DataManager.Instance.gameObject);
+            }
+            
+            
+            if (IsHost)
+            {
+                ReturnToMainMenuClientRpc();
+            }
+
+            NetworkManager.Singleton.Shutdown();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
+
+        [ClientRpc]
+        private void ReturnToMainMenuClientRpc()
+        {
+            if (IsHost) return;
+
+            ReturnToMainMenu();
         }
 
         private void LoadPlayers()
