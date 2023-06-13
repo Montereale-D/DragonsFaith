@@ -20,6 +20,7 @@ namespace UI
         private List<GameObject> _cellList = new List<GameObject>();
 
         private Sprite _otherPlayerSprite;
+        private string _otherPlayerName;
         private PlayerGridMovement _localPlayer;
         private int _currentCellIdx;
         private PlayerGridMovement _dead;
@@ -37,10 +38,14 @@ namespace UI
             Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
                 "CombatSystem.instance.otherPlayerSpriteIdx != null");
             _otherPlayerSprite = PlayerUI.instance.portraitSprites[(int)CombatSystem.instance.otherPlayerSpriteIdx];
+            _otherPlayerName = CombatSystem.instance.otherPlayerName;
 
-            foreach (var character in _charList.Where(character => character.GetTeam() == PlayerGridMovement.Team.Players))
+            foreach (var character in _charList.Where(character => 
+                         character.GetTeam() == PlayerGridMovement.Team.Players))
             {
                 character.SetTurnSprite(character == _localPlayer ? PlayerUI.instance.portrait.sprite : _otherPlayerSprite);
+                character.charName =
+                    character == _localPlayer ? character.GetComponent<CharacterInfo>().characterName : _otherPlayerName;
             }
             
             if (_charList.Count < threshold)

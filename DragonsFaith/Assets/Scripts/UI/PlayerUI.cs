@@ -140,7 +140,7 @@ namespace UI
             
             _optionsManager.SetDropdown(resolutionDropdown);
 
-            nameText.text = _optionsManager.RetrievePlayerName();
+            //nameText.text = _optionsManager.RetrievePlayerName();
         
             playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
             enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
@@ -149,6 +149,7 @@ namespace UI
             //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
             
             //_rectTransformTurnUI = turnUI.GetComponent<RectTransform>();
+            
             _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
             FadeInElement(_rectTransformFaithTab, faithTabFadeInTime);
         }

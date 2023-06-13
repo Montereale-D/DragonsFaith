@@ -36933,7 +36933,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MV Icons Complete Sheet Free - ALL_1768
+      name: shield
       rect:
         serializedVersion: 2
         x: 416
@@ -40559,7 +40559,6 @@ TextureImporter:
       MV Icons Complete Sheet Free - ALL_1765: -1025984712
       MV Icons Complete Sheet Free - ALL_1766: -941749384
       MV Icons Complete Sheet Free - ALL_1767: -1207900688
-      MV Icons Complete Sheet Free - ALL_1768: 688056439
       MV Icons Complete Sheet Free - ALL_1769: 509607086
       MV Icons Complete Sheet Free - ALL_177: -1611841730
       MV Icons Complete Sheet Free - ALL_1770: -249103085
@@ -41593,6 +41592,7 @@ TextureImporter:
       MV Icons Complete Sheet Free - ALL_997: -127821277
       MV Icons Complete Sheet Free - ALL_998: -1968266742
       MV Icons Complete Sheet Free - ALL_999: 2005429887
+      shield: 688056439
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

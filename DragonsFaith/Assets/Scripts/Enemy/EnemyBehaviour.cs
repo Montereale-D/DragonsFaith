@@ -187,6 +187,7 @@ namespace Enemy
             DungeonProgressManager.instance.EnemyDefeated(_saveId);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
+            //TransitionBackground.instance.FadeOut();
 
             if (IsHost)
             {

@@ -56,6 +56,11 @@ public class EnemyGridBehaviour : MonoBehaviour
         //_networkAnimator = GetComponentInChildren<OwnerNetworkAnimator>();
     }
 
+    /*public void SetUI()
+    {
+        _popUpUI.SetUI(enemyName, healthMax);
+    }*/
+
     public void PlanAction(List<PlayerGridMovement> characterList)
     {
         StartCoroutine(WaitAndPlan(characterList));

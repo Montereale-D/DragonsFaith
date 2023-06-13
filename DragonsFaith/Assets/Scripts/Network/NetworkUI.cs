@@ -19,6 +19,9 @@ public class NetworkUI : NetworkBehaviour
     [SerializeField] private Button hostReadyButton;
     [SerializeField] private Button clientReadyButton;
 
+    [SerializeField] private TMP_InputField hostName;
+    [SerializeField] private TMP_InputField clientName;
+
     [SerializeField] private Color onButtonColor;
     [SerializeField] private Color offButtonColor;
 
@@ -119,7 +122,8 @@ public class NetworkUI : NetworkBehaviour
     {
         if (dontWaitClient)
         {
-            PlayerPrefs.SetString("playerName", "host");
+            //PlayerPrefs.SetString("playerName", "host");
+            if (hostName.text == "") PlayerPrefs.SetString("playerName", "host");
             OnBothPlayersReady();
             return;
         }
@@ -134,7 +138,8 @@ public class NetworkUI : NetworkBehaviour
         {
             _isReady = true;
             hostReadyButton.image.color = onButtonColor;
-            PlayerPrefs.SetString("playerName", "host");
+            //PlayerPrefs.SetString("playerName", "host");
+            if (hostName.text == "") PlayerPrefs.SetString("playerName", "host");
             HostReadyClientRpc();
 
             if (!_isClientReady) return;
@@ -156,7 +161,8 @@ public class NetworkUI : NetworkBehaviour
             _isReady = true;
             clientReadyButton.image.color = onButtonColor;
             //NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().gameObject.name = "Client";
-            PlayerPrefs.SetString("playerName", "client");
+            //PlayerPrefs.SetString("playerName", "client");
+            if (clientName.text == "") PlayerPrefs.SetString("playerName", "client");
             ClientReadyServerRpc();
         }
     }
