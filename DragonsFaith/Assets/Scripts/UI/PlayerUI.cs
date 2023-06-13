@@ -581,5 +581,12 @@ namespace UI
         {
             _combatUI.ToggleMoveAttackButton(mode);
         }
+
+        public void ReturnToMainMenu()
+        {
+            Debug.Log("Return to main menu");
+            
+            
+        }
     }
 }

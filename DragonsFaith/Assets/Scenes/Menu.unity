@@ -1033,7 +1033,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -60.621258, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4545,6 +4545,10 @@ PrefabInstance:
       propertyPath: NetworkConfig.Prefabs.NetworkPrefabsLists.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: edd2f3764e5126344a350cb6c22080fd, type: 2}
+    - target: {fileID: 709259343300550215, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
+      propertyPath: m_ProtocolType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
 --- !u!1 &450785127
@@ -5662,7 +5666,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &541147494
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11669,7 +11673,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1060652417
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22323,7 +22327,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95467abcb5b0cf45b504932486c4be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontWaitClient: 0
   hostButton: {fileID: 27594954}
   clientButton: {fileID: 633726383}
   cancelButton: {fileID: 1960329157}
@@ -22334,6 +22337,10 @@ MonoBehaviour:
   logText: {fileID: 938863569}
   sceneManager: {fileID: 926707751}
   sceneName: Hub
+  relayJoinCodeHost: {fileID: 99513975}
+  nameTextHost: {fileID: 715710196}
+  relayJoinCodeClient: {fileID: 630751805}
+  nameTextClient: {fileID: 1213436139}
 --- !u!1 &1862524423
 GameObject:
   m_ObjectHideFlags: 0

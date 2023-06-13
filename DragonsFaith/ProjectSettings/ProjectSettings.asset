@@ -778,11 +778,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 2d4df6a5-b6b3-4889-959b-5baf432e03ab
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: OGD
+  organizationId: andreamontereale
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
