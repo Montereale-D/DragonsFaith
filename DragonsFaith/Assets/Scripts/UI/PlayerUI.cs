@@ -586,7 +586,7 @@ namespace UI
 
         public void ReturnToMainMenu()
         {
-            SceneManager.instance.ReturnToMainMenu();
+            SceneManager.instance.ReturnToMainMenu(NetworkManager.Singleton.IsHost);
         }
 
         private void OnDestroy()
