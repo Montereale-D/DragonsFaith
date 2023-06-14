@@ -126,13 +126,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Weapons_1
+      name: AssaultRifle
       rect:
         serializedVersion: 2
-        x: 78
-        y: 231.75
-        width: 78.6
-        height: 77.25
+        x: 86
+        y: 244
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -294,13 +294,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Weapons_9
+      name: Sniper
       rect:
         serializedVersion: 2
-        x: 702
-        y: 231.75
-        width: 78.6
-        height: 77.25
+        x: 712
+        y: 242
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -672,13 +672,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Weapons_27
+      name: Shotgun
       rect:
         serializedVersion: 2
-        x: 546
-        y: 77.75
-        width: 78.6
-        height: 77.25
+        x: 555
+        y: 87
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -956,8 +956,10 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Ammo: -56133827
+      AssaultRifle: -763692750
+      Shotgun: 334628651
+      Sniper: -1652146166
       Weapons_0: -889410065
-      Weapons_1: -763692750
       Weapons_10: 1207339525
       Weapons_11: -2003345047
       Weapons_12: -1733462480
@@ -974,7 +976,6 @@ TextureImporter:
       Weapons_24: 496740137
       Weapons_25: 1968778060
       Weapons_26: 777261671
-      Weapons_27: 334628651
       Weapons_28: 224158038
       Weapons_29: 737615043
       Weapons_3: -1895913126
@@ -993,7 +994,6 @@ TextureImporter:
       Weapons_6: 322572882
       Weapons_7: 1002220524
       Weapons_8: -961850550
-      Weapons_9: -1652146166
       pistol: -10514552
   spritePackingTag: 
   pSDRemoveMatte: 0

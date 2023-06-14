@@ -1,5 +1,81 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &187537281232154972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6864690351044935207}
+  - component: {fileID: 4322915098085336210}
+  - component: {fileID: 4794517916532602452}
+  m_Layer: 5
+  m_Name: Shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &6864690351044935207
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187537281232154972}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5754164446806053407}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 1.188}
+  m_SizeDelta: {x: 1.5, y: 1.5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4322915098085336210
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187537281232154972}
+  m_CullTransparentMesh: 1
+--- !u!114 &4794517916532602452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187537281232154972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 688056439, guid: 6d2bbb07dafc06c4c9f53caaf4ad3138, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &277841241995616070
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,8 +89,9 @@ GameObject:
   - component: {fileID: 6870420458554985037}
   - component: {fileID: 3263148781412382535}
   - component: {fileID: 5674218427252541878}
+  - component: {fileID: 7377669135128293809}
   m_Layer: 0
-  m_Name: AssaultSoldier
+  m_Name: MeleeSoldier
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,8 +153,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
-  m_Sprite: {fileID: -885795555, guid: 26cbba54ff8b6eb45806daf486fba3f8, type: 3}
+  m_SortingOrder: 2
+  m_Sprite: {fileID: -588759899, guid: 8d7a45eeca21c9e4fa7d496e37eeea51, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,7 +175,7 @@ Animator:
   m_GameObject: {fileID: 277841241995616070}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a04f66a688a3ff441a47e38640095a5a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2b500b9fb1613be4b8e94be4428fd10f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -138,6 +215,44 @@ CapsuleCollider2D:
   m_Offset: {x: -0.20000005, y: 1.5213408}
   m_Size: {x: 2, y: 2.9573183}
   m_Direction: 0
+--- !u!114 &7377669135128293809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277841241995616070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 1740614436
+    TransitionDuration: 0
+    TriggerNameHash: 1740614436
+    TransitionIndex: 0
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 1273568435
+    TransitionDuration: 0
+    TriggerNameHash: 237393061
+    TransitionIndex: 2
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -1525363869
+    TransitionDuration: 0
+    TriggerNameHash: -1525363869
+    TransitionIndex: 3
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -608183251
+    TransitionDuration: 0
+    TriggerNameHash: -1864224364
+    TransitionIndex: 4
+  m_Animator: {fileID: 6870420458554985037}
 --- !u!1 &809007258253916776
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,7 +420,7 @@ RectTransform:
   - {fileID: 9119792484572937000}
   - {fileID: 8389527621306976018}
   m_Father: {fileID: 5754164446806053407}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -614,6 +729,7 @@ GameObject:
   - component: {fileID: -1754092425021754728}
   - component: {fileID: -3303874697613722726}
   - component: {fileID: 8105661979939268855}
+  - component: {fileID: 7553198070928314876}
   m_Layer: 0
   m_Name: CharacterMelee
   m_TagString: Untagged
@@ -677,7 +793,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_Sprite: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -688,7 +804,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!114 &759670218607235391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -704,7 +820,8 @@ MonoBehaviour:
   team: 1
   pathMovementSpeed: 5
   isMoving: 0
-  turnSprite: {fileID: -2102863413, guid: 049dce31061bbcc499477f2b0c89ee7c, type: 3}
+  turnSprite: {fileID: -1789146564, guid: 810671a87e384a14ca71358c8f1246c9, type: 3}
+  charName: 
 --- !u!114 &-1754092425021754728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -717,11 +834,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f28565ff15bca2c43a2eea4fc994e923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyName: Melee Enemy
+  enemyName: Melee Soldier
   behaviourType: 0
   agility: 3
   healthMax: 100
   weapon: {fileID: 11400000, guid: ff2cf01fb429a3d4cb5947cc3bb1542d, type: 2}
+  skipTurn: 0
 --- !u!114 &-3303874697613722726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -737,6 +855,7 @@ MonoBehaviour:
   maxHealth: 100
   maxMana: 100
   isLocalPlayer: 0
+  health: 0
   characterName: 
   isBlocking: 0
 --- !u!114 &8105661979939268855
@@ -760,6 +879,23 @@ MonoBehaviour:
   startPoint: {fileID: 9119792484572937000}
   endPoint: {fileID: 8389527621306976018}
   speed: 1
+  shield: {fileID: 187537281232154972}
+--- !u!114 &7553198070928314876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554189749673916096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &6607194972100973179
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,7 +1100,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 4.61}
+  m_AnchoredPosition: {x: 0, y: 3.66}
   m_SizeDelta: {x: 4.5, y: 1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &108355938742355607
@@ -1063,6 +1199,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3083176799190151916}
+  - {fileID: 6864690351044935207}
   - {fileID: 4752675087704202860}
   m_Father: {fileID: 401984917656369082}
   m_RootOrder: 0

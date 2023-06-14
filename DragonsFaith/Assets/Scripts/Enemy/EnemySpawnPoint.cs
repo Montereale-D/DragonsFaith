@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
+    public bool isMiniboss;
     public bool patrol = true;
     public float waitOnPatrolPosition = 2f;
     public List<Transform> patrolPositions;

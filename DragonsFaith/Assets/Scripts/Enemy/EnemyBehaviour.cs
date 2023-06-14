@@ -10,6 +10,7 @@ namespace Enemy
     public class EnemyBehaviour : NetworkBehaviour
     {
         private string _saveId;
+        private bool _isMiniboss;
         private EnemySpawnPoint _spawnPoint;
         private bool _patrol = true;
         public float _waitOnPatrolPosition = 2f;
@@ -22,7 +23,16 @@ namespace Enemy
         private Vector3 _nextPosition;
         private int _positionIndex;
         private bool _keepMoving = true;
+
+        //use this in order to avoid unwanted collision with player on scene reloading
+        private bool _isReadyToFight;
         
+        private SpriteRenderer _spriteRenderer;
+        private Animator _animator;
+        private static readonly int Moving = Animator.StringToHash("isMoving");
+        private static readonly int X = Animator.StringToHash("x");
+        private float _previousDir;
+
         //private readonly NetworkVariable<bool> _setUpDone = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public void SetUp(EnemySpawnPoint spawnPoint)
@@ -30,6 +40,7 @@ namespace Enemy
             //Debug.Log("Enemy spawned setup");
 
             //Instantiated as a child of a EnemySpawnPoint, get params
+            _isMiniboss = spawnPoint.isMiniboss;
             _spawnPoint = spawnPoint;
             _patrol = _spawnPoint.patrol;
             _waitOnPatrolPosition = _spawnPoint.waitOnPatrolPosition;
@@ -48,13 +59,24 @@ namespace Enemy
             if (IsHost)
             {
                 GetComponent<NetworkObject>().DestroyWithScene = true;
+                _animator = GetComponentInChildren<Animator>();
+                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
 
             if (IsHost && DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
             {
                 Debug.Log(gameObject.name + " was already defeated");
                 Destroy(gameObject);
+                return;
             }
+
+            StartCoroutine(WaitToFight());
+        }
+
+        private IEnumerator WaitToFight()
+        {
+            yield return new WaitForSecondsRealtime(2f);
+            _isReadyToFight = true;
         }
 
         private void Update()
@@ -73,10 +95,15 @@ namespace Enemy
             
             characterTransform.position = Vector3.MoveTowards(charPos, _nextPosition,
                 speed * 0.003f /*Time.deltaTime*/ );
+            _animator.SetBool(Moving, true);
+            //_spriteRenderer.flipX = (_nextPosition - charPos).normalized == Vector3.left;
+            if (_previousDir != 0) _animator.SetFloat(X, _previousDir);
+            _previousDir = (_nextPosition - charPos).normalized.x;
 
             if (IsPositionReached())
             {
                 _keepMoving = false;
+                _animator.SetBool(Moving, false);
                 StartCoroutine(WaitOnPosition());
             }
         }
@@ -146,12 +173,33 @@ namespace Enemy
             base.OnNetworkDespawn();
         }
 
+        public void OnCombatStart()
+        {
+            OnCombatStart(characterTransform.position);
+        }
         public void OnCombatStart(Vector3 position)
         {
+            if (!_isReadyToFight)
+            {
+                Debug.Log("Not ready to CombatStart");
+                return;
+            }
+            
             Debug.Log("OnCombatStart " + position);
             DungeonProgressManager.instance.EnemyDefeated(_saveId);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
+            //TransitionBackground.instance.FadeOut();
+
+            if (_isMiniboss)
+            {
+                MinibossDefeated();
+
+                if (IsHost)
+                {
+                    MinibossDefeatedClientRpc();
+                }
+            }
 
             if (IsHost)
             {
@@ -159,6 +207,19 @@ namespace Enemy
                 Destroy(gameObject);
                 SceneManager.instance.LoadSceneSingle("Grid");
             }
+        }
+
+        [ClientRpc]
+        private void MinibossDefeatedClientRpc()
+        {
+            if(IsHost) return;
+            MinibossDefeated();
+        }
+
+        private void MinibossDefeated()
+        {
+            DungeonProgressManager.instance.MinibossDefeated();
+            HubProgressManager.keyCounter++;
         }
 
         [ClientRpc]

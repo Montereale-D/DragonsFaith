@@ -1,3 +1,4 @@
+using Grid;
 using UI;
 using UnityEngine;
 
@@ -18,12 +19,16 @@ public class CharacterInfo : MonoBehaviour
 
     public bool isBlocking;
 
+    private PlayerGridMovement _gridMovement;
+
     private void Awake()
     {
         health = maxHealth;
         mana = maxMana;
+        //characterName = PlayerPrefs.GetString("playerName");
         _characterUI = GetComponent<CharacterGridPopUpUI>();
-        _characterUI.SetUI(characterName, maxHealth);
+        //_characterUI.SetUI(characterName, maxHealth);
+        _gridMovement = GetComponent<PlayerGridMovement>();
     }
 
     public void SetUp()
@@ -35,7 +40,8 @@ public class CharacterInfo : MonoBehaviour
             _playerUI.manaSlider.maxValue = maxMana;
             _playerUI.UpdateHealthBar(maxHealth, maxHealth);
             _playerUI.UpdateManaBar(maxMana, maxMana);
-            _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
+            characterName = _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
+            _characterUI.SetUI(characterName, maxHealth);
         }
         else
         {
@@ -89,7 +95,8 @@ public class CharacterInfo : MonoBehaviour
     
     private void Die()
     {
-        CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
+        CombatSystem.instance.CharacterDied(_gridMovement);
+        _gridMovement.OnDeath();
     }
 
     public bool IsAlive()
@@ -113,12 +120,14 @@ public class CharacterInfo : MonoBehaviour
         else
         {
             _characterUI.UpdateHealth(health);
+            GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(heal, true);
         }
     }
 
     public void Revive()
     {
         Heal(maxHealth/2);
+        _gridMovement.OnRevive();
     }
 
     public bool UseMana(int value)

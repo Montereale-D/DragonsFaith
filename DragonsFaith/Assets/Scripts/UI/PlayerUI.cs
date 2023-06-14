@@ -2,7 +2,9 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using Inventory;
+using Network;
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -140,7 +142,7 @@ namespace UI
             
             _optionsManager.SetDropdown(resolutionDropdown);
 
-            nameText.text = _optionsManager.RetrievePlayerName();
+            //nameText.text = _optionsManager.RetrievePlayerName();
         
             playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
             enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
@@ -149,6 +151,7 @@ namespace UI
             //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
             
             //_rectTransformTurnUI = turnUI.GetComponent<RectTransform>();
+            
             _rectTransformFaithTab = faithTab.GetComponent<RectTransform>();
             FadeInElement(_rectTransformFaithTab, faithTabFadeInTime);
         }
@@ -587,5 +590,14 @@ namespace UI
             _combatUI.SkillButtonAction(mode);
         }
 
+        public void ReturnToMainMenu()
+        {
+            SceneManager.instance.ReturnToMainMenu(NetworkManager.Singleton.IsHost);
+        }
+
+        private void OnDestroy()
+        {
+            instance = null;
+        }
     }
 }

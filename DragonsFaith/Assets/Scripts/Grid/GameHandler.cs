@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Grid;
 using Network;
 using Player;
 using UI;
@@ -41,6 +42,7 @@ public class GameHandler : NetworkBehaviour
     //Find and setup all characters, then setup the CombatSystem
     public void Setup()
     {
+        Debug.Log("GameHandle Setup");
         _obstacles = FindObjectsOfType<Obstacle>();
         /*for (var i = 0; i < _obstacles.Length; i++)
         {
@@ -80,6 +82,7 @@ public class GameHandler : NetworkBehaviour
 
     private IEnumerator WaitMovementInfo(PlayerGridMovement[] characters, Obstacle[] obstacles)
     {
+        Debug.Log("GameHandle WaitMovementInfo init");
         yield return null;
 
         var charactersReady = false;

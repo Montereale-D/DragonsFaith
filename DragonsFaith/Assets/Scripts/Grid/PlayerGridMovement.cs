@@ -18,6 +18,15 @@ public class PlayerGridMovement : MonoBehaviour
 
     public Sprite turnSprite;
 
+    public string charName;
+    
+    private Animator _animator;
+    private static readonly int IsMoving = Animator.StringToHash("isMoving");
+    private static readonly int IsRunning = Animator.StringToHash("isRunning");
+    private static readonly int X = Animator.StringToHash("x");
+    private static readonly int Downed = Animator.StringToHash("downed");
+    private static readonly int Revive = Animator.StringToHash("revive");
+
     public enum Team
     {
         Players,
@@ -34,6 +43,7 @@ public class PlayerGridMovement : MonoBehaviour
     private void Awake()
     {
         state = State.Normal;
+        _animator = GetComponentInChildren<Animator>();
     }
 
     public void SetGridPosition()
@@ -88,7 +98,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         state = State.Moving;
         SetTile(tile);
-        StartCoroutine(UpdateMovementAnimation());
+        //StartCoroutine(UpdateMovementAnimation());
     }
 
     public void FreeRoaming(Vector2Int direction)
@@ -105,7 +115,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     public void MoveToTile(Tile tile)
     {
-        if (isMoving) return;
+        if (isMoving) return; //TODO: isMoving is never set to true
         Debug.Log("Request movement to tile " + tile.mapPosition);
         MapHandler.instance.HideAllTiles();
         List<Tile> toExamine = MapHandler.instance.GetTilesInRange(onTile, movement);
@@ -119,11 +129,17 @@ public class PlayerGridMovement : MonoBehaviour
     {
         if (path.Count < 1) throw new Exception("Path has 0 elements");
 
+        var direction = (path[^1].transform.position - transform.position).normalized.x;
+        _animator.SetBool(IsMoving, true);
+        _animator.SetFloat(X, direction);
+        
         while (path.Count > 0)
         {
             yield return StartCoroutine(InterpToTile(path[0]));
             path.RemoveAt(0);
         }
+        
+        _animator.SetBool(IsMoving, false);
     }
 
     #region Pathfinding
@@ -208,13 +224,29 @@ public class PlayerGridMovement : MonoBehaviour
     }
 
     // Called to update movement animation after one frame from movement end
-    private IEnumerator UpdateMovementAnimation()
+    /*private IEnumerator UpdateMovementAnimation()
     {
         yield return null;
-    }
+    }*/
 
     public void SetTurnSprite(Sprite sprite)
     {
         turnSprite = sprite;
+    }
+
+    public void TurnTowardTile(Tile tile)
+    {
+        var direction = (tile.transform.position - transform.position).normalized.x;
+        _animator.SetFloat(X, direction);
+    }
+
+    public void OnDeath()
+    {
+        _animator.SetTrigger(Downed);
+    }
+
+    public void OnRevive()
+    {
+        _animator.SetTrigger(Revive);
     }
 }

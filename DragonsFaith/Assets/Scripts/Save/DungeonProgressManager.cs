@@ -13,8 +13,8 @@ public class DungeonProgressManager : MonoBehaviour
     private Dictionary<string, bool> _enemyData;
     private Dictionary<string, bool> _abilityData;
     private Dictionary<GameData.PlayerType, Vector3> _spawnData;
-
-    //todo capire cosa ho modificato perché non funziona più
+    private bool _isMinibossDefeated;
+    
     private void Awake()
     {
         if (instance != null)
@@ -112,7 +112,11 @@ public class DungeonProgressManager : MonoBehaviour
     public void UpdateSpawnPoint(Vector3 position, GameData.PlayerType playerType)
     {
         Debug.Log("UpdateSpawnPoint " + position);
-        _spawnData.TryAdd(playerType, position);
+        if (!_spawnData.TryAdd(playerType, position))
+        {
+            _spawnData.Remove(playerType);
+            _spawnData.Add(playerType, position);
+        }
     }
 
     public Vector3? GetSpawnPoint(GameData.PlayerType playerType)
@@ -120,6 +124,11 @@ public class DungeonProgressManager : MonoBehaviour
         var result = _spawnData.TryGetValue(playerType, out Vector3 value);
         Debug.Log("GetSpawnPoint " + value);
         return result ? value : null;
+    }
+
+    public void MinibossDefeated()
+    {
+        _isMinibossDefeated = true;
     }
     
     private void CheckUid(string uid)

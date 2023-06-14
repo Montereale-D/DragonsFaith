@@ -9,6 +9,7 @@ public class MapHandler : MonoBehaviour
     public static MapHandler instance { get; private set; }
 
     [SerializeReference] private Tile tileClass;
+    private LayerMask _layerMask;
 
     private Dictionary<Vector2Int, Tile> map = new Dictionary<Vector2Int, Tile>();
 
@@ -34,19 +35,21 @@ public class MapHandler : MonoBehaviour
 
     private void Start()
     {
+        _layerMask = LayerMask.GetMask("Tiles");
         container = new GameObject("OverlayContainer");
-        Tilemap tileMap = gameObject.GetComponentInChildren<Tilemap>();
-        BoundsInt bounds = tileMap.cellBounds;
-        for (int x = bounds.min.x; x < bounds.max.x; x++)
+        //var tileMap = gameObject.GetComponentInChildren<Tilemap>();
+        var tileMap = gameObject.GetComponentsInChildren<Tilemap>()[0];
+        var bounds = tileMap.cellBounds;
+        for (var x = bounds.min.x; x < bounds.max.x; x++)
         {
-            for (int y = bounds.min.y; y < bounds.max.y; y++)
+            for (var y = bounds.min.y; y < bounds.max.y; y++)
             {
-                Vector3Int tilePosition = new Vector3Int(x, y, 0);
-                Vector2Int tilePosition2d = new Vector2Int(x, y);
+                var tilePosition = new Vector3Int(x, y, 0);
+                var tilePosition2d = new Vector2Int(x, y);
                 if (tileMap.HasTile(tilePosition) && !map.ContainsKey(tilePosition2d))
                 {
-                    Vector3 tileWorldPosition = tileMap.GetCellCenterWorld(tilePosition);
-                    Tile tile = Instantiate(tileClass, container.transform);
+                    var tileWorldPosition = tileMap.GetCellCenterWorld(tilePosition);
+                    var tile = Instantiate(tileClass, container.transform);
                     tile.mapPosition = tilePosition2d;
                     tile.transform.position = tileWorldPosition;
 
@@ -58,16 +61,16 @@ public class MapHandler : MonoBehaviour
 
     public RaycastHit2D? GetHoveredRaycast()
     {
-        Camera mainCamera = Camera.main;
+        var mainCamera = Camera.main;
         if (mainCamera == null)
         {
             Debug.LogError("mainCamera not found: ASSIGN IT!");
             return null;
         }
 
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 mousePosition2d = new Vector2(mousePosition.x, mousePosition.y);
-        RaycastHit2D[] hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero);
+        var mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var mousePosition2d = new Vector2(mousePosition.x, mousePosition.y);
+        var hitResult = Physics2D.RaycastAll(mousePosition2d, Vector2.zero, Mathf.Infinity, _layerMask);
         if (hitResult.Length > 0)
         {
             return hitResult.OrderByDescending(i => i.collider.transform.position.z).First();
@@ -79,21 +82,21 @@ public class MapHandler : MonoBehaviour
     //return a list of neighbour tile to one given as input (serching in a tile list if passed or in all map if not)
     public List<Tile> GetNeighbourTiles(Tile current, List<Tile> toExamine)
     {
-        Dictionary<Vector2Int, Tile> tiles = new Dictionary<Vector2Int, Tile>();
+        var tiles = new Dictionary<Vector2Int, Tile>();
         if (toExamine.Count > 0)
         {
-            foreach (Tile tile in toExamine)
+            foreach (var tile in toExamine)
             {
                 tiles.Add(tile.mapPosition, tile);
             }
         }
         else tiles = map; // if toExamine is empty we check ALL tiles in map
 
-        List<Tile> neighbours = new List<Tile>();
+        var neighbours = new List<Tile>();
 
 
         // Check the tile over the current one
-        Vector2Int positionToCheck = current.mapPosition + Vector2Int.up;
+        var positionToCheck = current.mapPosition + Vector2Int.up;
         if (tiles.ContainsKey(positionToCheck))
         {
             neighbours.Add(tiles[positionToCheck]);
@@ -126,16 +129,16 @@ public class MapHandler : MonoBehaviour
     //return a list of all tiles in range from a starting tile
     public List<Tile> GetTilesInRange(Tile start, int range)
     {
-        List<Tile> inRange = new List<Tile>();
-        List<Tile> previousStep = new List<Tile>();
-        int step = 0;
+        var inRange = new List<Tile>();
+        var previousStep = new List<Tile>();
+        var step = 0;
         inRange.Add(start);
         previousStep.Add(start);
 
         while (step < range)
         {
-            List<Tile> neighbourhood = new List<Tile>();
-            foreach (Tile tile in previousStep)
+            var neighbourhood = new List<Tile>();
+            foreach (var tile in previousStep)
             {
                 neighbourhood.AddRange(GetNeighbourTiles(tile, new List<Tile>()));
             }
@@ -150,7 +153,7 @@ public class MapHandler : MonoBehaviour
 
     public void HideAllTiles()
     {
-        foreach (Tile tile in map.Values)
+        foreach (var tile in map.Values)
         {
             tile.HideTile();
         }
@@ -159,11 +162,11 @@ public class MapHandler : MonoBehaviour
     //shows all tiles player can move to
     public void ShowNavigableTiles(Tile characterTile, int movement)
     {
-        List<Tile> tiles = GetTilesInRange(characterTile, movement);
-        foreach (Tile tile in tiles)
+        var tiles = GetTilesInRange(characterTile, movement);
+        foreach (var tile in tiles)
         {
             if(tile.navigable)
-            tile.ShowTile();
+                tile.ShowTile();
         }
     }
 }

@@ -1,7 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Enemy;
+using Grid;
 using Inventory.Items;
+using Unity.Netcode;
+using Network;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -27,7 +32,14 @@ public class EnemyGridBehaviour : MonoBehaviour
     private CharacterGridPopUpUI _popUpUI;
 
     private int _health;
+    private Animator _animator;
+    //private OwnerNetworkAnimator _networkAnimator;
     private static readonly int Dead = Animator.StringToHash("Dead");
+    private static readonly int Hurt = Animator.StringToHash("Hurt");
+    private static readonly int X = Animator.StringToHash("x");
+    private static readonly int Ranged = Animator.StringToHash("Ranged");
+    private static readonly int Melee = Animator.StringToHash("Melee");
+    private static readonly int Reload = Animator.StringToHash("Reload");
 
     private void Awake()
     {
@@ -39,7 +51,15 @@ public class EnemyGridBehaviour : MonoBehaviour
 
         _characterInfo = GetComponent<CharacterInfo>();
         _characterInfo.characterName = enemyName;
+
+        _animator = GetComponentInChildren<Animator>();
+        //_networkAnimator = GetComponentInChildren<OwnerNetworkAnimator>();
     }
+
+    /*public void SetUI()
+    {
+        _popUpUI.SetUI(enemyName, healthMax);
+    }*/
 
     public void PlanAction(List<PlayerGridMovement> characterList)
     {
@@ -68,6 +88,7 @@ public class EnemyGridBehaviour : MonoBehaviour
             Die();
         }
 
+        _animator.SetTrigger(Hurt);
         _popUpUI.UpdateHealth(_health);
     }
 
@@ -79,10 +100,13 @@ public class EnemyGridBehaviour : MonoBehaviour
     private IEnumerator DeathCoroutine()
     {
         CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
-        // TODO: activate death animation
-        GetComponentInChildren<Animator>().SetTrigger(Dead);
+        _animator.SetTrigger(Dead);
         yield return new WaitForSeconds(3f);
-        Destroy(gameObject);
+
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Destroy(gameObject);
+        }
     }
 
     [ContextMenu("ForceDieDebug")]
@@ -178,6 +202,16 @@ public class EnemyGridBehaviour : MonoBehaviour
     private void RangedPlan(List<PlayerGridMovement> characterList)
     {
         Debug.Log("Ranged Enemy turn");
+
+        if (weapon.GetAmmo() <= 0)
+        {
+            Debug.Log("No ammo, reloading ...");
+            CombatSystem.instance.ReloadAction();
+            CombatSystem.instance.SkipTurn();
+            return;
+        }
+        
+        
         var players = characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
         PlayerGridMovement target;
 
@@ -291,5 +325,17 @@ public class EnemyGridBehaviour : MonoBehaviour
             .ToList();
 
         return reachableTiles[0];
+    }
+    
+    public void TriggerAttackAnimation(PlayerGridMovement target)
+    {
+        var direction = (target.transform.position - transform.position).normalized.x;
+        _animator.SetFloat(X, direction);
+        _animator.SetTrigger(behaviourType == EnemyBehaviourType.Ranged ? Ranged : Melee);
+    }
+
+    public void TriggerReloadAnimation()
+    {
+        _animator.SetTrigger(Reload);
     }
 }

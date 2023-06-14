@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using Grid;
+using Inventory;
+using Inventory.Items;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -37,9 +40,19 @@ namespace UI
         public void SetUp(List<PlayerGridMovement> characterList)
         {
             //TODO: uncomment when player weapons
-            /*SetWeaponRangeUI((int)InventoryManager.Instance.GetWeapon().GetRange());
-            SetWeaponDamageUI((int)InventoryManager.Instance.GetWeapon().GetDamage());
-            SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());*/
+            var weapon = InventoryManager.Instance.GetWeapon();
+            if (!weapon)
+            {
+                weapon = ScriptableObject.CreateInstance<Weapon>();
+                weapon.range = 1;
+                weapon.weaponType = Weapon.WeaponType.Melee;
+                weapon.damage = 1;
+            }
+
+            SetWeaponRangeUI(weapon.range);
+            SetWeaponDamageUI((int)weapon.damage);
+            if (weapon.weaponType == Weapon.WeaponType.Melee) SetMeleeAmmoCounter();
+            else SetAmmoCounter(weapon.GetAmmo());
                 
             _turnUI = GetComponentInChildren<TurnUI>();
             _turnUI.SetUpList(characterList);
@@ -56,15 +69,15 @@ namespace UI
             blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
             reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
-            skipTurnButton.onClick.AddListener(() =>
-            {
+            skipTurnButton.onClick.AddListener(CombatSystem.instance.ButtonSkipTurn);
+            /*{
                 var localPlayer =
                     NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
                 if (CombatSystem.instance.activeUnit == localPlayer)
                 {
                     CombatSystem.instance.SkipTurn();
                 }
-            });
+            });*/
         }
 
         public void Destroy()
@@ -96,6 +109,11 @@ namespace UI
         public void SetAmmoCounter(int value)
         {
             ammoCounter.text = "Ammo left: " + value;
+        }
+
+        public void SetMeleeAmmoCounter()
+        {
+            ammoCounter.text = "No ammo needed";
         }
         
         public void SetCombatPopUp(bool state, string text = "")

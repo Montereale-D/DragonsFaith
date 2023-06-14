@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace UI
@@ -14,19 +15,24 @@ namespace UI
 
         public static void Show(string content, string header = "")
         {
-            current.tooltip.SetText(content, header);
-            current.tooltip.gameObject.SetActive(true);
-            current.tooltip.FadeStart();
+            
+            try
+            {
+                current.tooltip.SetText(content, header);
+                current.tooltip.gameObject.SetActive(true);
+                current.tooltip.FadeStart();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public static void Hide()
         {
             if (!current.tooltip.enabled) return;
             current.tooltip.FadeFinished();
-            LeanTween.delayedCall(0.1f, () =>
-            {
-                current.tooltip.gameObject.SetActive(false);
-            });
-        }    
+            LeanTween.delayedCall(0.1f, () => { current.tooltip.gameObject.SetActive(false); });
+        }
     }
 }

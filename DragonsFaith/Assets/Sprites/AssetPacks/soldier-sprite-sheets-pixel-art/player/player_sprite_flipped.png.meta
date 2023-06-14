@@ -1,0 +1,1399 @@
+fileFormatVersion: 2
+guid: 6333b4a02652cb549a1ccce7d7452ef3
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 17
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: player_sprite_flipped_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd28ba8232c2a2a4bb109d3b775256cd
+      internalID: -1710512990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_1
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d44be9324c2780f44945eb489fb823ac
+      internalID: 1147538496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_2
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4aac77fd6a966114898baea727db12f2
+      internalID: -1968974632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_3
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af90bfecc92ad8e47af58a60a9d6c578
+      internalID: 1329311271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_4
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40d5c4cfffea3824e8d6546a95f78c7e
+      internalID: -1665799788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_5
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7229d11636ce4dc43bfb140ca67d4b41
+      internalID: -1084647195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_6
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a27e405656fc874985ed6f1c2531aa8
+      internalID: -1878662126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_7
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 349.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f884efd79bc213d40b40850dc136fade
+      internalID: 826197126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 300.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e4b307516f70b8408e5cc17328b401d
+      internalID: 1950397155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_9
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 300.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09892557a33f2164bb24b6c0a6d5372b
+      internalID: 178937839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_10
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 300.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: baefd6b7dc9ee554dae3ca3332199080
+      internalID: 1581196872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_11
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 300.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03a3c828b4887bd499f53fce6b858bef
+      internalID: 1860590616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_12
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 299
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9325aad9b5f579d4ab02189fed8b07a4
+      internalID: 523103794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_13
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 299
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a42bf78e2cf5aa4087b1eedcc8ea8ae
+      internalID: 1677335863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_14
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 299
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b3ad0a1fa612d3429ba3f3193bbe2c2
+      internalID: 488629985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_15
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 299
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb007f17994556c49a1f2a3edcb40bf9
+      internalID: 915829151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6ea259e11ee8944fb7bf73a37b2dd68
+      internalID: -1866802457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_17
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e9b781ddedef4e4e9ffe0d9eaf69b5a
+      internalID: 257401887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_18
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b417f456f5a181a4494f5e45630a42da
+      internalID: 162046018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_19
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8fb661431172a7d459ec75e40f08d0b3
+      internalID: -1686837872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_20
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fcaa63727f93b14a88785bd9bf36b21
+      internalID: -2030020803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_21
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04e5615238a9bec41915cf99128c9df8
+      internalID: 793102687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_22
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc9eb4870641fae41836b0245f33e82b
+      internalID: -2075525028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_23
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 251.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7626e80fdac0bc44eaae6cef39c057ab
+      internalID: 462592355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 132cf9819e0918b4d8991bef1faacfd2
+      internalID: -263543932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_25
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 944d226fcaaaa334393fa94f0173a5d3
+      internalID: -1097099826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_26
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b45438e3e15287744a245c37a6c90285
+      internalID: 1535166223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_27
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe5ecd59e2b96544fa4dc0f96392ee27
+      internalID: 930975352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_28
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 182f76f153d310e4ebe8aaa8944482ef
+      internalID: -739693209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_29
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1da71929e161484da7be6cbef9d8eed
+      internalID: -1727518425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_30
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e63ce3c0caea83947a37d6d5ff1c382c
+      internalID: 1169438510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_31
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 202.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05935b2d739ce13469d52514cf86353b
+      internalID: 796154997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 153.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 598a0b0929caac24a919a44c35ec9be4
+      internalID: 1077682762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_33
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 153.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 144bf9a7d3b87224dbde02f430d6a585
+      internalID: -182766166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_34
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 149
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1eb8d71bcc079a49acdde9eb2a3c4dd
+      internalID: -456576074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_35
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 149
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4092104a84e40b0419bc40a698420962
+      internalID: -1680192464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_36
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 149
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b87cbf0d41737d3429f9d9a8e591cc8e
+      internalID: 1824705207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_37
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 149
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 132877a2c61d2f44a936257e21f95c82
+      internalID: -282446327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_38
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 149
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba0ffd422da811c47ada66cbce4ad4d1
+      internalID: -1995819254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_39
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 149
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1aaa4099f41aae14fb22aced2f9deb24
+      internalID: -365550989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eae5ced307a219a4d8b99887f93ac434
+      internalID: -394929512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_41
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2154fe32d94d49040806d8cc26be1321
+      internalID: 2000058989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_42
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a080288108f7bf45b1841db7390fab4
+      internalID: 805797007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_43
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d0fa33b993d6634391e226c0a3694c7
+      internalID: -2030952888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_44
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f26e59dc452b4441a62004dd62f2908
+      internalID: 1793561550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_45
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2f4f833234c7224f99d6b64a17aa0fb
+      internalID: -1179375488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_46
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3335d7ceeeb7bfe47bd1089e41d9aa85
+      internalID: -2093486722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_47
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 104.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0738ec9e2cfdac2418ffbd511cce0052
+      internalID: -1893574514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65a8b9cb09fdd0f4e952d8da8b74073b
+      internalID: -105933200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_49
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f218dcfe3ad6144e9ba0a94ccc9ab2f
+      internalID: 1887410940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_50
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be31c6b77f593b841a1e0e433fb22023
+      internalID: 1992992054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_51
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55ea0ec34ab14584e948c6e66b4e6b58
+      internalID: 1388111125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_52
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca92065c55738dc429bd370a47a22a5a
+      internalID: -1376092945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_53
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09f45de837f2dfb44971e1e1bf533058
+      internalID: -483058996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_54
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab220f0b39b73a042822908c25e79b08
+      internalID: 1090135409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_55
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 55.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 897ff51c46277e14fafe3deb57197321
+      internalID: -1281955758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: downedFlipped
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 45
+        height: 50
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f0412580c61ade45abc5b97e1479add
+      internalID: 332065703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_sprite_flipped_57
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 6.125
+        width: 45
+        height: 49.875
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f16b9386d979b4b4eafaa13ccb64fcf0
+      internalID: 1701349124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      downedFlipped: 332065703
+      player_sprite_flipped_0: -1710512990
+      player_sprite_flipped_1: 1147538496
+      player_sprite_flipped_10: 1581196872
+      player_sprite_flipped_11: 1860590616
+      player_sprite_flipped_12: 523103794
+      player_sprite_flipped_13: 1677335863
+      player_sprite_flipped_14: 488629985
+      player_sprite_flipped_15: 915829151
+      player_sprite_flipped_16: -1866802457
+      player_sprite_flipped_17: 257401887
+      player_sprite_flipped_18: 162046018
+      player_sprite_flipped_19: -1686837872
+      player_sprite_flipped_2: -1968974632
+      player_sprite_flipped_20: -2030020803
+      player_sprite_flipped_21: 793102687
+      player_sprite_flipped_22: -2075525028
+      player_sprite_flipped_23: 462592355
+      player_sprite_flipped_24: -263543932
+      player_sprite_flipped_25: -1097099826
+      player_sprite_flipped_26: 1535166223
+      player_sprite_flipped_27: 930975352
+      player_sprite_flipped_28: -739693209
+      player_sprite_flipped_29: -1727518425
+      player_sprite_flipped_3: 1329311271
+      player_sprite_flipped_30: 1169438510
+      player_sprite_flipped_31: 796154997
+      player_sprite_flipped_32: 1077682762
+      player_sprite_flipped_33: -182766166
+      player_sprite_flipped_34: -456576074
+      player_sprite_flipped_35: -1680192464
+      player_sprite_flipped_36: 1824705207
+      player_sprite_flipped_37: -282446327
+      player_sprite_flipped_38: -1995819254
+      player_sprite_flipped_39: -365550989
+      player_sprite_flipped_4: -1665799788
+      player_sprite_flipped_40: -394929512
+      player_sprite_flipped_41: 2000058989
+      player_sprite_flipped_42: 805797007
+      player_sprite_flipped_43: -2030952888
+      player_sprite_flipped_44: 1793561550
+      player_sprite_flipped_45: -1179375488
+      player_sprite_flipped_46: -2093486722
+      player_sprite_flipped_47: -1893574514
+      player_sprite_flipped_48: -105933200
+      player_sprite_flipped_49: 1887410940
+      player_sprite_flipped_5: -1084647195
+      player_sprite_flipped_50: 1992992054
+      player_sprite_flipped_51: 1388111125
+      player_sprite_flipped_52: -1376092945
+      player_sprite_flipped_53: -483058996
+      player_sprite_flipped_54: 1090135409
+      player_sprite_flipped_55: -1281955758
+      player_sprite_flipped_57: 1701349124
+      player_sprite_flipped_6: -1878662126
+      player_sprite_flipped_7: 826197126
+      player_sprite_flipped_8: 1950397155
+      player_sprite_flipped_9: 178937839
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
