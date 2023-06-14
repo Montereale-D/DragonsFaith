@@ -37,10 +37,11 @@ namespace Network
             if (IsServer)
             {
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
-                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+                //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnPlayerDisconnect;
         }
 
         private void OnSceneLoaded(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
@@ -52,7 +53,7 @@ namespace Network
             _isLoading = false;
         }
 
-        private void OnClientDisconnect(ulong clientId)
+        private void OnPlayerDisconnect(ulong clientId)
         {
             ReturnToMainMenu(false);
         }
