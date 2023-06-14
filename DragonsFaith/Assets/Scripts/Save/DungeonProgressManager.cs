@@ -50,61 +50,61 @@ public class DungeonProgressManager : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void ChestOpened(string uid)
+    public void ChestOpened(string uid, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         Debug.Log("ChestOpened for " + uid);
         _chestData.TryAdd(uid, true);
     }
 
-    public bool IsChestOpened(string uid)
+    public bool IsChestOpened(string uid, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         Debug.Log("IsChestOpened for " + uid);
         return _chestData.TryGetValue(uid, out _);
     }
 
-    public void ButtonChangeState(string uid, bool isPressed)
+    public void ButtonChangeState(string uid, bool isPressed, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         Debug.Log("ButtonChangeState for " + uid);
         _buttonsData.TryAdd(uid, true);
     }
 
-    public bool IsButtonPressed(string uid)
+    public bool IsButtonPressed(string uid, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         Debug.Log("IsButtonPressed for " + uid);
         return _buttonsData.TryGetValue(uid, out _);
     }
     
-    public void AbilityPassed(string uid)
+    public void AbilityPassed(string uid, GameObject go)
     {
         //todo controllare che funzioni
-        CheckUid(uid);
+        CheckUid(uid, go);
         var value = _abilityData.TryAdd(uid, true);
         //Debug.Log("AbilityPassed for " + uid + " : " + value);
         
     }
 
-    public bool IsAbilityPassed(string uid)
+    public bool IsAbilityPassed(string uid, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         _abilityData.TryGetValue(uid, out bool value);
         //Debug.Log("IsAbilityPassed for " + uid + " : " + value);
         return value;
     }
 
-    public void EnemyDefeated(string uid)
+    public void EnemyDefeated(string uid, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         //Debug.Log("EnemyDefeated for " + uid);
         _enemyData.TryAdd(uid, true);
     }
 
-    public bool IsEnemyDefeated(string uid)
+    public bool IsEnemyDefeated(string uid, GameObject go)
     {
-        CheckUid(uid);
+        CheckUid(uid, go);
         //Debug.Log("IsEnemyDefeated for " + uid);
         return _enemyData.TryGetValue(uid, out _);
     }
@@ -131,11 +131,11 @@ public class DungeonProgressManager : MonoBehaviour
         _isMinibossDefeated = true;
     }
     
-    private void CheckUid(string uid)
+    private void CheckUid(string uid, GameObject go)
     {
         if (string.IsNullOrEmpty(uid))
         {
-            throw new Exception("Not valid uid");
+            throw new Exception("Not valid uid of " + go.name);
         }
     }
 }

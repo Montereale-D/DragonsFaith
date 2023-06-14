@@ -72,7 +72,7 @@ namespace Enemy
                 //_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
 
-            if (IsHost && DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
+            if (IsHost && DungeonProgressManager.instance.IsEnemyDefeated(_saveId, gameObject))
             {
                 Debug.Log(gameObject.name + " was already defeated");
                 Destroy(gameObject);
@@ -196,7 +196,7 @@ namespace Enemy
 
             Debug.Log("OnCombatStart " + position);
             _keepMoving = false;
-            DungeonProgressManager.instance.EnemyDefeated(_saveId);
+            DungeonProgressManager.instance.EnemyDefeated(_saveId, gameObject);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
             //TransitionBackground.instance.FadeOut();
@@ -242,7 +242,7 @@ namespace Enemy
         {
             Debug.Log("OnCombatStartClientRpc " + position);
             SceneManager.instance.LoadSceneSingle("Grid");
-            DungeonProgressManager.instance.EnemyDefeated(_saveId);
+            DungeonProgressManager.instance.EnemyDefeated(_saveId, gameObject);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
         }

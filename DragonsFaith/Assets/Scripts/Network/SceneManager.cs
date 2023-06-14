@@ -376,5 +376,17 @@ namespace Network
             var status = NetworkManager.SceneManager.UnloadScene(_loadedScene);
             CheckStatus(status, false);
         }
+
+        private string dungeonSceneName;
+        public void LoadSceneSingleDungeon(string sceneName)
+        {
+            dungeonSceneName = sceneName;
+            LoadSceneSingle(sceneName);
+        }
+
+        public void ReloadSceneSingleDungeon()
+        {
+            LoadSceneSingle(dungeonSceneName);
+        }
     }
 }

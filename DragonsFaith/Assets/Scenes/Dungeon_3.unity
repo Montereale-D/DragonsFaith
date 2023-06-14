@@ -497,9 +497,21 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 358903216
       objectReference: {fileID: 0}
+    - target: {fileID: 3585746391682691451, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: saveId
+      value: 504dceea-73bb-4d84-b305-96c69516d954
+      objectReference: {fileID: 0}
     - target: {fileID: 3686974971469970706, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 711284675
+      objectReference: {fileID: 0}
+    - target: {fileID: 4282564677904307385, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: saveId
+      value: 4fb18aef-49e4-46a6-bd2f-7c6fb7dec41b
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492313642368491676, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: saveId
+      value: ef292c36-2506-4964-be59-678ea50a4658
       objectReference: {fileID: 0}
     - target: {fileID: 4507006648739390729, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -529,6 +541,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3215944703
       objectReference: {fileID: 0}
+    - target: {fileID: 6265712765243487161, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: saveId
+      value: a09d149a-ae31-42bf-84ba-40e3c3dd4bdc
+      objectReference: {fileID: 0}
     - target: {fileID: 6433928006430120835, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 1229843716
@@ -536,6 +552,10 @@ PrefabInstance:
     - target: {fileID: 6437529525608850403, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 775187410
+      objectReference: {fileID: 0}
+    - target: {fileID: 6811899926747165515, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: saveId
+      value: 94d91fa4-2e96-44b9-9c40-60ec98d14021
       objectReference: {fileID: 0}
     - target: {fileID: 6899670294905722480, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: GlobalObjectIdHash

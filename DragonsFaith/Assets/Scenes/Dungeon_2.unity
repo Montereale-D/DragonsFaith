@@ -370,6 +370,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 136788605387832344, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: saveId
+      value: c48b7c69-40bf-4aea-bbc3-4db887f44650
+      objectReference: {fileID: 0}
     - target: {fileID: 166491713663536670, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 628869952
@@ -393,6 +397,14 @@ PrefabInstance:
     - target: {fileID: 894222239302086659, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1128512305671067377, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: saveId
+      value: 352aedd3-2898-4f40-a4e4-5525ec330dfa
+      objectReference: {fileID: 0}
+    - target: {fileID: 1129573359536409845, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: saveId
+      value: 7e501d85-8b5b-4e32-a805-a0a7f6f51e3a
       objectReference: {fileID: 0}
     - target: {fileID: 1331926680568447996, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: m_RootOrder
@@ -614,6 +626,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5423119143982885654, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: saveId
+      value: 2e99c724-039d-43d5-8e89-5ca1c8cc93e9
+      objectReference: {fileID: 0}
     - target: {fileID: 5675227809145689682, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -685,6 +701,14 @@ PrefabInstance:
     - target: {fileID: 7864917551244249417, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 295945991
+      objectReference: {fileID: 0}
+    - target: {fileID: 8105411924781118171, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: saveId
+      value: af125923-f85f-4d12-9848-9b6c7c17a26a
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370079794706802690, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: saveId
+      value: 3e1445d7-a48e-46ae-9d5f-00937401a38a
       objectReference: {fileID: 0}
     - target: {fileID: 8431385205326939187, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: GlobalObjectIdHash

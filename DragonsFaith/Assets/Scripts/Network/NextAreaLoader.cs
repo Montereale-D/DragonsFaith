@@ -9,7 +9,7 @@ namespace Network
     public class NextAreaLoader : MonoBehaviour
     {
         [Header("Debug")] [SerializeField] private bool activateOnFirstTrigger;
-    
+
         private SceneManager _sceneManager;
         [SerializeField] private string sceneName;
         [SerializeField] private int numberOfDungeons;
@@ -26,8 +26,8 @@ namespace Network
 
             if (toDungeon)
             {
-                //todo rimuovere sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons+1);
-                sceneName = "Dungeon_1";
+                sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons + 1);
+                //sceneName = "Dungeon_1";
             }
         }
 
@@ -40,7 +40,7 @@ namespace Network
             {
                 OnPlayersReady();
             }
-        
+
             _playersReady++;
             if (_playersReady > 2) _playersReady = 2;
             if (_playersReady == 2) OnPlayersReady();
@@ -50,7 +50,7 @@ namespace Network
         {
             Debug.Log("TriggerExit");
             if (isBlocked) return;
-            
+
             _playersReady--;
             if (_playersReady < 0) _playersReady = 0;
         }
@@ -61,9 +61,10 @@ namespace Network
             {
                 door.sprite = openDoorSprite;
             }
+
             if (_sceneManager)
             {
-                _sceneManager.LoadSceneSingle(sceneName);
+                _sceneManager.LoadSceneSingleDungeon(sceneName);
             }
             else
             {
@@ -86,7 +87,6 @@ namespace Network
             {
                 Debug.LogWarning("Scene manager is null, Ok is appear in client");
             }
-            
         }
 
         public void Unlock()
