@@ -416,7 +416,7 @@ namespace Grid
             BlockAction();
         }
 
-        private void BlockAction()
+        public void BlockAction()
         {
             if (!_canAttackThisTurn)
             {
@@ -525,6 +525,7 @@ namespace Grid
         
             // Turns character toward the selected tile
             activeUnit.TurnTowardTile(_selectedTile);
+            _playerUI.SkillButtonAction("Show");
 
             var character = _selectedTile.GetCharacter();
             var obstacle = _selectedTile.GetObstacle();
@@ -754,16 +755,19 @@ namespace Grid
         int distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
         if (distance >= 5) _playerUI.SetCombatPopUp(true, "cell beyond skill reach");
 
-        //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
+            //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
+        MapHandler.instance.HideAllTiles();
         List<Tile> searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
         switch (PlayerUI.instance.chosenFaith)
         {
             //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
             case PlayerUI.Element.Fire:
                 {
+                    
                     skillRange = ConeAttack(searchable);
                     foreach (Tile t in skillRange)
                     {
+                            Debug.Log("t found");
                         t.ShowTile(); 
                         }
                     _playerUI.SkillButtonAction("Unleash");
@@ -798,7 +802,7 @@ namespace Grid
 
     public void CheckSkillAttack()
     {
-        switch (PlayerUI.instance.chosenFaith)
+    /*    switch (PlayerUI.instance.chosenFaith)
         {
             //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
             case PlayerUI.Element.Fire:
@@ -847,7 +851,7 @@ namespace Grid
                 {
                     break;
                 }
-        }
+        }*/
     }
 
 
@@ -1336,7 +1340,7 @@ namespace Grid
 
     public List<Tile> ConeAttack(List<Tile> searchable)
     {
-        MapHandler.instance.HideAllTiles();
+            Debug.Log("Calculating cone area");
         List<Tile> aoe = new List<Tile>();
         List<Tile> upperCone = new List<Tile>();
         List<Tile> lowerCone = new List<Tile>();
@@ -1418,6 +1422,7 @@ namespace Grid
             }
         }
 
+            Debug.Log("Cone calculating finished");
         return aoe;
     }
 
