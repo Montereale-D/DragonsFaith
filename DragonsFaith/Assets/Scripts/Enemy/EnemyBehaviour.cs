@@ -193,8 +193,9 @@ namespace Enemy
                 Debug.Log("Not ready to CombatStart");
                 return;
             }
-            
+
             Debug.Log("OnCombatStart " + position);
+            _keepMoving = false;
             DungeonProgressManager.instance.EnemyDefeated(_saveId);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
@@ -240,9 +241,19 @@ namespace Enemy
         private void OnCombatStartClientRpc(Vector3 position)
         {
             Debug.Log("OnCombatStartClientRpc " + position);
+            SceneManager.instance.LoadSceneSingle("Grid");
             DungeonProgressManager.instance.EnemyDefeated(_saveId);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void OnCombatStartServerRpc(Vector3 posiiton)
+        {
+            if (IsHost)
+            {
+                OnCombatStart(posiiton);
+            }
         }
     }
 }

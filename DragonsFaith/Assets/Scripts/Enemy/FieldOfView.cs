@@ -11,6 +11,7 @@ public class FieldOfView : MonoBehaviour {
     private const int RayCount = 50;
     private Vector3 _origin = Vector3.zero;
     private float _startingAngle;
+    private bool _stop;
 
     private void Start() {
         _mesh = new Mesh();
@@ -18,6 +19,8 @@ public class FieldOfView : MonoBehaviour {
     }
 
     private void LateUpdate() {
+        if(_stop) return;
+        
         var angle = _startingAngle;
         var angleIncrease = fov / RayCount;
 
@@ -43,6 +46,7 @@ public class FieldOfView : MonoBehaviour {
                 {
                     Debug.Log("Enemy start combat!");
                     GetComponentInParent<EnemyBehaviour>().OnCombatStart();
+                    _stop = true;
                     return;
                 }
             }
