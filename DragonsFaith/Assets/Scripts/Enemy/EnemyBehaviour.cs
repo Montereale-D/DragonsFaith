@@ -212,9 +212,14 @@ namespace Enemy
 
             if (IsHost)
             {
-                OnCombatStartClientRpc(position);
-                Destroy(gameObject);
-                SceneManager.instance.LoadSceneSingle("Grid");
+                //OnCombatStartClientRpc(position);
+                //Destroy(gameObject);
+
+                var done = SceneManager.instance.LoadSceneSingle("Grid");
+                if (done)
+                {
+                    OnCombatStartClientRpc(position);
+                }
             }
         }
 

@@ -5,6 +5,7 @@ using Player;
 using Save;
 using UI;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,7 @@ namespace Network
         public Scene _loadedScene { get; private set; }
 
         private ClientNetworkTransform[] _players;
+        private bool _isLoading;
 
         private void Awake()
         {
@@ -37,6 +39,17 @@ namespace Network
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
+
+            NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
+        {
+            if(!_isLoading) return;
+            
+            Debug.Log("On scene loaded");
+            TransitionBackground.instance.FadeIn();
+            _isLoading = false;
         }
 
         private void OnClientDisconnect(ulong clientId)
@@ -70,46 +83,58 @@ namespace Network
             }
         }
 
-        public void LoadSceneSingle(string sceneName)
+        public bool LoadSceneSingle(string sceneName)
         {
+            if(_isLoading) return false;
+
+            _isLoading = true;
+            
             //EnableInterpolation(false);
             if (sceneName == "Hub")
             {
                 ResetDungeonProgress();
             }
 
-            if (!IsHost) return;
+            //if (!IsHost) return;
 
             StartCoroutine(StartTransition(sceneName));
-            /*var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-            CheckStatus(status);*/
+            
+            //var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            //CheckStatus(status); 
+            return true;
         }
         
         private IEnumerator StartTransition(string sceneName)
         {
             TransitionBackground.instance.FadeOut();
-            if (IsHost)
+            
+            /*if (IsHost)
             {
                 StartTransitionClientRpc();
-            }
-            else
+            }*/
+            /*else
             {
                 StartTransitionServerRpc();
-            }
+            }*/
 
             yield return new WaitForSeconds(1f);
+
+            if (!IsHost) yield break;
+            
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
+
+            //yield return new WaitForSecondsRealtime(1.5f);
+            //TransitionBackground.instance.FadeIn();
             
-            TransitionBackground.instance.FadeIn();
-            if (IsHost)
+            /*if (IsHost)
             {
                 EndTransitionClientRpc();
             }
             else
             {
                 EndTransitionServerRpc();
-            }
+            }*/
         }
 
         [ClientRpc]
@@ -118,7 +143,7 @@ namespace Network
             TransitionBackground.instance.FadeOut();
         }
         
-        [ServerRpc(RequireOwnership = false)]
+        /*[ServerRpc(RequireOwnership = false)]
         private void StartTransitionServerRpc()
         {
             TransitionBackground.instance.FadeOut();
@@ -134,7 +159,7 @@ namespace Network
         private void EndTransitionServerRpc()
         {
             TransitionBackground.instance.FadeIn();
-        }
+        }*/
 
         public void ReturnToMainMenu(bool notifyClient)
         {
@@ -302,6 +327,8 @@ namespace Network
                         Debug.LogWarning("Load event timed out for the following client " +
                                          $"identifiers:({sceneEvent.ClientsThatTimedOut})");
                     }
+                    
+                    
 
                     /*if (_loadedScene.name != "Grid")
                     {
