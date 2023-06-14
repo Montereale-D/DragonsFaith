@@ -30,7 +30,7 @@ namespace Grid
         private PlayerGridMovement _target;
 
         public int? otherPlayerSpriteIdx;
-        public string otherPlayerName;
+        [HideInInspector] public string otherPlayerName;
         private PlayerUI _playerUI;
         private MapHandler _mapHandler;
         private TurnUI _turnUI;
@@ -633,6 +633,7 @@ namespace Grid
 
         public void ButtonCheckMovement()
         {
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
             PerformPlayerMovement(_selectedTile);
         }
 
@@ -745,10 +746,10 @@ namespace Grid
 
         public void ButtonAttackAction()
         {
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
             CheckAction(_target);
         }
-
-
+        
         //// <returns>false if no action has been performed</returns>
         public void CheckAction(PlayerGridMovement target, Tile fromTile = null)
         {
@@ -764,8 +765,8 @@ namespace Grid
             // Can Attack Enemy
             if (!_canAttackThisTurn)
             {
-                Debug.Log("Already performed action in this turn.");
-                _playerUI.ShowMessage("Already performed action in this turn.");
+                Debug.Log("Already performed action.");
+                _playerUI.ShowMessage("Already performed action.");
                 return;
             }
 
@@ -817,7 +818,6 @@ namespace Grid
 
             if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
             {
-                //TODO: change depending weather the equipped weapon is melee or ranged
                 var damage = weapon.weaponType == Weapon.WeaponType.Melee ? 
                         (int)(weapon.damage + CharacterManager.Instance.GetTotalStr()) :
                         (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
@@ -834,7 +834,8 @@ namespace Grid
                     damage /= 2;
                 }
 
-                NotifyAttackToEnemy(target, damage);
+                //weapon.itemName;
+                NotifyAttackToEnemy(target, damage, weapon.itemName);
             }
             else
             {
@@ -930,36 +931,39 @@ namespace Grid
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
         }
 
-        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage)
+        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "")
         {
             var targetIndex = characterList.IndexOf(target);
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
 
             if (IsHost)
             {
-                NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage);
+                NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage, weaponName);
             }
             else
             {
-                NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage);
+                NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, weaponName);
             }
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage)
+        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, string weaponName)
         {
             if (!IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
         [ClientRpc]
-        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage)
+        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName)
         {
             if (IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
 

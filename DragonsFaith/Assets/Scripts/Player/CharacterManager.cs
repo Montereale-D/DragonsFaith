@@ -138,6 +138,16 @@ namespace Player
             data.SetFaith(playerType, _characterInfo.faith);
         }
 
+        public void Update()
+        {
+            /*if (Input.GetKeyDown(KeyCode.T))
+            {
+                Debug.Log("spawning weapon");
+                var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+                localPlayer.GetComponentInChildren<WeaponHolder>().SetUpWeapon();
+            }*/
+        }
+
         public void SetPlayerGridMode()
         {
             var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
@@ -146,8 +156,8 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
-            /*//TODO: the weapon is spawning only for host and can't be seen
-            localPlayer.GetComponentInChildren<WeaponHolder>().SetUpWeapon();*/
+            //TODO: the weapon is spawning only for host and can't be seen
+            //localPlayer.GetComponentInChildren<WeaponHolder>().SetUpWeapon();
         }
 
         public void SetPlayerFreeMode()
@@ -157,8 +167,8 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
-            /*//TODO: test
-            localPlayer.GetComponentInChildren<WeaponHolder>().DestroyWeapon();*/
+            //TODO: test
+            //localPlayer.GetComponentInChildren<WeaponHolder>().DestroyWeapon();
             
         }
         

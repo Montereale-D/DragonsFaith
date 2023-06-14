@@ -39,7 +39,6 @@ namespace UI
 
         public void SetUp(List<PlayerGridMovement> characterList)
         {
-            //TODO: uncomment when player weapons
             var weapon = InventoryManager.Instance.GetWeapon();
             if (!weapon)
             {
