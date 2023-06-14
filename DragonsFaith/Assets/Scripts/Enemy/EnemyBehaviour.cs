@@ -19,6 +19,7 @@ namespace Enemy
 
         [SerializeField] private float speed = 4f;
         [SerializeField] private Transform characterTransform;
+        [SerializeField] private Color minibossColor;
 
         private Vector3 _nextPosition;
         private int _positionIndex;
@@ -51,16 +52,25 @@ namespace Enemy
             _positionIndex = 1;
             _nextPosition = _patrolPositions[1].position;
             characterTransform.position = _patrolPositions[0].position;
+            
+            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            if (_spriteRenderer && _isMiniboss)
+            {
+                Debug.Log("Test dentro ");
+                _spriteRenderer.color = minibossColor;
+            }else Debug.Log("Test fuori ");
         }
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
+            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
             if (IsHost)
             {
                 GetComponent<NetworkObject>().DestroyWithScene = true;
                 _animator = GetComponentInChildren<Animator>();
-                _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+                //_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
 
             if (IsHost && DungeonProgressManager.instance.IsEnemyDefeated(_saveId))
