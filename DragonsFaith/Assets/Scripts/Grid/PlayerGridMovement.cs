@@ -18,7 +18,7 @@ public class PlayerGridMovement : MonoBehaviour
 
     public Sprite turnSprite;
 
-    public string charName;
+    [HideInInspector] public string charName;
     
     private Animator _animator;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");

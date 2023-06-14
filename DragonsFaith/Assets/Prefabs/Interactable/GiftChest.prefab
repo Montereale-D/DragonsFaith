@@ -369,6 +369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usedSprite: {fileID: 651660845, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
   unusedSprite: {fileID: -387247453, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
+  saveId: 25dbb1ea-7531-444d-b15a-e0aeabcd72a0
   item: {fileID: 11400000, guid: 8e762ee08a92f064886f84b7bee44634, type: 2}
 --- !u!114 &6822241147109976008
 MonoBehaviour:

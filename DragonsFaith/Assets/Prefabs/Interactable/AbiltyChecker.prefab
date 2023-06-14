@@ -628,6 +628,7 @@ MonoBehaviour:
   onSuccess:
     m_PersistentCalls:
       m_Calls: []
+  saveId: 
 --- !u!1 &7063720747624519365
 GameObject:
   m_ObjectHideFlags: 0
@@ -752,7 +753,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3, y: 0.5}
+  m_SizeDelta: {x: 2.5, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1952790216816328816
 CanvasRenderer:
@@ -809,8 +810,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.5
-  m_fontSizeBase: 0.5
+  m_fontSize: 0.4
+  m_fontSizeBase: 0.4
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -917,7 +918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Name
+  m_text: Chest
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
   m_sharedMaterial: {fileID: -2713363486176451765, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}

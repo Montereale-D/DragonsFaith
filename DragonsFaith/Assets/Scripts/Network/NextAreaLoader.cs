@@ -1,4 +1,5 @@
 using System.Collections;
+using UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -93,6 +94,7 @@ namespace Network
         {
             // To call when miniboss is killed
             isBlocked = false;
+            PlayerUI.instance.ShowMessage("Final Area unlocked.");
         }
     }
 }

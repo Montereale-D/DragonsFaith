@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-public class HubProgressManager : MonoBehaviour
+public class HubProgressManager : NetworkBehaviour
 {
     public static HubProgressManager instance { get; private set; }
     public static int keyCounter;
+
+    public Sprite obtainedSprite;
+    public Sprite missingSprite;
+    
     [SerializeField] private List<GameObject> notificationObjects;
 
     public UnityEvent onAllKeysCollect;
@@ -23,15 +28,56 @@ public class HubProgressManager : MonoBehaviour
         }
 
         instance = this;
+        //DontDestroyOnLoad(this);
     }
 
     private void ResetNotification()
     {
-        for (int i = 0; i < keyCounter; i++)
+        for (var i = 0; i < keyCounter; i++)
         {
-            notificationObjects[i].GetComponent<SpriteRenderer>().color = Color.green;
+            //notificationObjects[i].GetComponent<SpriteRenderer>().color = Color.green;
+            notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
         }
+        
+        //TODO: uncomment to sync sprites for both host and client
+        //SyncSprites(keyCounter);
 
+        if (keyCounter == notificationObjects.Count)
+        {
+            StartCoroutine(WaitAndNotify());
+        }
+    }
+
+    private void SyncSprites(int keyCounter)
+    {
+        if (IsHost)
+            SyncSpritesClientRpc(keyCounter);
+        else
+            SyncSpritesServerRpc(keyCounter);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SyncSpritesServerRpc(int keyCounter)
+    {
+        for (var i = 0; i < keyCounter; i++)
+        {
+            notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
+        }
+        
+        if (keyCounter == notificationObjects.Count)
+        {
+            StartCoroutine(WaitAndNotify());
+        }
+    }
+
+    [ClientRpc]
+    private void SyncSpritesClientRpc(int keyCounter)
+    {
+        for (var i = 0; i < keyCounter; i++)
+        {
+            notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
+        }
+        
         if (keyCounter == notificationObjects.Count)
         {
             StartCoroutine(WaitAndNotify());
@@ -51,7 +97,8 @@ public class HubProgressManager : MonoBehaviour
 
         foreach (var notificationObject in notificationObjects)
         {
-            notificationObject.GetComponent<SpriteRenderer>().color = Color.red;
+            //notificationObject.GetComponent<SpriteRenderer>().color = Color.red;
+            notificationObject.GetComponent<SpriteRenderer>().sprite = missingSprite;
         }
         
         ResetNotification();
