@@ -179,8 +179,14 @@ public class NetworkUI : NetworkBehaviour
 
     private void OnBothPlayersReady()
     {
-        GetComponent<NetworkObject>().Despawn();
+        if (IsHost)
+        {
+            OnBothPlayersReadyClientRpc();
+            GetComponent<NetworkObject>().Despawn();
+        }
+        
         logText.text = "Log: NEXT SCENE";
+        
         sceneManager.LoadSceneSingle(sceneName);
 
         if (IsHost)
@@ -188,6 +194,14 @@ public class NetworkUI : NetworkBehaviour
             ShowUI();
             ShowUIClientRpc();
         }
+    }
+
+    [ClientRpc]
+    private void OnBothPlayersReadyClientRpc()
+    {
+        if(IsHost) return;
+        
+        OnBothPlayersReady();
     }
 
     private void ShowUI()

@@ -118,7 +118,7 @@ namespace Network
                 StartTransitionServerRpc();
             }*/
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
 
             if (!IsHost) yield break;
             
