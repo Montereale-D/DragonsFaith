@@ -38,7 +38,12 @@ namespace Player
 
         public void Heal(int value)
         {
+            Debug.Log("Heal");
             _characterInfo.Heal(value);
+        }
+        public void RestoreMana(int value)
+        {
+            _characterInfo.RestoreMana(value);
         }
 
         public void GiveRevive()
@@ -50,6 +55,16 @@ namespace Player
         public void ReceiveRevive()
         {
             _characterInfo.Revive();
+        }
+        
+        public int GetMaxHealth()
+        {
+            return _characterInfo.GetMaxHealth();
+        }
+
+        public int GetMaxMana()
+        {
+            return _characterInfo.GetMaxMana();
         }
 
         public void Damage(int value)

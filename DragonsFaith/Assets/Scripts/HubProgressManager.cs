@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -8,6 +9,7 @@ public class HubProgressManager : MonoBehaviour
 {
     public static HubProgressManager instance { get; private set; }
     public static int keyCounter;
+    public static bool firstTime = true;
     [SerializeField] private List<GameObject> notificationObjects;
 
     public UnityEvent onAllKeysCollect;
@@ -15,7 +17,15 @@ public class HubProgressManager : MonoBehaviour
     private void Awake()
     {
         ResetNotification();
-        
+
+        if (!firstTime)
+        {
+            CharacterManager.Instance.Heal(CharacterManager.Instance.GetMaxHealth());
+            CharacterManager.Instance.RestoreMana(CharacterManager.Instance.GetMaxMana());
+        }
+
+        firstTime = false;
+
         if (instance != null)
         {
             Destroy(gameObject);

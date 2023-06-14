@@ -56,9 +56,8 @@ namespace Enemy
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             if (_spriteRenderer && _isMiniboss)
             {
-                Debug.Log("Test dentro ");
                 _spriteRenderer.color = minibossColor;
-            }else Debug.Log("Test fuori ");
+            }
         }
 
         public override void OnNetworkSpawn()
