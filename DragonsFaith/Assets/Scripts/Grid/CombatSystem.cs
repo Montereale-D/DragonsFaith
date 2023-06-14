@@ -25,6 +25,7 @@ namespace Grid
         private bool _isThisPlayerTurn;
         private bool _isCombatReady;
         private bool _isUIReady;
+        private bool isUsingSkill;
         private Tile _selectedTile;
 
         private PlayerGridMovement _target;
@@ -206,7 +207,15 @@ namespace Grid
 
             if (!_isThisPlayerTurn) return;
 
-            if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
+            if(isUsingSkill)
+            {
+                foreach (Tile t in skillRange)
+                {
+                    t.ShowTile();
+                }
+            }
+
+           else  if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
             if (_selectedTile)
             {
                 _selectedTile.SelectTile();
@@ -257,6 +266,7 @@ namespace Grid
             _canMoveThisTurn = true;
             _canAttackThisTurn = true;
             _selectedTile = null;
+            isUsingSkill = false;
             activeUnit.GetComponent<CharacterInfo>().isBlocking = false;
             activeUnit.GetComponent<CharacterGridPopUpUI>().HideShield();
 
@@ -526,6 +536,7 @@ namespace Grid
             // Turns character toward the selected tile
             activeUnit.TurnTowardTile(_selectedTile);
             _playerUI.SkillButtonAction("Show");
+            isUsingSkill = false;
 
             var character = _selectedTile.GetCharacter();
             var obstacle = _selectedTile.GetObstacle();
@@ -756,7 +767,7 @@ namespace Grid
         if (distance >= 5) _playerUI.SetCombatPopUp(true, "cell beyond skill reach");
 
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
-        MapHandler.instance.HideAllTiles();
+
         List<Tile> searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
         switch (PlayerUI.instance.chosenFaith)
         {
@@ -765,11 +776,7 @@ namespace Grid
                 {
                     
                     skillRange = ConeAttack(searchable);
-                    foreach (Tile t in skillRange)
-                    {
-                            Debug.Log("t found");
-                        t.ShowTile(); 
-                        }
+                     isUsingSkill = true;
                     _playerUI.SkillButtonAction("Unleash");
                     break;
                 }
@@ -783,11 +790,8 @@ namespace Grid
             //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
             case PlayerUI.Element.Air:
                 {
-                    List<Tile> skillRange = ConeAttack(searchable);
-                    foreach (Tile t in skillRange)
-                    {
-                        t.ShowTile();
-                    }
+                    skillRange = ConeAttack(searchable);
+                        isUsingSkill = true;
                     _playerUI.SkillButtonAction("Unleash");
                     break;
                 }
@@ -802,7 +806,10 @@ namespace Grid
 
     public void CheckSkillAttack()
     {
-        switch (PlayerUI.instance.chosenFaith)
+            if (!isUsingSkill || !_canAttackThisTurn) return;
+            isUsingSkill = false;
+            _canAttackThisTurn = false;
+            switch (PlayerUI.instance.chosenFaith)
         {
             //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
             case PlayerUI.Element.Fire:
@@ -815,10 +822,10 @@ namespace Grid
                             {
                                 int damage = (int)CharacterManager.Instance.GetTotalStr() + (int)CharacterManager.Instance.GetTotalAgi();
                                 NotifyAttackToEnemy(t.GetCharacter(), damage);
+                                    Debug.Log("Enemy hit by skill");
                             }
                         }
                     }
-
                     break;
                 }
 
@@ -839,10 +846,11 @@ namespace Grid
                             {
                                 int damage = (int)CharacterManager.Instance.GetTotalDex() + (int)CharacterManager.Instance.GetTotalAgi();
                                 NotifyAttackToEnemy(t.GetCharacter(), damage);
-                            }
+                                    Debug.Log("Enemy hit by skill");
+                                }
                         }
                     }
-
+                  
                     break;
                 }
 
@@ -1186,6 +1194,7 @@ namespace Grid
 
         public void SkipTurn()
         {
+            isUsingSkill = false;
             if (IsHost)
             {
                 //UnselectTile();
@@ -1340,7 +1349,6 @@ namespace Grid
 
     public List<Tile> ConeAttack(List<Tile> searchable)
     {
-            Debug.Log("Calculating cone area");
         List<Tile> aoe = new List<Tile>();
         List<Tile> upperCone = new List<Tile>();
         List<Tile> lowerCone = new List<Tile>();
@@ -1374,7 +1382,7 @@ namespace Grid
         else if (lowerCone.Count > 0)
         {
             int enemyInRange = 0;
-            foreach (Tile t in upperCone)
+            foreach (Tile t in lowerCone)
             {
                 if (t.GetCharacter())
                 {
@@ -1384,14 +1392,14 @@ namespace Grid
             if (enemyInRange >= maxEnemiesInRange)
             {
                 maxEnemiesInRange = enemyInRange;
-                aoe = upperCone;
+                aoe = lowerCone;
             }
         }
 
         if (rightCone.Count > 0)
         {
             int enemyInRange = 0;
-            foreach (Tile t in upperCone)
+            foreach (Tile t in rightCone)
             {
                 if (t.GetCharacter())
                 {
@@ -1401,14 +1409,14 @@ namespace Grid
             if (enemyInRange >= maxEnemiesInRange)
             {
                 maxEnemiesInRange = enemyInRange;
-                aoe = upperCone;
+                aoe = rightCone;
             }
         }
 
         else if (leftCone.Count > 0)
         {
             int enemyInRange = 0;
-            foreach (Tile t in upperCone)
+            foreach (Tile t in leftCone)
             {
                 if (t.GetCharacter())
                 {
@@ -1418,11 +1426,10 @@ namespace Grid
             if (enemyInRange >= maxEnemiesInRange)
             {
                 maxEnemiesInRange = enemyInRange;
-                aoe = upperCone;
+                aoe = leftCone;
             }
         }
 
-            Debug.Log("Cone calculating finished");
         return aoe;
     }
 
@@ -1431,9 +1438,9 @@ namespace Grid
         List<Tile> cone = new List<Tile>();
         foreach (Tile t in tiles)
         {
-            if (t.mapPosition.y > _selectedTile.mapPosition.y) cone.Add(t);
+            if (t.mapPosition.y > activeUnit.onTile.mapPosition.y) cone.Add(t);
         }
-        return cone;
+            return cone;
     }
 
     public List<Tile> createLeftCone(List<Tile> tiles)
@@ -1441,9 +1448,9 @@ namespace Grid
         List<Tile> cone = new List<Tile>();
         foreach (Tile t in tiles)
         {
-            if (t.mapPosition.x < _selectedTile.mapPosition.x) cone.Add(t);
+            if (t.mapPosition.x < activeUnit.onTile.mapPosition.x) cone.Add(t);
         }
-        return cone;
+            return cone;
     }
 
     public List<Tile> createLowerCone(List<Tile> tiles)
@@ -1451,9 +1458,9 @@ namespace Grid
         List<Tile> cone = new List<Tile>();
         foreach (Tile t in tiles)
         {
-            if (t.mapPosition.y < _selectedTile.mapPosition.y) cone.Add(t);
+            if (t.mapPosition.y < activeUnit.onTile.mapPosition.y) cone.Add(t);
         }
-        return cone;
+            return cone;
     }
 
     public List<Tile> createRightCone(List<Tile> tiles)
@@ -1461,9 +1468,9 @@ namespace Grid
         List<Tile> cone = new List<Tile>();
         foreach (Tile t in tiles)
         {
-            if (t.mapPosition.x > _selectedTile.mapPosition.x) cone.Add(t);
+            if (t.mapPosition.x > activeUnit.onTile.mapPosition.x) cone.Add(t);
         }
-        return cone;
+            return cone;
     }
 
     #endregion
