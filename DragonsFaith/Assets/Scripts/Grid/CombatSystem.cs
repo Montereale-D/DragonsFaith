@@ -802,7 +802,7 @@ namespace Grid
 
     public void CheckSkillAttack()
     {
-    /*    switch (PlayerUI.instance.chosenFaith)
+        switch (PlayerUI.instance.chosenFaith)
         {
             //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
             case PlayerUI.Element.Fire:
@@ -851,7 +851,7 @@ namespace Grid
                 {
                     break;
                 }
-        }*/
+        }
     }
 
 
