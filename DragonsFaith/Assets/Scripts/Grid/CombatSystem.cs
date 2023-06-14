@@ -36,6 +36,8 @@ public class CombatSystem : NetworkBehaviour
     /*private float _turnDelay; //needs to be the same as the length of the turn UI animation
     private float _turnDelayCounter;*/
 
+    private List<Tile> skillRange;
+
     #region Core
 
     private void Awake()
@@ -619,6 +621,112 @@ public class CombatSystem : NetworkBehaviour
 
     #region AttackAction
 
+
+    //The demo has only Fire and Air, with both these skills using a cone AOE; the switch is "useless" beacuse of this, but would be needed if other faith are included
+    public void CheckSkillRange()
+    {
+        if (!_selectedTile) _playerUI.SetCombatPopUp(true, "select a cell before using a skill");
+
+        int distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
+        if (distance >= 5) _playerUI.SetCombatPopUp(true, "cell beyond skill reach");
+
+        //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
+        List<Tile> searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
+        switch (PlayerUI.instance.chosenFaith)
+        {
+            //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
+            case PlayerUI.Element.Fire:
+                {
+                    skillRange = ConeAttack(searchable);
+                    foreach (Tile t in skillRange)
+                    {
+                        t.ShowTile(); 
+                        }
+                    _playerUI.SkillButtonAction("Unleash");
+                    break;
+                }
+
+            //not available in demo
+            case PlayerUI.Element.Water:
+                {
+                    break;
+                }
+
+            //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
+            case PlayerUI.Element.Air:
+                {
+                    List<Tile> skillRange = ConeAttack(searchable);
+                    foreach (Tile t in skillRange)
+                    {
+                        t.ShowTile();
+                    }
+                    _playerUI.SkillButtonAction("Unleash");
+                    break;
+                }
+
+            //not available in demo
+            case PlayerUI.Element.Earth:
+                {
+                    break;
+                }
+        }
+    }
+
+    public void CheckSkillAttack()
+    {
+        switch (PlayerUI.instance.chosenFaith)
+        {
+            //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
+            case PlayerUI.Element.Fire:
+                {
+                    foreach (Tile t in skillRange)
+                    {
+                        if (t.GetCharacter() != null)
+                        {
+                            if (activeUnit.IsOppositeTeam(t.GetCharacter()))
+                            {
+                                int damage = (int)CharacterManager.Instance.GetTotalStr() + (int)CharacterManager.Instance.GetTotalAgi();
+                                NotifyAttackToEnemy(t.GetCharacter(), damage);
+                            }
+                        }
+                    }
+
+                    break;
+                }
+
+            //not available in demo
+            case PlayerUI.Element.Water:
+                {
+                    break;
+                }
+
+            //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
+            case PlayerUI.Element.Air:
+                {
+                    foreach (Tile t in skillRange)
+                    {
+                        if (t.GetCharacter() != null)
+                        {
+                            if (activeUnit.IsOppositeTeam(t.GetCharacter()))
+                            {
+                                int damage = (int)CharacterManager.Instance.GetTotalDex() + (int)CharacterManager.Instance.GetTotalAgi();
+                                NotifyAttackToEnemy(t.GetCharacter(), damage);
+                            }
+                        }
+                    }
+
+                    break;
+                }
+
+            //not available in demo
+            case PlayerUI.Element.Earth:
+                {
+                    break;
+                }
+        }
+    }
+
+
     public void ButtonAttackAction()
     {
         CheckAction(_target);
@@ -930,6 +1038,133 @@ public class CombatSystem : NetworkBehaviour
         }
 
         return weapon;
+    }
+
+    public List<Tile> ConeAttack(List<Tile> searchable)
+    {
+        MapHandler.instance.HideAllTiles();
+        List<Tile> aoe = new List<Tile>();
+        List<Tile> upperCone = new List<Tile>();
+        List<Tile> lowerCone = new List<Tile>();
+        List<Tile> rightCone = new List<Tile>();
+        List<Tile> leftCone = new List<Tile>();
+        if (_selectedTile.mapPosition.y > activeUnit.onTile.mapPosition.y) { upperCone = createUpperCone(searchable); }
+        else if (_selectedTile.mapPosition.y < activeUnit.onTile.mapPosition.y) { lowerCone = createLowerCone(searchable); }
+        if (_selectedTile.mapPosition.x > activeUnit.onTile.mapPosition.x) { rightCone = createRightCone(searchable); }
+        else if (_selectedTile.mapPosition.x < activeUnit.onTile.mapPosition.x) { leftCone = createLeftCone(searchable); }
+
+        //this is used to pick the best cone (the one containing most enemies)
+        int maxEnemiesInRange = 0;
+
+        if (upperCone.Count > 0 )
+        {
+            int enemyInRange = 0; 
+            foreach (Tile t in upperCone)
+            {
+                if (t.GetCharacter())
+                {
+                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                }
+            }
+            if (enemyInRange >= maxEnemiesInRange)
+            {
+                maxEnemiesInRange = enemyInRange;
+                aoe = upperCone;
+            }
+        }
+
+        else if (lowerCone.Count > 0)
+        {
+            int enemyInRange = 0;
+            foreach (Tile t in upperCone)
+            {
+                if (t.GetCharacter())
+                {
+                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                }
+            }
+            if (enemyInRange >= maxEnemiesInRange)
+            {
+                maxEnemiesInRange = enemyInRange;
+                aoe = upperCone;
+            }
+        }
+
+        if (rightCone.Count > 0)
+        {
+            int enemyInRange = 0;
+            foreach (Tile t in upperCone)
+            {
+                if (t.GetCharacter())
+                {
+                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                }
+            }
+            if (enemyInRange >= maxEnemiesInRange)
+            {
+                maxEnemiesInRange = enemyInRange;
+                aoe = upperCone;
+            }
+        }
+
+        else if (leftCone.Count > 0)
+        {
+            int enemyInRange = 0;
+            foreach (Tile t in upperCone)
+            {
+                if (t.GetCharacter())
+                {
+                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                }
+            }
+            if (enemyInRange >= maxEnemiesInRange)
+            {
+                maxEnemiesInRange = enemyInRange;
+                aoe = upperCone;
+            }
+        }
+
+        return aoe;
+    }
+
+    public List<Tile> createUpperCone(List<Tile> tiles)
+    {
+        List<Tile> cone = new List<Tile>();
+        foreach (Tile t in tiles)
+        {
+            if (t.mapPosition.y > _selectedTile.mapPosition.y) cone.Add(t);
+        }
+        return cone;
+    }
+
+    public List<Tile> createLeftCone(List<Tile> tiles)
+    {
+        List<Tile> cone = new List<Tile>();
+        foreach (Tile t in tiles)
+        {
+            if (t.mapPosition.x < _selectedTile.mapPosition.x) cone.Add(t);
+        }
+        return cone;
+    }
+
+    public List<Tile> createLowerCone(List<Tile> tiles)
+    {
+        List<Tile> cone = new List<Tile>();
+        foreach (Tile t in tiles)
+        {
+            if (t.mapPosition.y < _selectedTile.mapPosition.y) cone.Add(t);
+        }
+        return cone;
+    }
+
+    public List<Tile> createRightCone(List<Tile> tiles)
+    {
+        List<Tile> cone = new List<Tile>();
+        foreach (Tile t in tiles)
+        {
+            if (t.mapPosition.x > _selectedTile.mapPosition.x) cone.Add(t);
+        }
+        return cone;
     }
 
     #endregion

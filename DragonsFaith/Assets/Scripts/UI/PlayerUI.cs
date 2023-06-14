@@ -581,5 +581,11 @@ namespace UI
         {
             _combatUI.ToggleMoveAttackButton(mode);
         }
+
+        public void SkillButtonAction(string mode)
+        {
+            _combatUI.SkillButtonAction(mode);
+        }
+
     }
 }

@@ -52,7 +52,7 @@ namespace UI
                     _moveOrAttackImage = img;
             }
                 
-            //skillButton.onClick.AddListener(add use skill function);
+            skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
             blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
             reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
@@ -70,7 +70,7 @@ namespace UI
         public void Destroy()
         {
             moveOrAttackButton.onClick.RemoveAllListeners();
-            //skillButton.onClick.RemoveAllListeners();
+            skillButton.onClick.RemoveAllListeners();
             blockButton.onClick.RemoveAllListeners();
             reloadButton.onClick.RemoveAllListeners();
             itemsButton.onClick.RemoveAllListeners();
@@ -111,6 +111,28 @@ namespace UI
         public TurnUI GetTurnUI()
         {
             return _turnUI;
+        }
+
+        public void SkillButtonAction(string mode)
+        {
+            List<Tile> aoe = new List<Tile>();
+            switch (mode)
+            { 
+                case "Unleash":
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Unleash";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Unleash the Skill";
+                    skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+                    break;
+                default:
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Show";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Show the AOE of the Skill";
+                    skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillRange);
+                    break;
+            }
+
+            
         }
         
         public void ToggleMoveAttackButton(string mode)
