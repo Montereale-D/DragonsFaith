@@ -14,13 +14,11 @@ public class TransitionBackground : MonoBehaviour
         if (instance != null && instance != this)
         {
             Destroy(this);
-        }
-        else
-        {
-            instance = this;
-            DontDestroyOnLoad(this);
+            return;
         }
 
+        instance = this;
+        DontDestroyOnLoad(this);
         _animator = GetComponent<Animator>();
     }
 

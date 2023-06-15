@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Player;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-public class HubProgressManager : NetworkBehaviour
+public class HubProgressManager : MonoBehaviour
 {
     public static HubProgressManager instance { get; private set; }
     public static int keyCounter;
@@ -13,6 +14,7 @@ public class HubProgressManager : NetworkBehaviour
     public Sprite obtainedSprite;
     public Sprite missingSprite;
     
+    public static bool firstTime = true;
     [SerializeField] private List<GameObject> notificationObjects;
 
     public UnityEvent onAllKeysCollect;
@@ -20,7 +22,15 @@ public class HubProgressManager : NetworkBehaviour
     private void Awake()
     {
         ResetNotification();
-        
+
+        if (!firstTime)
+        {
+            CharacterManager.Instance.Heal(CharacterManager.Instance.GetMaxHealth());
+            CharacterManager.Instance.RestoreMana(CharacterManager.Instance.GetMaxMana());
+        }
+
+        firstTime = false;
+
         if (instance != null)
         {
             Destroy(gameObject);
@@ -28,7 +38,6 @@ public class HubProgressManager : NetworkBehaviour
         }
 
         instance = this;
-        //DontDestroyOnLoad(this);
     }
 
     private void ResetNotification()
@@ -38,46 +47,7 @@ public class HubProgressManager : NetworkBehaviour
             //notificationObjects[i].GetComponent<SpriteRenderer>().color = Color.green;
             notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
         }
-        
-        //TODO: uncomment to sync sprites for both host and client
-        //SyncSprites(keyCounter);
 
-        if (keyCounter == notificationObjects.Count)
-        {
-            StartCoroutine(WaitAndNotify());
-        }
-    }
-
-    private void SyncSprites(int keyCounter)
-    {
-        if (IsHost)
-            SyncSpritesClientRpc(keyCounter);
-        else
-            SyncSpritesServerRpc(keyCounter);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SyncSpritesServerRpc(int keyCounter)
-    {
-        for (var i = 0; i < keyCounter; i++)
-        {
-            notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
-        }
-        
-        if (keyCounter == notificationObjects.Count)
-        {
-            StartCoroutine(WaitAndNotify());
-        }
-    }
-
-    [ClientRpc]
-    private void SyncSpritesClientRpc(int keyCounter)
-    {
-        for (var i = 0; i < keyCounter; i++)
-        {
-            notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
-        }
-        
         if (keyCounter == notificationObjects.Count)
         {
             StartCoroutine(WaitAndNotify());

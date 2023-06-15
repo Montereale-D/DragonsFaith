@@ -10434,7 +10434,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &574770530
 GameObject:
@@ -17614,7 +17614,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1009953144}
   - component: {fileID: 1009953143}
-  - component: {fileID: 1009953145}
   m_Layer: 0
   m_Name: HubProgressManager
   m_TagString: Untagged
@@ -17671,22 +17670,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1009953145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1009953142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3022259163
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1001 &1017364454
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18176,7 +18159,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1049294723
 GameObject:
@@ -24769,7 +24752,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1337401991
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37393,7 +37376,11 @@ PrefabInstance:
       objectReference: {fileID: 2064330687}
     - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: sceneName
-      value: Dungeon_1
+      value: Dungeon_5
+      objectReference: {fileID: 0}
+    - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: toDungeon
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 741245173864279795, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: openDoorSprite

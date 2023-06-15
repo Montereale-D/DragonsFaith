@@ -23,7 +23,7 @@ namespace Interactable
             base.OnNetworkSpawn();
             GetComponent<NetworkObject>().DestroyWithScene = true;
             
-            if (DungeonProgressManager.instance.IsAbilityPassed(saveId))
+            if (DungeonProgressManager.instance.IsAbilityPassed(saveId, gameObject))
             {
                 Debug.Log(gameObject.name + " was already activated");
                 //_isUsed.Value = true;
@@ -45,7 +45,7 @@ namespace Interactable
                     return;
                 }
 
-                DungeonProgressManager.instance.AbilityPassed(saveId);
+                DungeonProgressManager.instance.AbilityPassed(saveId, gameObject);
                 Notify();
                 
                 if (IsHost)
@@ -80,7 +80,7 @@ namespace Interactable
         {
             if(IsHost) return;
             
-            DungeonProgressManager.instance.AbilityPassed(saveId);
+            DungeonProgressManager.instance.AbilityPassed(saveId, gameObject);
         }
         
         [ServerRpc (RequireOwnership = false)]
@@ -88,7 +88,7 @@ namespace Interactable
         {
             if(!IsHost) return;
             
-            DungeonProgressManager.instance.AbilityPassed(saveId);
+            DungeonProgressManager.instance.AbilityPassed(saveId, gameObject);
         }
 
         private void ShowNotAble()

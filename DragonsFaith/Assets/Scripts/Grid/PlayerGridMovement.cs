@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Grid;
 using Player;
 using Unity.Netcode;
 
@@ -101,6 +102,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         state = State.Moving;
         SetTile(tile);
+        Debug.Log("PerformEnemyMovement set tile InterpToTile");
         //StartCoroutine(UpdateMovementAnimation());
     }
 
@@ -130,7 +132,14 @@ public class PlayerGridMovement : MonoBehaviour
 
     private IEnumerator MoveAlongPath(List<Tile> path)
     {
-        if (path.Count < 1) throw new Exception("Path has 0 elements");
+        if (path.Count < 1)
+        {
+            Debug.LogError("Path has 0 elements");
+            _animator.SetBool(IsMoving, false);
+            Debug.Log("PerformEnemyMovement unlock");
+            CombatSystem.instance._moveInProgress = false;
+            yield break;
+        }
 
         var direction = (path[^1].transform.position - transform.position).normalized.x;
         _animator.SetBool(IsMoving, true);
@@ -143,6 +152,8 @@ public class PlayerGridMovement : MonoBehaviour
         }
         
         _animator.SetBool(IsMoving, false);
+        Debug.Log("PerformEnemyMovement unlock");
+        CombatSystem.instance._moveInProgress = false;
     }
 
     #region Pathfinding
@@ -168,7 +179,7 @@ public class PlayerGridMovement : MonoBehaviour
             List<Tile> neighbourTiles = MapHandler.instance.GetNeighbourTiles(current, searchableTiles);
             foreach (Tile tile in neighbourTiles)
             {
-                if ( !tile.navigable ||  closedList.Contains(tile))
+                if (!tile.navigable || closedList.Contains(tile))
                     continue;
 
                 tile.g = GetManhattanDistance(start, tile);

@@ -113,7 +113,7 @@ public class CharacterInfo : MonoBehaviour
             health = maxHealth;
         }
 
-        if (isLocalPlayer)
+        if (isLocalPlayer && _playerUI)
         {
             _playerUI.UpdateHealthBar(health, maxHealth);
         }
@@ -154,7 +154,7 @@ public class CharacterInfo : MonoBehaviour
             mana = maxMana;
         }
 
-        if (isLocalPlayer)
+        if (isLocalPlayer && _playerUI)
         {
             _playerUI.UpdateManaBar(mana, maxMana);
         }

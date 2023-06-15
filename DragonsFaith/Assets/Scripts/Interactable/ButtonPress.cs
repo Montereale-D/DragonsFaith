@@ -43,7 +43,7 @@ namespace Interactable
             if (!standAloneMode) return;
             //if (!IsHost) return;
 
-            if (DungeonProgressManager.instance.IsButtonPressed(saveId))
+            if (DungeonProgressManager.instance.IsButtonPressed(saveId, gameObject))
             {
                 Debug.Log(gameObject.name + " was already activated");
                 //openable.OpenAction();
@@ -74,7 +74,7 @@ namespace Interactable
             if (newValue)
             {
                 openable.OpenAction();
-                DungeonProgressManager.instance.ButtonChangeState(saveId, true);
+                DungeonProgressManager.instance.ButtonChangeState(saveId, true, gameObject);
             }
             else
                 openable.CloseAction();

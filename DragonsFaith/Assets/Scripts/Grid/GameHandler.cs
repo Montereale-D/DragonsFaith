@@ -121,8 +121,9 @@ public class GameHandler : NetworkBehaviour
         
         CharacterManager.Instance.SetPlayerFreeMode();
         PlayerUI.instance.HideCombatUI();
-        //todo aggiornare con level manager
-        SceneManager.instance.LoadSceneSingle("Dungeon_1");
+        
+        
+        SceneManager.instance.ReloadSceneSingleDungeon();
     }
 
     [ServerRpc(RequireOwnership = false)]
