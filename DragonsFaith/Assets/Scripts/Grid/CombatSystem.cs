@@ -1094,11 +1094,19 @@ namespace Grid
         private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName, string skillElement = "")
         {
             if (IsHost) return;
-            characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
-            if (skillElement != "") characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-            else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
-            activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
+
+            try
+            {
+                characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
+                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+                if (skillElement != "") characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+                else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
+                activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Ok if at the end " + e);
+            }
         }
 
 
