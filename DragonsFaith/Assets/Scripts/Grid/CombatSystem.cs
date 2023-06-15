@@ -1057,6 +1057,7 @@ namespace Grid
                 target.GetComponent<CharacterInfo>().Damage(damage);
             }
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
         public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "", string skillElement = "")
@@ -1064,7 +1065,8 @@ namespace Grid
             var targetIndex = characterList.IndexOf(target);
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
-            target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            if (skillElement != "") target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            else target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
 
             if (IsHost)
@@ -1083,7 +1085,8 @@ namespace Grid
             if (!IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            if (skillElement != "") characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
@@ -1093,7 +1096,8 @@ namespace Grid
             if (IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            if (skillElement != "") characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
@@ -1116,6 +1120,7 @@ namespace Grid
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
         [ClientRpc]
@@ -1136,6 +1141,7 @@ namespace Grid
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
         public void ButtonDestroyAction()

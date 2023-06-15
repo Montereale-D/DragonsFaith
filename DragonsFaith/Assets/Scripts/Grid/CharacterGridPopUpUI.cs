@@ -70,7 +70,7 @@ namespace Grid
             damageCounterText.text = value.ToString();
             damageCounterText.color = heal ? Color.green : Color.red;
             _isOpening = true;
-            ShowBlood();
+            //ShowBlood();
         }
 
         private void Update()
