@@ -64,9 +64,9 @@ namespace UI
                     _moveOrAttackImage = img;
             }
                 
-            //skillButton.onClick.AddListener(add use skill function);
-            blockButton.onClick.AddListener(CombatSystem.instance.ButtonBlockAction);
-            reloadButton.onClick.AddListener(CombatSystem.instance.ButtonReloadAction);
+            skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+            blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
+            reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
             skipTurnButton.onClick.AddListener(CombatSystem.instance.ButtonSkipTurn);
             /*{
@@ -82,7 +82,7 @@ namespace UI
         public void Destroy()
         {
             moveOrAttackButton.onClick.RemoveAllListeners();
-            //skillButton.onClick.RemoveAllListeners();
+            skillButton.onClick.RemoveAllListeners();
             blockButton.onClick.RemoveAllListeners();
             reloadButton.onClick.RemoveAllListeners();
             itemsButton.onClick.RemoveAllListeners();
@@ -128,6 +128,28 @@ namespace UI
         public TurnUI GetTurnUI()
         {
             return _turnUI;
+        }
+
+        public void SkillButtonAction(string mode)
+        {
+            //var aoe = new List<Tile>();
+            switch (mode)
+            { 
+                case "Unleash":
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Unleash";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Unleash the skill.";
+                    skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+                    break;
+                default:
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Show";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Show the area of effect of the skill.";
+                    skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillRange);
+                    break;
+            }
+
+            
         }
         
         public void ToggleMoveAttackButton(string mode)

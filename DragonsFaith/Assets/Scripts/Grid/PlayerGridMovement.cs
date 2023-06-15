@@ -148,7 +148,7 @@ public class PlayerGridMovement : MonoBehaviour
     #region Pathfinding
 
     // Called to get path from tile A to tile B
-    private List<Tile> FindPath(Tile start, Tile end, List<Tile> searchableTiles)
+    public List<Tile> FindPath(Tile start, Tile end, List<Tile> searchableTiles)
     {
         List<Tile> openList = new List<Tile>();
         List<Tile> closedList = new List<Tile>();
