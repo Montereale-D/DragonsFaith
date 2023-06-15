@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Grid;
 using Player;
 using Unity.Netcode;
 
@@ -19,7 +20,7 @@ public class PlayerGridMovement : MonoBehaviour
     public Sprite turnSprite;
 
     public string charName;
-    
+
     private Animator _animator;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
     private static readonly int IsRunning = Animator.StringToHash("isRunning");
@@ -52,6 +53,7 @@ public class PlayerGridMovement : MonoBehaviour
         var playerStartPosition = new Vector2Int((int)position.x, (int)position.y);
         SetGridPosition(playerStartPosition);
     }
+
     public void SetGridPosition(Vector2Int position)
     {
         var map = MapHandler.instance.GetMap();
@@ -78,7 +80,7 @@ public class PlayerGridMovement : MonoBehaviour
         {
             movement = GetComponent<EnemyGridBehaviour>().agility;
         }
-        
+
         Debug.Log(gameObject.name + " movement is " + movement);
         return true;
     }
@@ -98,6 +100,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         state = State.Moving;
         SetTile(tile);
+        Debug.Log("PerformEnemyMovement set tile InterpToTile");
         //StartCoroutine(UpdateMovementAnimation());
     }
 
@@ -127,19 +130,28 @@ public class PlayerGridMovement : MonoBehaviour
 
     private IEnumerator MoveAlongPath(List<Tile> path)
     {
-        if (path.Count < 1) throw new Exception("Path has 0 elements");
+        if (path.Count < 1)
+        {
+            Debug.LogError("Path has 0 elements");
+            _animator.SetBool(IsMoving, false);
+            Debug.Log("PerformEnemyMovement unlock");
+            CombatSystem.instance._moveInProgress = false;
+            yield break;
+        }
 
         var direction = (path[^1].transform.position - transform.position).normalized.x;
         _animator.SetBool(IsMoving, true);
         _animator.SetFloat(X, direction);
-        
+
         while (path.Count > 0)
         {
             yield return StartCoroutine(InterpToTile(path[0]));
             path.RemoveAt(0);
         }
-        
+
         _animator.SetBool(IsMoving, false);
+        Debug.Log("PerformEnemyMovement unlock");
+        CombatSystem.instance._moveInProgress = false;
     }
 
     #region Pathfinding
@@ -165,7 +177,7 @@ public class PlayerGridMovement : MonoBehaviour
             List<Tile> neighbourTiles = MapHandler.instance.GetNeighbourTiles(current, searchableTiles);
             foreach (Tile tile in neighbourTiles)
             {
-                if ( !tile.navigable ||  closedList.Contains(tile))
+                if (!tile.navigable || closedList.Contains(tile))
                     continue;
 
                 tile.g = GetManhattanDistance(start, tile);

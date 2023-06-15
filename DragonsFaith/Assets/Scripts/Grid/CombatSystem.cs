@@ -655,6 +655,7 @@ namespace Grid
 
         public void PerformEnemyMovement(Tile toTile)
         {
+            Debug.Log("PerformEnemyMovement");
             if (!IsHost)
             {
                 Debug.LogWarning("Client should not be here");
@@ -693,8 +694,17 @@ namespace Grid
             return true;
         }
 
+        public bool CanProceedToAction()
+        {
+            return !_moveInProgress && !_attackInProgress;
+        }
+
+        public bool _moveInProgress;
+        
         private void PerformMovement(Tile toTile, bool animatePath)
         {
+            _moveInProgress = true;
+            
             _canMoveThisTurn = false;
             //_playerUI.SetMovementCounter(0);
 
@@ -714,6 +724,7 @@ namespace Grid
             else
             {
                 activeUnit.SetTile(toTile);
+                _moveInProgress = false;
             }
         }
 
@@ -803,9 +814,11 @@ namespace Grid
             Attack(target, weapon);
         }
 
+        private bool _attackInProgress;
         private void Attack(PlayerGridMovement target, Weapon weapon)
         {
             Debug.Log("Attack!");
+            _attackInProgress = true;
 
             if (weapon.weaponType == Weapon.WeaponType.Range)
             {
@@ -852,6 +865,8 @@ namespace Grid
             
                 NotifyAttackToPlayer(target, (int)damage);
             }
+
+            _attackInProgress = false;
         }
 
         private bool IsTargetCovered(PlayerGridMovement target)
