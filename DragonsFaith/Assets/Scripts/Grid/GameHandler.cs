@@ -106,6 +106,7 @@ public class GameHandler : NetworkBehaviour
     {
         Debug.Log("GAME OVER");
         //todo UI show GameOver screen
+        SceneManager.instance.LoadSceneSingle("GameOver");
         //FindObjectOfType<SceneManager>().LoadSceneAdditive("Menu");
     }
 

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
-  m_Name: AssaultRifle
+  m_Name: Assault
   m_EditorClassIdentifier: 
-  itemName: Assault Rifle
+  itemName: Assault
   description: Medium range weapon that deals TOT damage points per hit.
   id: 99d77a64-4242-4495-811f-b279f88b7ddb
   tile: {fileID: 0}
   image: {fileID: -763692750, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
   range: 5
-  damage: 2
+  damage: 5
   capacity: 3
   weaponObject: {fileID: 7563764566049780249, guid: 33c21b990a352f442b51f512f1d3c786, type: 3}

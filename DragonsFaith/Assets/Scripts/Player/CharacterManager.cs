@@ -38,7 +38,6 @@ namespace Player
 
         public void Heal(int value)
         {
-            Debug.Log("Heal");
             _characterInfo.Heal(value);
         }
         public void RestoreMana(int value)

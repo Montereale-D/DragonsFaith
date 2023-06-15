@@ -36,6 +36,8 @@ public class Tile : MonoBehaviour
         c.a = alpha;
         _spriteRenderer.color = c;
     }
+
+
     public void HoverTile()
     {
         Color c = _characterOnTile ? occupiedColor : hoveringColor;

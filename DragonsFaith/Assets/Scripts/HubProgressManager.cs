@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Player;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -9,6 +10,10 @@ public class HubProgressManager : MonoBehaviour
 {
     public static HubProgressManager instance { get; private set; }
     public static int keyCounter;
+
+    public Sprite obtainedSprite;
+    public Sprite missingSprite;
+    
     public static bool firstTime = true;
     [SerializeField] private List<GameObject> notificationObjects;
 
@@ -37,9 +42,10 @@ public class HubProgressManager : MonoBehaviour
 
     private void ResetNotification()
     {
-        for (int i = 0; i < keyCounter; i++)
+        for (var i = 0; i < keyCounter; i++)
         {
-            notificationObjects[i].GetComponent<SpriteRenderer>().color = Color.green;
+            //notificationObjects[i].GetComponent<SpriteRenderer>().color = Color.green;
+            notificationObjects[i].GetComponent<SpriteRenderer>().sprite = obtainedSprite;
         }
 
         if (keyCounter == notificationObjects.Count)
@@ -61,7 +67,8 @@ public class HubProgressManager : MonoBehaviour
 
         foreach (var notificationObject in notificationObjects)
         {
-            notificationObject.GetComponent<SpriteRenderer>().color = Color.red;
+            //notificationObject.GetComponent<SpriteRenderer>().color = Color.red;
+            notificationObject.GetComponent<SpriteRenderer>().sprite = missingSprite;
         }
         
         ResetNotification();

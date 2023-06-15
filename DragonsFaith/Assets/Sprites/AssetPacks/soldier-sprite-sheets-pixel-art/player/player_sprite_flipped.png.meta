@@ -609,13 +609,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_24
+      name: rifle_flipped_1
       rect:
         serializedVersion: 2
         x: 0
-        y: 202.125
+        y: 199
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -630,13 +630,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_25
+      name: rifle_flipped_0
       rect:
         serializedVersion: 2
         x: 45
-        y: 202.125
+        y: 199
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -777,13 +777,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_32
+      name: kick_flipped_1
       rect:
         serializedVersion: 2
         x: 0
-        y: 153.125
+        y: 149
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -798,13 +798,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_33
+      name: kick_flipped_0
       rect:
         serializedVersion: 2
         x: 45
-        y: 153.125
+        y: 149
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -945,13 +945,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_40
+      name: pistol_flipped_1
       rect:
         serializedVersion: 2
         x: 0
-        y: 104.125
+        y: 99
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -966,13 +966,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_41
+      name: pistol_flipped_0
       rect:
         serializedVersion: 2
         x: 45
-        y: 104.125
+        y: 99
         width: 45
-        height: 49.875
+        height: 50
       alignment: 9
       pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1113,174 +1113,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_sprite_flipped_48
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 65a8b9cb09fdd0f4e952d8da8b74073b
-      internalID: -105933200
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_49
-      rect:
-        serializedVersion: 2
-        x: 45
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8f218dcfe3ad6144e9ba0a94ccc9ab2f
-      internalID: 1887410940
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_50
-      rect:
-        serializedVersion: 2
-        x: 90
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: be31c6b77f593b841a1e0e433fb22023
-      internalID: 1992992054
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_51
-      rect:
-        serializedVersion: 2
-        x: 135
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 55ea0ec34ab14584e948c6e66b4e6b58
-      internalID: 1388111125
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_52
-      rect:
-        serializedVersion: 2
-        x: 180
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca92065c55738dc429bd370a47a22a5a
-      internalID: -1376092945
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_53
-      rect:
-        serializedVersion: 2
-        x: 225
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 09f45de837f2dfb44971e1e1bf533058
-      internalID: -483058996
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_54
-      rect:
-        serializedVersion: 2
-        x: 270
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ab220f0b39b73a042822908c25e79b08
-      internalID: 1090135409
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_sprite_flipped_55
-      rect:
-        serializedVersion: 2
-        x: 315
-        y: 55.125
-        width: 45
-        height: 49.875
-      alignment: 9
-      pivot: {x: 0.5, y: 0.3}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 897ff51c46277e14fafe3deb57197321
-      internalID: -1281955758
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: downedFlipped
       rect:
         serializedVersion: 2
@@ -1334,6 +1166,10 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       downedFlipped: 332065703
+      kick_flipped_0: -182766166
+      kick_flipped_1: 1077682762
+      pistol_flipped_0: 2000058989
+      pistol_flipped_1: -394929512
       player_sprite_flipped_0: -1710512990
       player_sprite_flipped_1: 1147538496
       player_sprite_flipped_10: 1581196872
@@ -1351,8 +1187,6 @@ TextureImporter:
       player_sprite_flipped_21: 793102687
       player_sprite_flipped_22: -2075525028
       player_sprite_flipped_23: 462592355
-      player_sprite_flipped_24: -263543932
-      player_sprite_flipped_25: -1097099826
       player_sprite_flipped_26: 1535166223
       player_sprite_flipped_27: 930975352
       player_sprite_flipped_28: -739693209
@@ -1360,8 +1194,6 @@ TextureImporter:
       player_sprite_flipped_3: 1329311271
       player_sprite_flipped_30: 1169438510
       player_sprite_flipped_31: 796154997
-      player_sprite_flipped_32: 1077682762
-      player_sprite_flipped_33: -182766166
       player_sprite_flipped_34: -456576074
       player_sprite_flipped_35: -1680192464
       player_sprite_flipped_36: 1824705207
@@ -1369,8 +1201,6 @@ TextureImporter:
       player_sprite_flipped_38: -1995819254
       player_sprite_flipped_39: -365550989
       player_sprite_flipped_4: -1665799788
-      player_sprite_flipped_40: -394929512
-      player_sprite_flipped_41: 2000058989
       player_sprite_flipped_42: 805797007
       player_sprite_flipped_43: -2030952888
       player_sprite_flipped_44: 1793561550
@@ -1386,11 +1216,14 @@ TextureImporter:
       player_sprite_flipped_53: -483058996
       player_sprite_flipped_54: 1090135409
       player_sprite_flipped_55: -1281955758
+      player_sprite_flipped_56: 1660909038
       player_sprite_flipped_57: 1701349124
       player_sprite_flipped_6: -1878662126
       player_sprite_flipped_7: 826197126
       player_sprite_flipped_8: 1950397155
       player_sprite_flipped_9: 178937839
+      rifle_flipped_0: -1097099826
+      rifle_flipped_1: -263543932
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

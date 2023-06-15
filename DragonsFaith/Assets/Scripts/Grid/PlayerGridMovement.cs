@@ -19,14 +19,17 @@ public class PlayerGridMovement : MonoBehaviour
 
     public Sprite turnSprite;
 
-    public string charName;
-
+    [HideInInspector] public string charName;
+    
     private Animator _animator;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
     private static readonly int IsRunning = Animator.StringToHash("isRunning");
     private static readonly int X = Animator.StringToHash("x");
     private static readonly int Downed = Animator.StringToHash("downed");
     private static readonly int Revive = Animator.StringToHash("revive");
+    private static readonly int Melee = Animator.StringToHash("Melee");
+    private static readonly int Pistol = Animator.StringToHash("Pistol");
+    private static readonly int Rifle = Animator.StringToHash("Rifle");
 
     public enum Team
     {
@@ -53,7 +56,6 @@ public class PlayerGridMovement : MonoBehaviour
         var playerStartPosition = new Vector2Int((int)position.x, (int)position.y);
         SetGridPosition(playerStartPosition);
     }
-
     public void SetGridPosition(Vector2Int position)
     {
         var map = MapHandler.instance.GetMap();
@@ -80,7 +82,7 @@ public class PlayerGridMovement : MonoBehaviour
         {
             movement = GetComponent<EnemyGridBehaviour>().agility;
         }
-
+        
         Debug.Log(gameObject.name + " movement is " + movement);
         return true;
     }
@@ -142,13 +144,13 @@ public class PlayerGridMovement : MonoBehaviour
         var direction = (path[^1].transform.position - transform.position).normalized.x;
         _animator.SetBool(IsMoving, true);
         _animator.SetFloat(X, direction);
-
+        
         while (path.Count > 0)
         {
             yield return StartCoroutine(InterpToTile(path[0]));
             path.RemoveAt(0);
         }
-
+        
         _animator.SetBool(IsMoving, false);
         Debug.Log("PerformEnemyMovement unlock");
         CombatSystem.instance._moveInProgress = false;
@@ -157,7 +159,7 @@ public class PlayerGridMovement : MonoBehaviour
     #region Pathfinding
 
     // Called to get path from tile A to tile B
-    private List<Tile> FindPath(Tile start, Tile end, List<Tile> searchableTiles)
+    public List<Tile> FindPath(Tile start, Tile end, List<Tile> searchableTiles)
     {
         List<Tile> openList = new List<Tile>();
         List<Tile> closedList = new List<Tile>();
@@ -260,5 +262,21 @@ public class PlayerGridMovement : MonoBehaviour
     public void OnRevive()
     {
         _animator.SetTrigger(Revive);
+    }
+
+    public void TriggerAttackAnimation(string weaponName)
+    {
+        switch (weaponName)
+        {
+            case "Pistol":
+                _animator.SetTrigger(Pistol);
+                break;
+            case "Assault" or "Shotgun" or "Sniper":
+                _animator.SetTrigger(Rifle);
+                break;
+            default:
+                _animator.SetTrigger(Melee);
+                break;
+        }
     }
 }
