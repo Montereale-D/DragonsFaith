@@ -26,7 +26,7 @@ namespace Grid
         private bool _isThisPlayerTurn;
         private bool _isCombatReady;
         private bool _isUIReady;
-        private bool isUsingSkill;
+        private bool _isUsingSkill;
         private Tile _selectedTile;
 
         private PlayerGridMovement _target;
@@ -43,7 +43,7 @@ namespace Grid
         /*private float _turnDelay; //needs to be the same as the length of the turn UI animation
         private float _turnDelayCounter;*/
 
-        private List<Tile> skillRange;
+        private List<Tile> _skillRange;
 
         #region Core
 
@@ -208,9 +208,9 @@ namespace Grid
 
             if (!_isThisPlayerTurn) return;
 
-            if (isUsingSkill)
+            if (_isUsingSkill)
             {
-                foreach (var t in skillRange)
+                foreach (var t in _skillRange)
                 {
                     t.ShowTile();
                 }
@@ -263,7 +263,7 @@ namespace Grid
             _canMoveThisTurn = true;
             _canAttackThisTurn = true;
             _selectedTile = null;
-            isUsingSkill = false;
+            _isUsingSkill = false;
             activeUnit.GetComponent<CharacterInfo>().isBlocking = false;
             activeUnit.GetComponent<CharacterGridPopUpUI>().HideShield();
 
@@ -371,11 +371,11 @@ namespace Grid
             }
 
             weapon.Reload();
-            _playerUI.ShowMessage("Weapon reloaded.");
             
             if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
             {
                 _playerUI.SetAmmoCounter(weapon.GetAmmo());
+                _playerUI.ShowMessage("Weapon reloaded.");
             }
             else if (activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies)
             {
@@ -533,7 +533,7 @@ namespace Grid
             // Turns character toward the selected tile
             activeUnit.TurnTowardTile(_selectedTile);
             _playerUI.SkillButtonAction("Show");
-            isUsingSkill = false;
+            _isUsingSkill = false;
 
             var character = _selectedTile.GetCharacter();
             var obstacle = _selectedTile.GetObstacle();
@@ -557,7 +557,7 @@ namespace Grid
 
                         if (!_canAttackThisTurn)
                         {
-                            _playerUI.SetCombatPopUp(true, "Already performed action in this turn.");
+                            _playerUI.SetCombatPopUp(true, "Already performed action.");
                         }
                         else if (!IsWithinRange(character, weapon))
                         {
@@ -583,7 +583,7 @@ namespace Grid
                 var weapon = GetActiveUnitWeapon();
                 if (!_canAttackThisTurn)
                 {
-                    _playerUI.SetCombatPopUp(true, "Already performed action in this turn.");
+                    _playerUI.SetCombatPopUp(true, "Already performed action.");
                 }
                 else if (!IsWithinRange(obstacle, weapon))
                 {
@@ -613,11 +613,11 @@ namespace Grid
                 }
                 else if (!_mapHandler.GetTilesInRange(activeUnit.onTile, activeUnit.movement).Contains(_selectedTile))
                 {
-                    _playerUI.SetCombatPopUp(true, "Cell is too far away.");
+                    _playerUI.SetCombatPopUp(true, "Cell outside movement range.");
                 }
                 else
                 {
-                    _playerUI.SetCombatPopUp(true, "Cell is within movement range " + activeUnit.movement + ".");
+                    _playerUI.SetCombatPopUp(true, "Cell within movement range " + activeUnit.movement + ".");
                 }
 
                 _playerUI.ToggleMoveAttackButton("Move");
@@ -760,10 +760,10 @@ namespace Grid
         //the switch is "useless" because of this, but would be needed if other faiths are included
         public void CheckSkillRange()
         {
-            if (!_selectedTile) _playerUI.SetCombatPopUp(true, "A cell needs to be selected before using a skill.");
+            if (!_selectedTile) _playerUI.ShowMessage("A cell needs to be selected before using a skill.");
 
             var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
-            if (distance >= 5) _playerUI.SetCombatPopUp(true, "The cell is too far away.");
+            if (distance >= 5) _playerUI.SetCombatPopUp(true, "Cell outside skill range.");
 
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
 
@@ -773,8 +773,8 @@ namespace Grid
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
                     {
-                        skillRange = ConeAttack(searchable);
-                         isUsingSkill = true;
+                        _skillRange = ConeAttack(searchable);
+                         _isUsingSkill = true;
                         _playerUI.SkillButtonAction("Unleash");
                         break;
                     }
@@ -788,8 +788,8 @@ namespace Grid
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
                     {
-                        skillRange = ConeAttack(searchable);
-                            isUsingSkill = true;
+                        _skillRange = ConeAttack(searchable);
+                            _isUsingSkill = true;
                         _playerUI.SkillButtonAction("Unleash");
                         break;
                     }
@@ -806,20 +806,20 @@ namespace Grid
 
         public void CheckSkillAttack()
         {
-            if (!isUsingSkill || !_canAttackThisTurn) return;
-            isUsingSkill = false;
+            if (!_isUsingSkill || !_canAttackThisTurn) return;
+            _isUsingSkill = false;
             _canAttackThisTurn = false;
             switch (PlayerUI.instance.chosenFaith)
             {
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
                     {
-                        foreach (var t in skillRange)
+                        foreach (var t in _skillRange)
                         {
                             if (t.GetCharacter() == null) continue;
                             if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
                             var damage = (int)CharacterManager.Instance.GetTotalStr() + (int)CharacterManager.Instance.GetTotalAgi();
-                            NotifyAttackToEnemy(t.GetCharacter(), damage);
+                            NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
                             Debug.Log("Enemy hit by skill");
                         }
                         break;
@@ -834,12 +834,12 @@ namespace Grid
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
                     {
-                        foreach (var t in skillRange)
+                        foreach (var t in _skillRange)
                         {
                             if (t.GetCharacter() == null) continue;
                             if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
                             var damage = (int)CharacterManager.Instance.GetTotalDex() + (int)CharacterManager.Instance.GetTotalAgi();
-                            NotifyAttackToEnemy(t.GetCharacter(), damage);
+                            NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
                             Debug.Log("Enemy hit by skill");
                         }
                       
@@ -1044,38 +1044,41 @@ namespace Grid
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
         }
 
-        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "")
+        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "", string skillElement = "")
         {
             var targetIndex = characterList.IndexOf(target);
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
 
             if (IsHost)
             {
-                NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage, weaponName);
+                NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage, weaponName, skillElement);
             }
             else
             {
-                NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, weaponName);
+                NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, weaponName, skillElement);
             }
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, string weaponName)
+        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, string weaponName, string skillElement = "")
         {
             if (!IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
         [ClientRpc]
-        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName)
+        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName, string skillElement = "")
         {
             if (IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
@@ -1191,7 +1194,7 @@ namespace Grid
 
         public void SkipTurn()
         {
-            isUsingSkill = false;
+            _isUsingSkill = false;
             if (IsHost)
             {
                 //UnselectTile();

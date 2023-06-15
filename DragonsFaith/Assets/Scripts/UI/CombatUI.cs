@@ -65,8 +65,8 @@ namespace UI
             }
                 
             skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
-            blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
-            reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
+            blockButton.onClick.AddListener(CombatSystem.instance.ButtonBlockAction);
+            reloadButton.onClick.AddListener(CombatSystem.instance.ButtonReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
             skipTurnButton.onClick.AddListener(CombatSystem.instance.ButtonSkipTurn);
             /*{

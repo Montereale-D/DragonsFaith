@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Runtime.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +23,11 @@ namespace Grid
         public float speed = 1;
         private bool _isOpening;
         private float _snapToSizeDistance = 0.25f;
+
+        public Animator bloodAnimator;
+        [OptionalField] public Animator skillAnimator;
+        private static readonly int Air = Animator.StringToHash("Air");
+        private static readonly int Fire = Animator.StringToHash("Fire");
 
         [Header("Shield")] 
         public GameObject shield;
@@ -62,6 +70,7 @@ namespace Grid
             damageCounterText.text = value.ToString();
             damageCounterText.color = heal ? Color.green : Color.red;
             _isOpening = true;
+            ShowBlood();
         }
 
         private void Update()
@@ -84,6 +93,41 @@ namespace Grid
         public void HideShield()
         {
             shield.SetActive(false);
+        }
+
+        public void ShowBlood()
+        {
+            StartCoroutine(BloodAnimation());
+        }
+
+        private IEnumerator BloodAnimation()
+        {
+            bloodAnimator.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            bloodAnimator.gameObject.SetActive(false);
+        }
+
+        public void ShowSkillEffect(string skill)
+        {
+            StartCoroutine(SkillEffectAnimation(skill));
+        }
+        
+        private IEnumerator SkillEffectAnimation(string skill)
+        {
+            skillAnimator.gameObject.SetActive(true);
+            switch (skill)
+            {
+                case "Air":
+                    skillAnimator.SetTrigger(Air);
+                    break;
+                case "Fire":
+                    skillAnimator.SetTrigger(Fire);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            yield return new WaitForSeconds(0.6f);
+            skillAnimator.gameObject.SetActive(false);
         }
     }
 }

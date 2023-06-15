@@ -22,13 +22,13 @@ public class PlayerGridMovement : MonoBehaviour
     
     private Animator _animator;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
-    private static readonly int IsRunning = Animator.StringToHash("isRunning");
     private static readonly int X = Animator.StringToHash("x");
     private static readonly int Downed = Animator.StringToHash("downed");
     private static readonly int Revive = Animator.StringToHash("revive");
     private static readonly int Melee = Animator.StringToHash("Melee");
     private static readonly int Pistol = Animator.StringToHash("Pistol");
     private static readonly int Rifle = Animator.StringToHash("Rifle");
+    private static readonly int Skill = Animator.StringToHash("Skill");
 
     public enum Team
     {
@@ -262,6 +262,9 @@ public class PlayerGridMovement : MonoBehaviour
                 break;
             case "Assault" or "Shotgun" or "Sniper":
                 _animator.SetTrigger(Rifle);
+                break;
+            case "Skill":
+                _animator.SetTrigger(Skill);
                 break;
             default:
                 _animator.SetTrigger(Melee);
