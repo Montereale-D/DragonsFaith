@@ -94,5 +94,11 @@ namespace Network
             // To call when miniboss is killed
             isBlocked = false;
         }
+
+        [ContextMenu("ForceNextAreaLoader")]
+        public void ForceNextAreaLoader()
+        {
+            OnPlayersReady();
+        }
     }
 }

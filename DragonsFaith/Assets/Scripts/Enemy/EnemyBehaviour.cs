@@ -38,7 +38,7 @@ namespace Enemy
 
         public void SetUp(EnemySpawnPoint spawnPoint)
         {
-            //Debug.Log("Enemy spawned setup");
+            Debug.Log("Enemy spawned setup " + spawnPoint.saveId);
 
             //Instantiated as a child of a EnemySpawnPoint, get params
             _isMiniboss = spawnPoint.isMiniboss;

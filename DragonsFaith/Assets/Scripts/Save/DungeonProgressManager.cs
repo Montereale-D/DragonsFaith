@@ -133,9 +133,13 @@ public class DungeonProgressManager : MonoBehaviour
     
     private void CheckUid(string uid, GameObject go)
     {
-        if (string.IsNullOrEmpty(uid))
+        if (uid == null)
         {
-            throw new Exception("Not valid uid of " + go.name);
+            throw new Exception("Null uid of " + go.name);
+        }
+        if (uid == "")
+        {
+            throw new Exception("Empty uid of " + go.name);
         }
     }
 }

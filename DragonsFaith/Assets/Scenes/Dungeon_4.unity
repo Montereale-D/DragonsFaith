@@ -579,7 +579,12 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 200296566
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2277673965036449818, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+    - {fileID: 8128621856102600344, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+    - {fileID: 2280918828574321230, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+    - {fileID: 1089108909251126091, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+    - {fileID: 3117432735003316730, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
 --- !u!114 &1077982073 stripped
 MonoBehaviour:
@@ -817,5 +822,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemySpawnPointer
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4853775900588088345, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
+--- !u!1 &1253309255 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8796173438544212247, guid: 5674555f960582e4a97fa4a640ddcc92, type: 3}
+  m_PrefabInstance: {fileID: 1253309254}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1253309256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253309255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3392782130
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
