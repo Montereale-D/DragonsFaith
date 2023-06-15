@@ -754,8 +754,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 720274468ad8f6642b8765769270d8a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  maxMana: 100
+  maxHealth: 50
+  maxMana: 50
   isLocalPlayer: 0
   health: 0
   characterName: 
@@ -902,6 +902,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -1563349829
+    TransitionDuration: 0
+    TriggerNameHash: -1518524019
+    TransitionIndex: 2
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: 237393061
+    TransitionDuration: 0
+    TriggerNameHash: 237393061
+    TransitionIndex: 3
+  - Layer: 0
+    OriginatingState: 2081823275
+    DestinationState: -1143670059
+    TransitionDuration: 0
+    TriggerNameHash: 2048251345
+    TransitionIndex: 4
   - Layer: 0
     OriginatingState: -660779543
     DestinationState: 2081823275

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Network;
 using Player;
 using Save;
 using Unity.Netcode;
@@ -14,6 +15,7 @@ public class SpawnPointerGrid : NetworkBehaviour
     [SerializeField] private int halfWidthMap = 7;
     [SerializeField] private Vector2Int spawnPointPlayer1;
     [SerializeField] private Vector2Int spawnPointPlayer2;
+    /*[SerializeField] private bool isBossRoom;*/
     
     private List<Vector2Int> spawnPointEnemies;
     private List<Vector2Int> spawnPointObstacles;
@@ -21,6 +23,7 @@ public class SpawnPointerGrid : NetworkBehaviour
     
     public GameObject[] enemyPrefabs;
     public GameObject[] obstaclePrefabs;
+
 
     private void Awake()
     {
@@ -72,7 +75,7 @@ public class SpawnPointerGrid : NetworkBehaviour
         var topLeft = new Vector2Int(-halfWidthMap, halfHeightMap);
         var topMiddle = new Vector2Int(0, halfHeightMap);
         var bottomRight = new Vector2Int(halfWidthMap, -halfHeightMap);
-        
+        /*if (!isBossRoom) */
         SpawnEnemy(topMiddle, bottomRight, enemyCount);
         SpawnObstacle(topLeft, bottomRight, obstaclesCount);
     }

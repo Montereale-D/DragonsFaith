@@ -22,6 +22,6 @@ MonoBehaviour:
   image: {fileID: 334628651, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
   range: 2
-  damage: 1
-  capacity: 1
+  damage: 10
+  capacity: 2
   weaponObject: {fileID: 7563764566049780249, guid: c2e1f546bb04099448b6d96832f74833, type: 3}

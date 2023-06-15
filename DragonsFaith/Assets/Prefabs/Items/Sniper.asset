@@ -18,7 +18,7 @@ MonoBehaviour:
   tile: {fileID: 0}
   image: {fileID: -1652146166, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
-  range: 5
-  damage: 1
+  range: 7
+  damage: 10
   capacity: 1
   weaponObject: {fileID: 7563764566049780249, guid: 50aa591fbc252d143b6564f5523ee349, type: 3}

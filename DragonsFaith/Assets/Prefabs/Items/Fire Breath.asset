@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
-  m_Name: Assault
+  m_Name: Fire Breath
   m_EditorClassIdentifier: 
-  itemName: Assault
-  description: Medium range weapon that deals TOT damage points per hit.
-  id: 99d77a64-4242-4495-811f-b279f88b7ddb
+  itemName: Fire Breath
+  description: item description
+  id: 7a903cbb-ad73-43cb-b35f-112545bf4d75
   tile: {fileID: 0}
-  image: {fileID: -763692750, guid: e0082552569e407449e5dee4b1552d29, type: 3}
+  image: {fileID: 0}
   weaponType: 1
-  range: 5
-  damage: 5
-  capacity: 3
-  weaponObject: {fileID: 7563764566049780249, guid: 33c21b990a352f442b51f512f1d3c786, type: 3}
+  range: 3
+  damage: 10
+  capacity: 1000
+  weaponObject: {fileID: 0}
