@@ -190,9 +190,11 @@ namespace Enemy
         {
             if (!_isReadyToFight)
             {
-                Debug.Log("Not ready to CombatStart");
+                Debug.Log("Not ready to CombatStart || already started");
                 return;
             }
+
+            _isReadyToFight = false;
 
             Debug.Log("OnCombatStart " + position);
             _keepMoving = false;
@@ -201,14 +203,11 @@ namespace Enemy
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
             //TransitionBackground.instance.FadeOut();
 
-            if (_isMiniboss)
+            if (_isMiniboss && IsHost)
             {
-                MinibossDefeated();
-
-                if (IsHost)
-                {
-                    MinibossDefeatedClientRpc();
-                }
+                var newCounter = HubProgressManager.keyCounter + 1;
+                MinibossDefeatedClientRpc(newCounter);
+                MinibossDefeated(newCounter);
             }
 
             if (IsHost)
@@ -225,16 +224,16 @@ namespace Enemy
         }
 
         [ClientRpc]
-        private void MinibossDefeatedClientRpc()
+        private void MinibossDefeatedClientRpc(int counter)
         {
             if(IsHost) return;
-            MinibossDefeated();
+            MinibossDefeated(counter);
         }
 
-        private void MinibossDefeated()
+        private void MinibossDefeated(int counter)
         {
             DungeonProgressManager.instance.MinibossDefeated();
-            HubProgressManager.keyCounter++;
+            HubProgressManager.keyCounter = counter;
         }
 
         [ClientRpc]
