@@ -222,6 +222,11 @@ namespace Network
                 Destroy(SpawnPointerGrid.instance.gameObject);
             }
 
+            if (SpawnPointerGridBoss.instance != null)
+            {
+                Destroy(SpawnPointerGridBoss.instance.gameObject);
+            }
+
             if (HubProgressManager.instance != null)
             {
                 Destroy(HubProgressManager.instance.gameObject);

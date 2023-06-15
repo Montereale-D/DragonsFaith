@@ -71,6 +71,7 @@ public class GameHandler : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsHost)
         {
+            Debug.Log("AskMovementClientRpc");
             AskMovementClientRpc(askedIndex);
         }
         else
@@ -131,6 +132,8 @@ public class GameHandler : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.IsHost) return;
 
+        Debug.Log("AskMovementServerRpc");
+        
         var movement = (int)CharacterManager.Instance.GetTotalAgi();
         ReplyMovementClientRpc(askedIndex, movement);
     }
@@ -139,6 +142,9 @@ public class GameHandler : NetworkBehaviour
     private void ReplyMovementServerRpc(int askedIndex, int movement)
     {
         if (!NetworkManager.Singleton.IsHost) return;
+        
+        Debug.Log("ReplyMovementServerRpc");
+        
         _characters[askedIndex].movement = movement;
         Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }
@@ -148,6 +154,7 @@ public class GameHandler : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsHost) return;
 
+        Debug.Log("AskMovementClientRpc");
         var movement = (int)CharacterManager.Instance.GetTotalAgi();
         ReplyMovementServerRpc(askedIndex, movement);
     }
@@ -156,6 +163,7 @@ public class GameHandler : NetworkBehaviour
     private void ReplyMovementClientRpc(int askedIndex, int movement)
     {
         if (NetworkManager.Singleton.IsHost) return;
+        Debug.Log("ReplyMovementClientRpc");
         _characters[askedIndex].movement = movement;
         Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }

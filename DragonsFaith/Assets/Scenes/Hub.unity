@@ -37415,6 +37415,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2064330688}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: isBlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: sceneName
       value: BossRoom
       objectReference: {fileID: 0}
@@ -37424,7 +37428,7 @@ PrefabInstance:
       objectReference: {fileID: -1718275389, guid: f771e7db45e2fb34ab3410aa9bde9ee4, type: 3}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: activateOnFirstTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2622002211282943186, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_Enabled

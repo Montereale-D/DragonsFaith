@@ -842,7 +842,7 @@ GameObject:
   - component: {fileID: 8321177729637560450}
   - component: {fileID: 5112907475707427200}
   - component: {fileID: 7255278749443468013}
-  - component: {fileID: 6726206115353635992}
+  - component: {fileID: 7983613352341298036}
   m_Layer: 0
   m_Name: DragonBoss
   m_TagString: Untagged
@@ -996,7 +996,7 @@ MonoBehaviour:
   bloodAnimator: {fileID: 6744492542618408418}
   skillAnimator: {fileID: 5366558247333076261}
   shield: {fileID: 455330759498419353}
---- !u!114 &6726206115353635992
+--- !u!114 &7983613352341298036
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -67,6 +67,7 @@ namespace Grid
 
         public void Setup(IEnumerable<PlayerGridMovement> characters, IEnumerable<Obstacle> obstacles)
         {
+            Debug.Log("CombatSystem Setup");
             characterList = characters.OrderByDescending(x => x.movement)
                 .ThenBy(x => x.name)
                 .ThenBy(x => x.GetHashCode())
@@ -94,8 +95,37 @@ namespace Grid
             _isUIReady = true;
         }
 
+        private Vector2Int GetHostPos(bool isBossFight)
+        {
+            return isBossFight
+                ? SpawnPointerGridBoss.instance.GetPlayerSpawnPoint(GameData.PlayerType.Host)
+                : SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Host);
+        }
+
+        private Vector2Int GetClientPos(bool isBossFight)
+        {
+            return isBossFight
+                ? SpawnPointerGridBoss.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client)
+                : SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client);
+        }
+
+        private List<Vector2Int> GetEnemiesPos(bool isBossFight)
+        {
+            return isBossFight
+                ? SpawnPointerGridBoss.instance.GetEnemySpawnPoint()
+                : SpawnPointerGrid.instance.GetEnemySpawnPoint();
+        }
+
+        private List<Vector2Int> GetObstaclesPos(bool isBossFight)
+        {
+            return isBossFight
+                ? SpawnPointerGridBoss.instance.GetObstaclesSpawnPoint()
+                : SpawnPointerGrid.instance.GetObstaclesSpawnPoint();
+        }
+
         private IEnumerator WaitSetupToStart()
         {
+            Debug.Log("CombatSystem WaitSetupToStart");
             //while (!_isCombatReady || !_isUIReady)
             while (!_isUIReady)
             {
@@ -104,11 +134,13 @@ namespace Grid
 
             var localPlayer = _localPlayer.GetComponent<PlayerGridMovement>();
 
-            var hostPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Host);
-            var clientPos = SpawnPointerGrid.instance.GetPlayerSpawnPoint(GameData.PlayerType.Client);
-            var enemiesPos = SpawnPointerGrid.instance.GetEnemySpawnPoint();
+            var isBossFight = SpawnPointerGrid.instance == null && SpawnPointerGridBoss.instance != null;
+
+            var hostPos = GetHostPos(isBossFight);
+            var clientPos = GetClientPos(isBossFight);
+            var enemiesPos = GetEnemiesPos(isBossFight);
             var enemyPosIndex = 0;
-            var obstaclesPos = SpawnPointerGrid.instance.GetObstaclesSpawnPoint();
+            var obstaclesPos = GetObstaclesPos(isBossFight);
             var obstaclePosIndex = 0;
 
             foreach (var obstacle in obstacleList)
@@ -156,12 +188,12 @@ namespace Grid
                 NotifyPopUpInfoToPlayerServerRpc(charName, health);
             }
         }
-    
+
         [ServerRpc(RequireOwnership = false)]
         private void NotifyPopUpInfoToPlayerServerRpc(string charName, int health)
         {
             if (!IsHost) return;
-            var players = 
+            var players =
                 characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
             foreach (var player in players.Where(player => player != _localPlayer.GetComponent<PlayerGridMovement>()))
             {
@@ -173,7 +205,7 @@ namespace Grid
         private void NotifyPopUpInfoToPlayerClientRpc(string charName, int health)
         {
             if (IsHost) return;
-            var players = 
+            var players =
                 characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
             foreach (var player in players.Where(player => player != _localPlayer.GetComponent<PlayerGridMovement>()))
             {
@@ -216,7 +248,7 @@ namespace Grid
                 }
             }
             else if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
-            
+
             if (_selectedTile)
             {
                 _selectedTile.SelectTile();
@@ -243,7 +275,7 @@ namespace Grid
                     UnselectTile();
                 }
             }
-            
+
             if (!_canAttackThisTurn && !_canMoveThisTurn) SkipTurn();
         }
 
@@ -348,13 +380,13 @@ namespace Grid
         }
 
         #region ReloadAction
-        
+
         public void ButtonReloadAction()
         {
             if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
             ReloadAction();
         }
-        
+
         public void ReloadAction()
         {
             if (!_canAttackThisTurn)
@@ -371,7 +403,7 @@ namespace Grid
             }
 
             weapon.Reload();
-            
+
             if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
             {
                 _playerUI.SetAmmoCounter(weapon.GetAmmo());
@@ -388,7 +420,7 @@ namespace Grid
         private void NotifyEnemyReload()
         {
             activeUnit.GetComponent<EnemyGridBehaviour>().TriggerReloadAnimation();
-        
+
             if (IsHost)
             {
                 NotifyEnemyReloadToPlayerClientRpc();
@@ -398,7 +430,7 @@ namespace Grid
                 NotifyEnemyReloadToPlayerServerRpc();
             }
         }
-    
+
         [ServerRpc(RequireOwnership = false)]
         private void NotifyEnemyReloadToPlayerServerRpc()
         {
@@ -412,7 +444,7 @@ namespace Grid
             if (IsHost) return;
             activeUnit.GetComponent<EnemyGridBehaviour>().TriggerReloadAnimation();
         }
-    
+
         #endregion
 
         #region BlockAction
@@ -430,8 +462,9 @@ namespace Grid
                 _playerUI.ShowMessage("Already performed action.");
                 return;
             }
+
             activeUnit.GetComponent<CharacterGridPopUpUI>().ShowShield();
-        
+
             NotifyBlock();
             activeUnit.GetComponent<CharacterInfo>().isBlocking = true;
             _canAttackThisTurn = false;
@@ -529,7 +562,7 @@ namespace Grid
 
             _selectedTile = tile;
             _selectedTile.SelectTile();
-        
+
             // Turns character toward the selected tile
             activeUnit.TurnTowardTile(_selectedTile);
             _playerUI.SkillButtonAction("Show");
@@ -551,9 +584,9 @@ namespace Grid
                     {
                         // Clicked on an Enemy of the current unit
                         var weapon = GetActiveUnitWeapon();
-                        var text = weapon.weaponType == Weapon.WeaponType.Melee ? 
-                            (int)(weapon.damage + CharacterManager.Instance.GetTotalStr()) :
-                            (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
+                        var text = weapon.weaponType == Weapon.WeaponType.Melee
+                            ? (int)(weapon.damage + CharacterManager.Instance.GetTotalStr())
+                            : (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
 
                         if (!_canAttackThisTurn)
                         {
@@ -712,11 +745,11 @@ namespace Grid
         }
 
         public bool _moveInProgress;
-        
+
         private void PerformMovement(Tile toTile, bool animatePath)
         {
             _moveInProgress = true;
-            
+
             _canMoveThisTurn = false;
             //_playerUI.SetMovementCounter(0);
 
@@ -766,7 +799,6 @@ namespace Grid
 
         #region AttackAction
 
-
         //The demo has only Fire and Air, with both these skills using a cone AOE;
         //the switch is "useless" because of this, but would be needed if other faiths are included
         public void CheckSkillRange()
@@ -783,33 +815,33 @@ namespace Grid
             {
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
-                    {
-                        _skillRange = ConeAttack(searchable);
-                         _isUsingSkill = true;
-                        _playerUI.SkillButtonAction("Unleash");
-                        break;
-                    }
+                {
+                    _skillRange = ConeAttack(searchable);
+                    _isUsingSkill = true;
+                    _playerUI.SkillButtonAction("Unleash");
+                    break;
+                }
 
                 //not available in demo
                 case PlayerUI.Element.Water:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
 
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
-                    {
-                        _skillRange = ConeAttack(searchable);
-                            _isUsingSkill = true;
-                        _playerUI.SkillButtonAction("Unleash");
-                        break;
-                    }
+                {
+                    _skillRange = ConeAttack(searchable);
+                    _isUsingSkill = true;
+                    _playerUI.SkillButtonAction("Unleash");
+                    break;
+                }
 
                 //not available in demo
                 case PlayerUI.Element.Earth:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -824,44 +856,47 @@ namespace Grid
             {
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
+                {
+                    foreach (var t in _skillRange)
                     {
-                        foreach (var t in _skillRange)
-                        {
-                            if (t.GetCharacter() == null) continue;
-                            if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
-                            var damage = (int)CharacterManager.Instance.GetTotalStr() + (int)CharacterManager.Instance.GetTotalAgi();
-                            NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
-                            Debug.Log("Enemy hit by skill");
-                        }
-                        break;
+                        if (t.GetCharacter() == null) continue;
+                        if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
+                        var damage = (int)CharacterManager.Instance.GetTotalStr() +
+                                     (int)CharacterManager.Instance.GetTotalAgi();
+                        NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
+                        Debug.Log("Enemy hit by skill");
                     }
+
+                    break;
+                }
 
                 //not available in demo
                 case PlayerUI.Element.Water:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
 
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
+                {
+                    foreach (var t in _skillRange)
                     {
-                        foreach (var t in _skillRange)
-                        {
-                            if (t.GetCharacter() == null) continue;
-                            if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
-                            var damage = (int)CharacterManager.Instance.GetTotalDex() + (int)CharacterManager.Instance.GetTotalAgi();
-                            NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
-                            Debug.Log("Enemy hit by skill");
-                        }
-                      
-                        break;
+                        if (t.GetCharacter() == null) continue;
+                        if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
+                        var damage = (int)CharacterManager.Instance.GetTotalDex() +
+                                     (int)CharacterManager.Instance.GetTotalAgi();
+                        NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
+                        Debug.Log("Enemy hit by skill");
                     }
+
+                    break;
+                }
 
                 //not available in demo
                 case PlayerUI.Element.Earth:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -873,7 +908,7 @@ namespace Grid
             if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
             CheckAction(_target);
         }
-    
+
         //// <returns>false if no action has been performed</returns>
         public void CheckAction(PlayerGridMovement target, Tile fromTile = null)
         {
@@ -929,6 +964,7 @@ namespace Grid
         }
 
         private bool _attackInProgress;
+
         private void Attack(PlayerGridMovement target, Weapon weapon)
         {
             Debug.Log("Attack!");
@@ -937,16 +973,17 @@ namespace Grid
             if (weapon.weaponType == Weapon.WeaponType.Range)
             {
                 weapon.UseAmmo();
-                if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>()) _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
+                if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
+                    _playerUI.SetAmmoCounter(weapon.GetAmmo()); // reduce UI counter by 1
             }
 
             var isCovered = IsTargetCovered(target);
 
             if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
             {
-                var damage = weapon.weaponType == Weapon.WeaponType.Melee ? 
-                        (int)(weapon.damage + CharacterManager.Instance.GetTotalStr()) :
-                        (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
+                var damage = weapon.weaponType == Weapon.WeaponType.Melee
+                    ? (int)(weapon.damage + CharacterManager.Instance.GetTotalStr())
+                    : (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
 
                 if (target.GetComponent<CharacterInfo>().isBlocking)
                 {
@@ -976,7 +1013,7 @@ namespace Grid
                 {
                     damage /= 2;
                 }
-            
+
                 NotifyAttackToPlayer(target, (int)damage);
             }
 
@@ -1056,11 +1093,13 @@ namespace Grid
             {
                 target.GetComponent<CharacterInfo>().Damage(damage);
             }
+
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
-        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "", string skillElement = "")
+        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "",
+            string skillElement = "")
         {
             var targetIndex = characterList.IndexOf(target);
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
@@ -1080,18 +1119,21 @@ namespace Grid
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, string weaponName, string skillElement = "")
+        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, string weaponName,
+            string skillElement = "")
         {
             if (!IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
-            if (skillElement != "") characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            if (skillElement != "")
+                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
         }
 
         [ClientRpc]
-        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName, string skillElement = "")
+        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName,
+            string skillElement = "")
         {
             if (IsHost) return;
 
@@ -1099,7 +1141,8 @@ namespace Grid
             {
                 characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
                 characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
-                if (skillElement != "") characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+                if (skillElement != "")
+                    characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
                 else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
                 activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
             }
@@ -1127,6 +1170,7 @@ namespace Grid
             {
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
+
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
@@ -1148,6 +1192,7 @@ namespace Grid
             {
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
+
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
@@ -1164,7 +1209,7 @@ namespace Grid
                 Debug.LogError("Selected tile has no obstacle");
                 return;
             }
-        
+
             NotifyDestroyedObstacle(obstacle);
             obstacle.onTile.ClearTile();
             Destroy(obstacle.gameObject);
@@ -1188,8 +1233,8 @@ namespace Grid
         [ClientRpc]
         private void DestroyedObstacleClientRpc(int x, int y)
         {
-            if(IsHost) return;
-        
+            if (IsHost) return;
+
             var toPosition = new Vector2Int(x, y);
             var tile = _mapHandler.GetMap()[toPosition];
 
@@ -1198,14 +1243,14 @@ namespace Grid
             Destroy(obstacle.gameObject);
         }
 
-        [ServerRpc (RequireOwnership = false)]
+        [ServerRpc(RequireOwnership = false)]
         private void DestroyedObstacleServerRpc(int x, int y)
         {
-            if(!IsHost) return;
-        
+            if (!IsHost) return;
+
             var toPosition = new Vector2Int(x, y);
             var tile = _mapHandler.GetMap()[toPosition];
-        
+
             var obstacle = tile.GetObstacle();
             tile.ClearTile();
             Destroy(obstacle.gameObject);
@@ -1238,6 +1283,7 @@ namespace Grid
                         character.GetComponent<CharacterGridPopUpUI>().HideUI();
                     }
                 }
+
                 HostHasSkippedClientRpc();
                 SelectNextActiveUnit();
             }
@@ -1255,6 +1301,7 @@ namespace Grid
                         character.GetComponent<CharacterGridPopUpUI>().HideUI();
                     }
                 }
+
                 ClientHasSkippedServerRpc();
                 SelectNextActiveUnit();
             }
@@ -1308,7 +1355,7 @@ namespace Grid
             if (IsHost) return;
             otherPlayerSpriteIdx = portraitIdx;
         }
-        
+
         private void SendPlayerName()
         {
             if (IsHost)
@@ -1376,133 +1423,154 @@ namespace Grid
             return weapon;
         }
 
-    public List<Tile> ConeAttack(List<Tile> searchable)
-    {
-        List<Tile> aoe = new List<Tile>();
-        List<Tile> upperCone = new List<Tile>();
-        List<Tile> lowerCone = new List<Tile>();
-        List<Tile> rightCone = new List<Tile>();
-        List<Tile> leftCone = new List<Tile>();
-        if (_selectedTile.mapPosition.y > activeUnit.onTile.mapPosition.y) { upperCone = createUpperCone(searchable); }
-        else if (_selectedTile.mapPosition.y < activeUnit.onTile.mapPosition.y) { lowerCone = createLowerCone(searchable); }
-        if (_selectedTile.mapPosition.x > activeUnit.onTile.mapPosition.x) { rightCone = createRightCone(searchable); }
-        else if (_selectedTile.mapPosition.x < activeUnit.onTile.mapPosition.x) { leftCone = createLeftCone(searchable); }
-
-        //this is used to pick the best cone (the one containing most enemies)
-        int maxEnemiesInRange = 0;
-
-        if (upperCone.Count > 0 )
+        public List<Tile> ConeAttack(List<Tile> searchable)
         {
-            int enemyInRange = 0; 
-            foreach (Tile t in upperCone)
+            List<Tile> aoe = new List<Tile>();
+            List<Tile> upperCone = new List<Tile>();
+            List<Tile> lowerCone = new List<Tile>();
+            List<Tile> rightCone = new List<Tile>();
+            List<Tile> leftCone = new List<Tile>();
+            if (_selectedTile.mapPosition.y > activeUnit.onTile.mapPosition.y)
             {
-                if (t.GetCharacter())
+                upperCone = createUpperCone(searchable);
+            }
+            else if (_selectedTile.mapPosition.y < activeUnit.onTile.mapPosition.y)
+            {
+                lowerCone = createLowerCone(searchable);
+            }
+
+            if (_selectedTile.mapPosition.x > activeUnit.onTile.mapPosition.x)
+            {
+                rightCone = createRightCone(searchable);
+            }
+            else if (_selectedTile.mapPosition.x < activeUnit.onTile.mapPosition.x)
+            {
+                leftCone = createLeftCone(searchable);
+            }
+
+            //this is used to pick the best cone (the one containing most enemies)
+            int maxEnemiesInRange = 0;
+
+            if (upperCone.Count > 0)
+            {
+                int enemyInRange = 0;
+                foreach (Tile t in upperCone)
                 {
-                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    if (t.GetCharacter())
+                    {
+                        if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    }
+                }
+
+                if (enemyInRange >= maxEnemiesInRange)
+                {
+                    maxEnemiesInRange = enemyInRange;
+                    aoe = upperCone;
                 }
             }
-            if (enemyInRange >= maxEnemiesInRange)
-            {
-                maxEnemiesInRange = enemyInRange;
-                aoe = upperCone;
-            }
-        }
 
-        else if (lowerCone.Count > 0)
-        {
-            int enemyInRange = 0;
-            foreach (Tile t in lowerCone)
+            else if (lowerCone.Count > 0)
             {
-                if (t.GetCharacter())
+                int enemyInRange = 0;
+                foreach (Tile t in lowerCone)
                 {
-                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    if (t.GetCharacter())
+                    {
+                        if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    }
+                }
+
+                if (enemyInRange >= maxEnemiesInRange)
+                {
+                    maxEnemiesInRange = enemyInRange;
+                    aoe = lowerCone;
                 }
             }
-            if (enemyInRange >= maxEnemiesInRange)
-            {
-                maxEnemiesInRange = enemyInRange;
-                aoe = lowerCone;
-            }
-        }
 
-        if (rightCone.Count > 0)
-        {
-            int enemyInRange = 0;
-            foreach (Tile t in rightCone)
+            if (rightCone.Count > 0)
             {
-                if (t.GetCharacter())
+                int enemyInRange = 0;
+                foreach (Tile t in rightCone)
                 {
-                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    if (t.GetCharacter())
+                    {
+                        if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    }
+                }
+
+                if (enemyInRange >= maxEnemiesInRange)
+                {
+                    maxEnemiesInRange = enemyInRange;
+                    aoe = rightCone;
                 }
             }
-            if (enemyInRange >= maxEnemiesInRange)
-            {
-                maxEnemiesInRange = enemyInRange;
-                aoe = rightCone;
-            }
-        }
 
-        else if (leftCone.Count > 0)
-        {
-            int enemyInRange = 0;
-            foreach (Tile t in leftCone)
+            else if (leftCone.Count > 0)
             {
-                if (t.GetCharacter())
+                int enemyInRange = 0;
+                foreach (Tile t in leftCone)
                 {
-                    if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    if (t.GetCharacter())
+                    {
+                        if (activeUnit.IsOppositeTeam(t.GetCharacter())) enemyInRange++;
+                    }
+                }
+
+                if (enemyInRange >= maxEnemiesInRange)
+                {
+                    maxEnemiesInRange = enemyInRange;
+                    aoe = leftCone;
                 }
             }
-            if (enemyInRange >= maxEnemiesInRange)
+
+            return aoe;
+        }
+
+        public List<Tile> createUpperCone(List<Tile> tiles)
+        {
+            List<Tile> cone = new List<Tile>();
+            foreach (Tile t in tiles)
             {
-                maxEnemiesInRange = enemyInRange;
-                aoe = leftCone;
+                if (t.mapPosition.y > activeUnit.onTile.mapPosition.y) cone.Add(t);
             }
-        }
 
-        return aoe;
-    }
-
-    public List<Tile> createUpperCone(List<Tile> tiles)
-    {
-        List<Tile> cone = new List<Tile>();
-        foreach (Tile t in tiles)
-        {
-            if (t.mapPosition.y > activeUnit.onTile.mapPosition.y) cone.Add(t);
-        }
             return cone;
-    }
-
-    public List<Tile> createLeftCone(List<Tile> tiles)
-    {
-        List<Tile> cone = new List<Tile>();
-        foreach (Tile t in tiles)
-        {
-            if (t.mapPosition.x < activeUnit.onTile.mapPosition.x) cone.Add(t);
         }
-            return cone;
-    }
 
-    public List<Tile> createLowerCone(List<Tile> tiles)
-    {
-        List<Tile> cone = new List<Tile>();
-        foreach (Tile t in tiles)
+        public List<Tile> createLeftCone(List<Tile> tiles)
         {
-            if (t.mapPosition.y < activeUnit.onTile.mapPosition.y) cone.Add(t);
-        }
-            return cone;
-    }
+            List<Tile> cone = new List<Tile>();
+            foreach (Tile t in tiles)
+            {
+                if (t.mapPosition.x < activeUnit.onTile.mapPosition.x) cone.Add(t);
+            }
 
-    public List<Tile> createRightCone(List<Tile> tiles)
-    {
-        List<Tile> cone = new List<Tile>();
-        foreach (Tile t in tiles)
+            return cone;
+        }
+
+        public List<Tile> createLowerCone(List<Tile> tiles)
         {
-            if (t.mapPosition.x > activeUnit.onTile.mapPosition.x) cone.Add(t);
-        }
-            return cone;
-    }
+            List<Tile> cone = new List<Tile>();
+            foreach (Tile t in tiles)
+            {
+                if (t.mapPosition.y < activeUnit.onTile.mapPosition.y) cone.Add(t);
+            }
 
-    #endregion
+            return cone;
+        }
+
+        public List<Tile> createRightCone(List<Tile> tiles)
+        {
+            List<Tile> cone = new List<Tile>();
+            foreach (Tile t in tiles)
+            {
+                if (t.mapPosition.x > activeUnit.onTile.mapPosition.x) cone.Add(t);
+            }
+
+            return cone;
+        }
+
+        #endregion
 
         [ContextMenu("Force skip")]
         public void ForceSkipDebug()

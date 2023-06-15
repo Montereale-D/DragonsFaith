@@ -15,9 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Hub.unity
     guid: 881d656fc12335d459d56628d128e821
   - enabled: 1
-    path: Assets/Scenes/BossRoom.unity
-    guid: d73bfa0c756a5d542a8d996f2df7d33e
-  - enabled: 1
     path: Assets/Scenes/Dungeon_1.unity
     guid: a25e8a9d0d22df342ad74532eb5c2517
   - enabled: 1
@@ -32,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Dungeon_5.unity
     guid: 176a9e6c7f3f6ea458da84ab0c63c61e
+  - enabled: 1
+    path: Assets/Scenes/BossRoom.unity
+    guid: aa20babe464189743b49807221a01bb3
   - enabled: 1
     path: Assets/Scenes/Grid.unity
     guid: 2cda990e2423bbf4892e6590ba056729
