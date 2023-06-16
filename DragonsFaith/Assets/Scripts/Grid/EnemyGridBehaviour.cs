@@ -233,7 +233,7 @@ namespace Grid
             List<Tile> reachable =
                 MapHandler.instance.GetNeighbourTiles(targetTile, agilityMaxMovement);
 
-            reachable.RemoveAll(x => x.GetCharacter() != null);
+            reachable.RemoveAll(x => x.IsOccupied());
 
 
             if (reachable.Count == 0)
@@ -337,14 +337,33 @@ namespace Grid
                 Debug.Log("Reach the weapon range then attack");
 
                 var weaponRangeFromTarget = MapHandler.instance.GetTilesInRange(targetTile, weapon.range);
-                weaponRangeFromTarget.RemoveAll(x => x.GetCharacter() != null);
+                weaponRangeFromTarget.RemoveAll(x => x.IsOccupied());
+
+                Debug.Log("Weapon range");
+                foreach (var tile in weaponRangeFromTarget)
+                {
+                    Debug.Log(tile);
+                }
 
                 List<Tile> movementRange = MapHandler.instance.GetTilesInRange(onTile, agility);
-                movementRange.RemoveAll(x => x.GetCharacter() != null);
+                movementRange.RemoveAll(x => x.IsOccupied());
+                
+                Debug.Log("Movement range");
+                foreach (var tile in movementRange)
+                {
+                    Debug.Log(tile);
+                }
 
                 var commonTiles = weaponRangeFromTarget.Where(t => movementRange.Contains(t)).ToList();
+                
+                Debug.Log("Common tiles");
+                foreach (var tile in commonTiles)
+                {
+                    Debug.Log(tile);
+                }
+                
                 var moveTile = commonTiles
-                    .OrderByDescending(x => PlayerGridMovement.GetManhattanDistance(onTile, targetTile)).FirstOrDefault();
+                    .OrderByDescending(x => PlayerGridMovement.GetManhattanDistance(x, targetTile)).FirstOrDefault();
                 if (moveTile)
                 {
                     //CombatSystem.instance.PerformEnemyMovement(moveTile);

@@ -95,4 +95,9 @@ public class Tile : MonoBehaviour
     {
         return GetCharacter() != null || GetObstacle() != null;
     }
+
+    public override string ToString()
+    {
+        return mapPosition + " is occupied: " + IsOccupied();
+    }
 }
