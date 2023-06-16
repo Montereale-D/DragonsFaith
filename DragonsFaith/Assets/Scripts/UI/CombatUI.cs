@@ -64,7 +64,8 @@ namespace UI
                     _moveOrAttackImage = img;
             }
                 
-            skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+            //skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+            SkillButtonAction("Show");
             blockButton.onClick.AddListener(CombatSystem.instance.ButtonBlockAction);
             reloadButton.onClick.AddListener(CombatSystem.instance.ButtonReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
@@ -141,11 +142,18 @@ namespace UI
                     skillButton.GetComponent<TooltipTrigger>().content = "Unleash the skill.";
                     skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
                     break;
-                default:
+                case "Show":
                     skillButton.onClick.RemoveAllListeners();
                     skillButton.GetComponent<TooltipTrigger>().header = "Show";
-                    skillButton.GetComponent<TooltipTrigger>().content = "Show the area of effect of the skill.";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Show the skill's area of effect." +
+                                                                         "Range is shown in the direction of the selected cell.";
                     skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillRange);
+                    break;
+                case "Hide":
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Hide";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Hide the skill's area of effect.";
+                    skillButton.onClick.AddListener(CombatSystem.instance.HideSkillRange);
                     break;
             }
 

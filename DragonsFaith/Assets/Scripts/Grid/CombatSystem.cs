@@ -565,49 +565,71 @@ namespace Grid
 
             // Turns character toward the selected tile
             activeUnit.TurnTowardTile(_selectedTile);
-            _playerUI.SkillButtonAction("Show");
-            _isUsingSkill = false;
-
+            
             var character = _selectedTile.GetCharacter();
             var obstacle = _selectedTile.GetObstacle();
             if (character)
             {
-                if (character != activeUnit)
+                if (character == activeUnit) return;
+                character.GetComponent<CharacterGridPopUpUI>().ShowUI();
+                if (character.GetTeam() == PlayerGridMovement.Team.Players)
                 {
-                    character.GetComponent<CharacterGridPopUpUI>().ShowUI();
-                    if (character.GetTeam() == PlayerGridMovement.Team.Players)
-                    {
-                        _playerUI.ToggleMoveAttackButton("Move");
-                        _playerUI.SetCombatPopUp(true, "Target is an ally.");
-                    }
-                    else
-                    {
-                        // Clicked on an Enemy of the current unit
-                        var weapon = GetActiveUnitWeapon();
-                        var text = weapon.weaponType == Weapon.WeaponType.Melee
-                            ? (int)(weapon.damage + CharacterManager.Instance.GetTotalStr())
-                            : (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
+                    _playerUI.ToggleMoveAttackButton("Move");
+                    _playerUI.SetCombatPopUp(true, "Target is an ally.");
+                }
+                else
+                {
+                    // Clicked on an Enemy of the current unit
+                    var weapon = GetActiveUnitWeapon();
+                    var text = weapon.weaponType == Weapon.WeaponType.Melee
+                        ? (int)(weapon.damage + CharacterManager.Instance.GetTotalStr())
+                        : (int)(weapon.damage + CharacterManager.Instance.GetTotalDex());
 
-                        if (!_canAttackThisTurn)
+                    if (!_canAttackThisTurn)
+                    {
+                        _playerUI.SetCombatPopUp(true, "Already performed action.");
+                    }
+                    else if (_isUsingSkill)
+                    {
+                        var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
+                        if (distance >= 5)
                         {
-                            _playerUI.SetCombatPopUp(true, "Already performed action.");
-                        }
-                        else if (!IsWithinRange(character, weapon))
-                        {
-                            //Debug.Log("Target outside range of weapon");
-                            //_playerUI.ShowMessage("Target outside range of weapon.");
-                            _playerUI.SetCombatPopUp(true, "Target outside weapon range.");
+                            _playerUI.SkillButtonAction("Hide");
+                            _playerUI.SetCombatPopUp(true, "Target outside skill's range.");
                         }
                         else
                         {
-                            _playerUI.SetCombatPopUp(true,
-                                "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
-                                "Strike target and deal " + text + " DMG.");
+                            var present = false;
+                            foreach (var t in _skillRange.Where(t => character == t.GetCharacter()))
+                            {
+                                present = true;
+                            }
+                            
+                            if (!present)
+                            {
+                                _playerUI.SkillButtonAction("Hide");
+                                _playerUI.SetCombatPopUp(true, "Target outside skill's range.");
+                            }
+                            else
+                            {
+                                _playerUI.SkillButtonAction("Unleash");
+                                _playerUI.SetCombatPopUp(true, "Target within skill's range.");
+                            }
                         }
-
-                        _target = character;
-                        _playerUI.ToggleMoveAttackButton("Attack");
                     }
+                    else if (!IsWithinRange(character, weapon))
+                    {
+                        _playerUI.SetCombatPopUp(true, "Target outside weapon range.");
+                    }
+                    else
+                    {
+                        _playerUI.SetCombatPopUp(true,
+                            "Target within weapon range " + weapon.range + "." + System.Environment.NewLine +
+                            "Strike target and deal " + text + " DMG.");
+                    }
+
+                    _target = character;
+                    _playerUI.ToggleMoveAttackButton("Attack");
                 }
             }
             //clicked on an obstacle
@@ -640,7 +662,12 @@ namespace Grid
             }
             else
             {
-                if (!_canMoveThisTurn)
+                if (_isUsingSkill)
+                {
+                    _playerUI.SkillButtonAction("Hide");
+                    _playerUI.SetCombatPopUp(true, "No target selected.");
+                }
+                else if (!_canMoveThisTurn)
                 {
                     _playerUI.SetCombatPopUp(true, "Already moved this turn.");
                 }
@@ -797,28 +824,46 @@ namespace Grid
 
         #endregion
 
-        #region AttackAction
+        #region Skill
 
         //The demo has only Fire and Air, with both these skills using a cone AOE;
         //the switch is "useless" because of this, but would be needed if other faiths are included
         public void CheckSkillRange()
         {
-            if (!_selectedTile) _playerUI.ShowMessage("A cell needs to be selected before using a skill.");
-
-            var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
-            if (distance >= 5) _playerUI.SetCombatPopUp(true, "Cell outside skill range.");
-
+            if (!_selectedTile) _playerUI.ShowMessage("A cell is required to show the skill's range.");
+            
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
 
-            var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
             switch (PlayerUI.instance.chosenFaith)
             {
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
                 {
+                    var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
                     _skillRange = ConeAttack(searchable);
                     _isUsingSkill = true;
-                    _playerUI.SkillButtonAction("Unleash");
+                    
+                    var character = _selectedTile.GetCharacter();
+                    if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
+                    {
+                        var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
+                        if (distance >= 5)
+                        {
+                            _playerUI.SkillButtonAction("Hide");
+                            _playerUI.SetCombatPopUp(true, "Target outside skill range.");
+                        }
+                        else
+                        {
+                            _playerUI.SkillButtonAction("Unleash");
+                            _playerUI.SetCombatPopUp(true, "Target within skill range.");
+                        }
+                    }
+                    else
+                    {
+                        _playerUI.SkillButtonAction("Hide");
+                        _playerUI.SetCombatPopUp(true, "No target selected.");
+                    }
+                    
                     break;
                 }
 
@@ -831,9 +876,31 @@ namespace Grid
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
                 {
+                    var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
                     _skillRange = ConeAttack(searchable);
                     _isUsingSkill = true;
-                    _playerUI.SkillButtonAction("Unleash");
+                    
+                    var character = _selectedTile.GetCharacter();
+                    if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
+                    {
+                        var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
+                        if (distance >= 5)
+                        {
+                            _playerUI.SkillButtonAction("Hide");
+                            _playerUI.SetCombatPopUp(true, "Target outside skill range.");
+                        }
+                        else
+                        {
+                            _playerUI.SkillButtonAction("Unleash");
+                            _playerUI.SetCombatPopUp(true, "Target within skill range.");
+                        }
+                    }
+                    else
+                    {
+                        _playerUI.SkillButtonAction("Hide");
+                        _playerUI.SetCombatPopUp(true, "No target selected.");
+                    }
+                    
                     break;
                 }
 
@@ -847,11 +914,18 @@ namespace Grid
             }
         }
 
+        public void HideSkillRange()
+        {
+            _isUsingSkill = false;
+            _playerUI.SkillButtonAction("Show");
+        }
+
         public void CheckSkillAttack()
         {
             if (!_isUsingSkill || !_canAttackThisTurn) return;
             _isUsingSkill = false;
             _canAttackThisTurn = false;
+            
             switch (PlayerUI.instance.chosenFaith)
             {
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
@@ -900,9 +974,14 @@ namespace Grid
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            
+            _playerUI.SkillButtonAction("Show");
         }
 
+        #endregion
 
+        #region AttackAction
+        
         public void ButtonAttackAction()
         {
             if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
@@ -1197,6 +1276,9 @@ namespace Grid
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
+        #endregion
+        
+        #region Obstacle
         public void ButtonDestroyAction()
         {
             DestroyObstacle(_selectedTile.GetObstacle());
