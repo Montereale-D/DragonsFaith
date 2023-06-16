@@ -32,6 +32,15 @@ namespace Network
             DontDestroyOnLoad(this);
         }
 
+        public override void OnDestroy()
+        {
+            if (instance == this)
+            {
+                instance = null;
+            }
+            base.OnDestroy();
+        }
+
         public override void OnNetworkSpawn()
         {
             if (IsServer)
@@ -164,6 +173,8 @@ namespace Network
 
         public void ReturnToMainMenu(bool notifyClient)
         {
+            Debug.Log("ReturnToMainMenu");
+            _isLoading = true;
             CleanDontDestroy();
 
             if (IsHost && notifyClient)
@@ -391,6 +402,7 @@ namespace Network
 
         public void ReloadSceneSingleDungeon()
         {
+            Debug.Log("ReloadSceneSingleDungeon");
             LoadSceneSingle(dungeonSceneName);
         }
     }

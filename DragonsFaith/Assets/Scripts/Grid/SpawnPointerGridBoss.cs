@@ -64,6 +64,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
         PopulateGrid();
 
         OnReadyClientRpc();
+        GameHandler.instance.isBossRoom = true;
         GameHandler.instance.Setup();
     }
 
@@ -72,6 +73,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
     {
         if (IsHost) return;
 
+        GameHandler.instance.isBossRoom = true;
         GameHandler.instance.Setup();
     }
 
