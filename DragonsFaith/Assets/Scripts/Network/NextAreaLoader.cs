@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UI;
 using Unity.VisualScripting;
@@ -20,6 +21,8 @@ namespace Network
         public bool isBlocked;
         public bool toDungeon;
 
+        private bool _offSetActive;
+
         private void Awake()
         {
             GetComponent<Collider2D>().isTrigger = true;
@@ -30,6 +33,17 @@ namespace Network
                 sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons + 1);
                 //sceneName = "Dungeon_1";
             }
+        }
+
+        private void Start()
+        {
+            StartCoroutine(WaitToActivate());
+        }
+
+        private IEnumerator WaitToActivate()
+        {
+            yield return new WaitForSeconds(2f);
+            _offSetActive = true;
         }
 
         private void OnTriggerEnter2D(Collider2D col)
@@ -58,6 +72,9 @@ namespace Network
 
         private void OnPlayersReady()
         {
+            if(!_offSetActive)
+                return;
+            
             if (door)
             {
                 door.sprite = openDoorSprite;
