@@ -601,6 +601,7 @@ GameObject:
   - component: {fileID: 1748610771}
   - component: {fileID: 1748610770}
   - component: {fileID: 1748610769}
+  - component: {fileID: 1748610772}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -672,7 +673,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1748610770}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1748610772}
+        m_TargetAssemblyTypeName: GameOverButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1748610770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,6 +724,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1748610767}
   m_CullTransparentMesh: 1
+--- !u!114 &1748610772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748610767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc93061ee60187d4f9a5308c0276300e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1768445739
 GameObject:
   m_ObjectHideFlags: 0

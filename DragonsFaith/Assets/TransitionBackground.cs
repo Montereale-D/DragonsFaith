@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,14 @@ public class TransitionBackground : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         _animator = GetComponent<Animator>();
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
 
     public void FadeOut()

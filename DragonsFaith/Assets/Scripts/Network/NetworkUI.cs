@@ -1,11 +1,9 @@
-﻿using TMPro;
+﻿using Network;
+using TMPro;
 using UI;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using SceneManager = Network.SceneManager;
 
 /// <summary>
 /// This class is used to handle connections in the lobby screen
@@ -26,8 +24,6 @@ public class NetworkUI : NetworkBehaviour
     [SerializeField] private Color offButtonColor;
 
     [SerializeField] private TextMeshProUGUI logText;
-    [SerializeField] private SceneManager sceneManager;
-    
     [SerializeField] private string sceneName;
 
     private bool _isReady;
@@ -187,7 +183,7 @@ public class NetworkUI : NetworkBehaviour
         
         logText.text = "Log: NEXT SCENE";
         
-        sceneManager.LoadSceneSingle(sceneName);
+        SceneManager.instance.LoadSceneSingle(sceneName);
 
         if (IsHost)
         {

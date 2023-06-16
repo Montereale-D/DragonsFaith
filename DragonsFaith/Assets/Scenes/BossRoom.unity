@@ -28872,6 +28872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f8a2ad8c054e6992de81f0fea99882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBossRoom: 0
 --- !u!114 &353413983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33267,7 +33268,7 @@ MonoBehaviour:
   spawnPointPlayer2: {x: -8, y: -1}
   spawnPointBoss: {x: 5, y: 0}
   spawnPointEnemies:
-  - {x: 5, y: -2}
+  - {x: 5, y: 2}
   - {x: 5, y: -2}
   spawnPointObstacles:
   - {x: 0, y: 0}

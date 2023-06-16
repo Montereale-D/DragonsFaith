@@ -30,6 +30,15 @@ namespace Save
             DontDestroyOnLoad(this);
         }
 
+        public override void OnDestroy()
+        {
+            if (Instance ==  this)
+            {
+                Instance = null;
+            }
+        }
+
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();

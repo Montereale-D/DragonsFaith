@@ -10390,17 +10390,6 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7839636692864282344, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
---- !u!114 &926707751 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7839636692864282345, guid: 9dd768a88c606f84792ad63025d1d5b6, type: 3}
-  m_PrefabInstance: {fileID: 926707750}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2099225239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a4d9f1def0cc43498496f8b133d421c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &928359989
 GameObject:
   m_ObjectHideFlags: 0
@@ -22382,7 +22371,6 @@ MonoBehaviour:
   onButtonColor: {r: 0, g: 1, b: 0, a: 0.78431374}
   offButtonColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   logText: {fileID: 938863569}
-  sceneManager: {fileID: 926707751}
   sceneName: Hub
 --- !u!1 &1862524423
 GameObject:

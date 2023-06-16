@@ -44,6 +44,14 @@ namespace Inventory
             }
         }
 
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.Z))
