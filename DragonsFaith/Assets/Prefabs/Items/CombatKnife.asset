@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: CombatKnife
   m_EditorClassIdentifier: 
   itemName: CombatKnife
-  description: Close quarters weapon, deals TOT damage per attack.
+  description: 'Range = 1 cell
+
+    Damage = 3 hp
+
+    No ammo'
   id: e5cb1d3d-22e0-4f35-80dc-a157793b6f06
   tile: {fileID: 0}
   image: {fileID: 104612895, guid: 04b8b4c1d142b744b9a022be5161b930, type: 3}

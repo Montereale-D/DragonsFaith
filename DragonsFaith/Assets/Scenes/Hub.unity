@@ -1825,6 +1825,7 @@ GameObject:
   m_Component:
   - component: {fileID: 88541249}
   - component: {fileID: 88541250}
+  - component: {fileID: 88541251}
   m_Layer: 5
   m_Name: Agility
   m_TagString: Untagged
@@ -1879,6 +1880,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &88541251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88541248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd1502e7057a2b419bb38aaea66d9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Agility
+  content: Increases your movement range.
 --- !u!1 &90481179
 GameObject:
   m_ObjectHideFlags: 0
@@ -7773,6 +7788,7 @@ GameObject:
   m_Component:
   - component: {fileID: 406914210}
   - component: {fileID: 406914211}
+  - component: {fileID: 406914212}
   m_Layer: 5
   m_Name: Intelligence
   m_TagString: Untagged
@@ -7827,6 +7843,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &406914212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406914209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd1502e7057a2b419bb38aaea66d9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Intelligence
+  content: Lets you interact with certain objects in the world.
 --- !u!1 &408168641
 GameObject:
   m_ObjectHideFlags: 0
@@ -24827,6 +24857,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1361606426}
   - component: {fileID: 1361606427}
+  - component: {fileID: 1361606428}
   m_Layer: 5
   m_Name: Constitution
   m_TagString: Untagged
@@ -24881,6 +24912,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1361606428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361606425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd1502e7057a2b419bb38aaea66d9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Constitution
+  content: Increases your max health.
 --- !u!1 &1361752233
 GameObject:
   m_ObjectHideFlags: 0
@@ -25778,6 +25823,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1404088949}
   - component: {fileID: 1404088950}
+  - component: {fileID: 1404088951}
   m_Layer: 5
   m_Name: Strength
   m_TagString: Untagged
@@ -25832,6 +25878,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1404088951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404088948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd1502e7057a2b419bb38aaea66d9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Strength
+  content: Increases your damage with melee weapons.
 --- !u!1001 &1418631155
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39037,6 +39097,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2139578090}
   - component: {fileID: 2139578091}
+  - component: {fileID: 2139578092}
   m_Layer: 5
   m_Name: Dexterity
   m_TagString: Untagged
@@ -39091,6 +39152,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2139578092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139578089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd1502e7057a2b419bb38aaea66d9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Dexterity
+  content: Increases your damage with ranged weapons.
 --- !u!1 &2142323067
 GameObject:
   m_ObjectHideFlags: 0

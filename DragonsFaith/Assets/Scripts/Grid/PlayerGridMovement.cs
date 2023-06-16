@@ -271,7 +271,7 @@ public class PlayerGridMovement : MonoBehaviour
             case "Pistol":
                 _animator.SetTrigger(Pistol);
                 break;
-            case "Assault" or "Shotgun" or "Sniper":
+            case "Assault Rifle" or "Shotgun" or "Sniper Rifle":
                 _animator.SetTrigger(Rifle);
                 break;
             case "Skill":
