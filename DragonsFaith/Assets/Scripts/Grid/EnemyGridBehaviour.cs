@@ -110,7 +110,7 @@ namespace Grid
         [ContextMenu("ForceDieDebug")]
         public void ForceDieDebug()
         {
-            CombatSystem.instance.NotifyAttackToEnemy(GetComponent<PlayerGridMovement>(), int.MaxValue);
+            CombatSystem.instance.NotifyAttackToEnemy(GetComponent<PlayerGridMovement>(), int.MaxValue, false);
         }
 
         private IEnumerator AttackThenMove(Tile moveOnTile, PlayerGridMovement target, Tile attackFromTile)

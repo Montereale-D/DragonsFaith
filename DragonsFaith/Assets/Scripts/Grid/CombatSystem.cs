@@ -640,6 +640,11 @@ namespace Grid
                 {
                     _playerUI.SetCombatPopUp(true, "Already performed action.");
                 }
+                else if (_isUsingSkill)
+                {
+                    _playerUI.SkillButtonAction("Hide");
+                    _playerUI.SetCombatPopUp(true, "Not an available target.");
+                }
                 else if (!IsWithinRange(obstacle, weapon))
                 {
                     _playerUI.SetCombatPopUp(true, "Target outside weapon range.");
@@ -937,7 +942,7 @@ namespace Grid
                         if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
                         var damage = (int)CharacterManager.Instance.GetTotalStr() +
                                      (int)CharacterManager.Instance.GetTotalAgi();
-                        NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
+                        NotifyAttackToEnemy(t.GetCharacter(), damage, false, "Skill", "Fire");
                         Debug.Log("Enemy hit by skill");
                     }
 
@@ -959,7 +964,7 @@ namespace Grid
                         if (!activeUnit.IsOppositeTeam(t.GetCharacter())) continue;
                         var damage = (int)CharacterManager.Instance.GetTotalDex() +
                                      (int)CharacterManager.Instance.GetTotalAgi();
-                        NotifyAttackToEnemy(t.GetCharacter(), damage, "Skill", "Fire");
+                        NotifyAttackToEnemy(t.GetCharacter(), damage, false, "Skill", "Fire");
                         Debug.Log("Enemy hit by skill");
                     }
 
@@ -1057,6 +1062,7 @@ namespace Grid
             }
 
             var isCovered = IsTargetCovered(target);
+            var isProtected = false;
 
             if (target.GetTeam() == PlayerGridMovement.Team.Enemies)
             {
@@ -1068,16 +1074,18 @@ namespace Grid
                 {
                     //Debug.Log("target is blocking");
                     damage /= 2;
+                    isProtected = true;
                 }
 
                 if (isCovered)
                 {
                     //Debug.Log("target is covered");
                     damage /= 2;
+                    isProtected = true;
                 }
 
                 //weapon.itemName;
-                NotifyAttackToEnemy(target, damage, weapon.itemName);
+                NotifyAttackToEnemy(target, damage, isProtected, weapon.itemName);
             }
             else
             {
@@ -1086,14 +1094,16 @@ namespace Grid
                 if (target.GetComponent<CharacterInfo>().isBlocking)
                 {
                     damage /= 2;
+                    isProtected = true;
                 }
 
                 if (isCovered)
                 {
                     damage /= 2;
+                    isProtected = true;
                 }
 
-                NotifyAttackToPlayer(target, (int)damage);
+                NotifyAttackToPlayer(target, (int)damage, isProtected);
             }
 
             _attackInProgress = false;
@@ -1149,18 +1159,18 @@ namespace Grid
             return false;
         }
 
-        private void NotifyAttackToPlayer(PlayerGridMovement target, int damage)
+        private void NotifyAttackToPlayer(PlayerGridMovement target, int damage, bool isProtected)
         {
             var targetIndex = characterList.IndexOf(target);
             //var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
             activeUnit.GetComponent<EnemyGridBehaviour>().TriggerAttackAnimation(target);
             if (IsHost)
             {
-                NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage);
+                NotifyAttackFromEnemyToPlayerClientRpc(targetIndex, damage, isProtected);
             }
             else
             {
-                NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage);
+                NotifyAttackFromEnemyToPlayerServerRpc(targetIndex, damage, isProtected);
             }
 
             if (target.gameObject == _localPlayer)
@@ -1173,37 +1183,37 @@ namespace Grid
                 target.GetComponent<CharacterInfo>().Damage(damage);
             }
 
-            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
-        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, string weaponName = "",
+        public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, bool isProtected, string weaponName = "",
             string skillElement = "")
         {
             var targetIndex = characterList.IndexOf(target);
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
-            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             if (skillElement != "") target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             else target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
 
             if (IsHost)
             {
-                NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage, weaponName, skillElement);
+                NotifyAttackFromHostToEnemyClientRpc(targetIndex, damage, isProtected, weaponName, skillElement);
             }
             else
             {
-                NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, weaponName, skillElement);
+                NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, isProtected, weaponName, skillElement);
             }
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, string weaponName,
+        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, bool isProtected, string weaponName,
             string skillElement = "")
         {
             if (!IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             if (skillElement != "")
                 characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
@@ -1211,7 +1221,7 @@ namespace Grid
         }
 
         [ClientRpc]
-        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, string weaponName,
+        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, bool isProtected, string weaponName,
             string skillElement = "")
         {
             if (IsHost) return;
@@ -1219,7 +1229,7 @@ namespace Grid
             try
             {
                 characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
                 if (skillElement != "")
                     characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
                 else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
@@ -1233,7 +1243,7 @@ namespace Grid
 
 
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyAttackFromEnemyToPlayerServerRpc(int targetIndex, int damage)
+        private void NotifyAttackFromEnemyToPlayerServerRpc(int targetIndex, int damage, bool isProtected)
         {
             if (!IsHost) return;
 
@@ -1250,12 +1260,12 @@ namespace Grid
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
 
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
         [ClientRpc]
-        private void NotifyAttackFromEnemyToPlayerClientRpc(int targetIndex, int damage)
+        private void NotifyAttackFromEnemyToPlayerClientRpc(int targetIndex, int damage, bool isProtected)
         {
             if (IsHost) return;
 
@@ -1272,7 +1282,7 @@ namespace Grid
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
 
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 

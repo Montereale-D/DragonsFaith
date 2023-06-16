@@ -120,7 +120,7 @@ public class CharacterInfo : MonoBehaviour
         else
         {
             _characterUI.UpdateHealth(health);
-            GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(heal, true);
+            GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(heal, true, false);
         }
     }
 

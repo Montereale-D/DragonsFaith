@@ -19,6 +19,7 @@ namespace Grid
         [Header("Damage Counter")]
         public GameObject damageCounter;
         public TextMeshProUGUI damageCounterText;
+        public GameObject coveredSymbol;
         public RectTransform startPoint, endPoint;
         public float speed = 1;
         private bool _isOpening;
@@ -63,11 +64,12 @@ namespace Grid
             ui.SetActive(false);
         }
 
-        public void ShowDamageCounter(int value, bool heal)
+        public void ShowDamageCounter(int value, bool heal, bool isProtected)
         {
             damageCounter.SetActive(true);
             damageCounterText.transform.position = startPoint.position;
             damageCounterText.text = value.ToString();
+            coveredSymbol.SetActive(isProtected);
             damageCounterText.color = heal ? Color.green : Color.red;
             _isOpening = true;
             //ShowBlood();
