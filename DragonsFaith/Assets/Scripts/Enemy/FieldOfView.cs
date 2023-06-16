@@ -18,6 +18,10 @@ public class FieldOfView : MonoBehaviour {
         meshFilter.mesh = _mesh;
     }
 
+    public void Stop()
+    {
+        _stop = true;
+    }
     private void LateUpdate() {
         if(_stop) return;
         
@@ -46,7 +50,7 @@ public class FieldOfView : MonoBehaviour {
                 {
                     Debug.Log("Enemy start combat!");
                     GetComponentInParent<EnemyBehaviour>().OnCombatStart();
-                    _stop = true;
+                    //_stop = true;
                     return;
                 }
             }

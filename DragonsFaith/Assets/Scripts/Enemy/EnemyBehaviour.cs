@@ -195,9 +195,11 @@ namespace Enemy
             }
 
             _isReadyToFight = false;
+            fieldOfView.Stop();
+            _keepMoving = false;
 
             Debug.Log("OnCombatStart " + position);
-            _keepMoving = false;
+            
             DungeonProgressManager.instance.EnemyDefeated(_saveId, gameObject);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Host);
             DungeonProgressManager.instance.UpdateSpawnPoint(position, GameData.PlayerType.Client);
