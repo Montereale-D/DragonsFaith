@@ -22,6 +22,7 @@ namespace Network
         public bool toDungeon;
 
         private bool _offSetActive;
+        private static int lastDungeon;
 
         private void Awake()
         {
@@ -30,7 +31,18 @@ namespace Network
 
             if (toDungeon)
             {
-                sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons + 1);
+                if (lastDungeon == 0)
+                {
+                    lastDungeon = Random.Range(1, numberOfDungeons + 1);
+                }
+                else
+                {
+                    lastDungeon++;
+                    if (lastDungeon > numberOfDungeons)
+                        lastDungeon = 1;
+                }
+
+                sceneName = "Dungeon_" + lastDungeon;
                 //sceneName = "Dungeon_1";
             }
         }
