@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4221211796238866682}
   - component: {fileID: 2591454986610895287}
   - component: {fileID: 1467394640370153375}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 6723110607240551890}
   - component: {fileID: 7033728723139892244}
   - component: {fileID: 5946606734394459550}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 4826330658006689845}
   - component: {fileID: 4826330658006689844}
   - component: {fileID: 463487140823554726}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KeyPressController
   m_TagString: Untagged
   m_Icon: {fileID: 0}

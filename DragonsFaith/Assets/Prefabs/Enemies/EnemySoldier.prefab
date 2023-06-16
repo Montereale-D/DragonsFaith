@@ -338,7 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 136
+    m_Bits: 200
   meshFilter: {fileID: 562601070528347330}
   fov: 90
   viewDistance: 10
