@@ -90,4 +90,9 @@ public class Tile : MonoBehaviour
     {
         return _obstacleOnTile;
     }
+
+    public bool IsOccupied()
+    {
+        return GetCharacter() != null || GetObstacle() != null;
+    }
 }

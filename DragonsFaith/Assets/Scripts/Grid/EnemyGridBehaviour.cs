@@ -242,7 +242,14 @@ namespace Grid
                 tileToReach = MoveTowardTarget(targetTile, agilityMaxMovement);
                 //CombatSystem.instance.PerformEnemyMovement(tileToReach);
                 //CombatSystem.instance.SkipTurn();
-                StartCoroutine(Move(tileToReach));
+                if (tileToReach)
+                {
+                    StartCoroutine(Move(tileToReach));
+                }
+                else
+                {
+                    CombatSystem.instance.SkipTurn();
+                }
             }
             else
             {
@@ -251,7 +258,14 @@ namespace Grid
                 //CombatSystem.instance.PerformEnemyMovement(tileToReach);
                 //CombatSystem.instance.CheckAction(target, tileToReach);
                 //CombatSystem.instance.SkipTurn();
-                StartCoroutine(MoveThenAttack(tileToReach, target));
+                if (tileToReach)
+                {
+                    StartCoroutine(MoveThenAttack(tileToReach, target));
+                }
+                else
+                {
+                    CombatSystem.instance.SkipTurn();
+                }
             }
         }
 
@@ -345,6 +359,11 @@ namespace Grid
                 Debug.Log("Move towards not reachable target, then check if the other player is in weapon range");
                 var tileToReach = MoveTowardTarget(targetTile, MapHandler.instance.GetTilesInRange(onTile, agility));
                 //CombatSystem.instance.PerformEnemyMovement(tileToReach);
+                if (!tileToReach)
+                {
+                    CombatSystem.instance.SkipTurn();
+                    return;
+                }
 
                 var otherPlayer = players[0] == target ? players[1] : players[0];
                 if (PlayerGridMovement.GetManhattanDistance(onTile, otherPlayer.onTile) <= weapon.range)
@@ -365,21 +384,20 @@ namespace Grid
 
         private Tile MoveNearTarget(Tile targetTile, List<Tile> reachableTiles)
         {
+            reachableTiles.RemoveAll(x => x.IsOccupied());
+            
             reachableTiles = reachableTiles.OrderBy(x => PlayerGridMovement.GetManhattanDistance(x, targetTile))
                 .ToList();
         
             Debug.Log("Test: target" + targetTile.mapPosition);
-        
-            /*foreach (var VARIABLE in reachableTiles)
-        {
-            Debug.Log("Test: candidates " + VARIABLE.mapPosition);
-        }*/
-        
+
             return reachableTiles[0];
         }
 
         private Tile MoveTowardTarget(Tile targetTile, List<Tile> reachableTiles)
         {
+            reachableTiles.RemoveAll(x => x.IsOccupied());
+            
             reachableTiles = reachableTiles.OrderBy(x => PlayerGridMovement.GetManhattanDistance(x, targetTile))
                 .ToList();
 
