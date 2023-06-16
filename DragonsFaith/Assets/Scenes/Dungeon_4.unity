@@ -375,6 +375,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 914751832
       objectReference: {fileID: 0}
+    - target: {fileID: 3682793475074403267, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4260300595148230356, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -586,6 +590,14 @@ PrefabInstance:
     - target: {fileID: 8128621856102600344, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 200296566
+      objectReference: {fileID: 0}
+    - target: {fileID: 8320966163306685551, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9127426211885242381, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2277673965036449818, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
