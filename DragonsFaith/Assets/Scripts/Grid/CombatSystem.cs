@@ -65,6 +65,14 @@ namespace Grid
         _turnDelayCounter = 0;*/
         }
 
+        /*public override void OnDestroy()
+        {
+            if (instance == this)
+            {
+                instance = null;
+            }
+        }*/
+
         public void Setup(IEnumerable<PlayerGridMovement> characters, IEnumerable<Obstacle> obstacles)
         {
             Debug.Log("CombatSystem Setup");
@@ -361,6 +369,45 @@ namespace Grid
         }
 
         #endregion
+
+        public bool CanUseItem()
+        {
+            if (!_canAttackThisTurn)
+            {
+                _playerUI.ShowMessage("Already performed action.");
+                return false;
+            }
+
+            if (_localPlayer.GetComponent<PlayerGridMovement>() != activeUnit)
+            {
+                _playerUI.ShowMessage("Not your turn");
+                return false;
+            }
+
+            return true;
+        }
+        public bool UseItem(Item item)
+        {
+            if (!_canAttackThisTurn)
+            {
+                return false;
+            }
+
+            if (_localPlayer.GetComponent<PlayerGridMovement>() != activeUnit)
+            {
+                return false;
+            }
+                
+            NotifyItemUseClientRpc(activeUnit.charName, item.itemName);
+            _canAttackThisTurn = false;
+            return true;
+        }
+
+        [ClientRpc]
+        private void NotifyItemUseClientRpc(string playerName, string itemName)
+        {
+            _playerUI.ShowMessage(playerName + " use " + itemName);
+        }
 
         public void CharacterDied(PlayerGridMovement character)
         {
@@ -844,7 +891,7 @@ namespace Grid
             if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
             CheckSkillRange();
         }
-        
+
         //The demo has only Fire and Air, with both these skills using a cone AOE;
         //the switch is "useless" because of this, but would be needed if other faiths are included
         public void CheckSkillRange()

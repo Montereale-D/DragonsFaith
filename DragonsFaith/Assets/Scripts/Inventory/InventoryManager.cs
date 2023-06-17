@@ -146,12 +146,23 @@ namespace Inventory
         /// <summary>
         /// Use this slot
         /// </summary>
+        /// <returns>true if used, false otherwise</returns>
         public bool OnSlotUse(InventorySlot slot, InventoryItem item)
         {
             switch (item.item.type)
             {
                 case ItemType.Consumable:
-                    return OnConsumableUse(item);
+                    var isUsed = false;
+                    if (CharacterManager.Instance.mode == CharacterManager.Mode.Free)
+                    {
+                        isUsed = OnConsumableUse(item);
+                    }
+                    else if(CombatSystem.instance != null && CombatSystem.instance.CanUseItem())
+                    {
+                        isUsed = CombatSystem.instance.UseItem(item.item);
+                    }
+
+                    return isUsed;
                     break;
                 case ItemType.Weapon:
                     break;
@@ -166,6 +177,8 @@ namespace Inventory
             return true;
         }
 
+        
+        /// <returns>true if used, false otherwise</returns>
         private bool OnConsumableUse(InventoryItem item)
         {
             var consumable = item.item as Consumable;
