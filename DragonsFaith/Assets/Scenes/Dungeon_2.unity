@@ -617,6 +617,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2766111059
       objectReference: {fileID: 0}
+    - target: {fileID: 3476960677352164518, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
+      propertyPath: isBlocked
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3536254040837892220, guid: 0770b0fb7df85ff42b77b5f2ca006c42, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

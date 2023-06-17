@@ -171,9 +171,10 @@ namespace Enemy
 
         public override void OnDestroy()
         {
-            //Debug.Log("Enemy OnDestroy");
-            base.OnDestroy();
+            Debug.Log("Enemy OnDestroy");
             
+            
+            base.OnDestroy();
         }
 
         public override void OnNetworkDespawn()

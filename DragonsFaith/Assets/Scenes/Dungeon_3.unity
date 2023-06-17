@@ -818,6 +818,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 358903216
       objectReference: {fileID: 0}
+    - target: {fileID: 3476960677352164518, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: isBlocked
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3585746391682691451, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: saveId
       value: 504dceea-73bb-4d84-b305-96c69516d954

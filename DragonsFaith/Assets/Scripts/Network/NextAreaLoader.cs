@@ -56,6 +56,16 @@ namespace Network
         {
             yield return new WaitForSeconds(2f);
             _offSetActive = true;
+
+            if (DungeonProgressManager.instance != null)
+            {
+                Debug.Log("IsMinibossDefeated? " + DungeonProgressManager.instance.IsMinibossDefeated());
+            
+                if (DungeonProgressManager.instance.IsMinibossDefeated())
+                {
+                    Unlock();
+                }
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D col)

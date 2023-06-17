@@ -658,6 +658,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3860994272
       objectReference: {fileID: 0}
+    - target: {fileID: 3476960677352164518, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
+      propertyPath: isBlocked
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3606570304618969225, guid: 33b3018d5bfe94b4b926662d128923db, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3488692423

@@ -130,6 +130,11 @@ public class DungeonProgressManager : MonoBehaviour
     {
         _isMinibossDefeated = true;
     }
+
+    public bool IsMinibossDefeated()
+    {
+        return _isMinibossDefeated;
+    }
     
     private void CheckUid(string uid, GameObject go)
     {
