@@ -73,11 +73,11 @@ namespace Grid
                 .ThenBy(x => x.enemyLocalOrder)
                 .ToList();
             
-            Debug.Log("Print enemies list");
+            /*Debug.Log("Print enemies list");
             foreach (var character in characterList)
             {
                 Debug.Log(character.transform.position);
-            }
+            }*/
 
             obstacleList = obstacles.ToList();
 

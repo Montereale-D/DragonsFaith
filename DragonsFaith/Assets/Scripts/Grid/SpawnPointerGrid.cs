@@ -170,7 +170,7 @@ public class SpawnPointerGrid : NetworkBehaviour
             var y = Random.Range(minY, maxY + 1);
             var point = new Vector2Int(x, y);
             
-            if (IsAvailable(point))
+            if (!tmpList.Contains(point) && IsAvailable(point))
             {
                 tmpList.Add(point);
                 i++;
