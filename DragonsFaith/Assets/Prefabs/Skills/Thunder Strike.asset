@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3acf31a7ec2e480cb13b9a5d98168881, type: 3}
-  m_Name: Thunder Bolt
+  m_Name: Thunder Strike
   m_EditorClassIdentifier: 
-  itemName: Thunder Bolt
-  description: Launch an a thunder bolt that deals damage to a single target and
-    has a chance to spread to nearby enemies..
+  itemName: Thunder Strike
+  description: Launch a thunder strike that deals damage to all enemies in a cone
+    area.
   id: 84134e0b-f286-4104-8dd3-83922d16a2de
   tile: {fileID: 0}
   image: {fileID: 21300000, guid: 6bfd5f6be0c1a7f43b677653ced03793, type: 3}

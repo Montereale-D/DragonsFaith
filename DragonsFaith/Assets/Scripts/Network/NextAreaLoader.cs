@@ -20,6 +20,8 @@ namespace Network
         public Sprite openDoorSprite;
         public bool isBlocked;
         public bool toDungeon;
+        public bool toBoss;
+        public SpriteRenderer activationArea;
 
         private bool _offSetActive;
         private static int lastDungeon;
@@ -28,23 +30,22 @@ namespace Network
         {
             GetComponent<Collider2D>().isTrigger = true;
             _sceneManager = FindObjectOfType<SceneManager>();
+            activationArea.color = Color.red;
 
-            if (toDungeon)
+            if (!toDungeon) return;
+            if (lastDungeon == 0)
             {
-                if (lastDungeon == 0)
-                {
-                    lastDungeon = Random.Range(1, numberOfDungeons + 1);
-                }
-                else
-                {
-                    lastDungeon++;
-                    if (lastDungeon > numberOfDungeons)
-                        lastDungeon = 1;
-                }
-
-                sceneName = "Dungeon_" + lastDungeon;
-                //sceneName = "Dungeon_1";
+                lastDungeon = Random.Range(1, numberOfDungeons + 1);
             }
+            else
+            {
+                lastDungeon++;
+                if (lastDungeon > numberOfDungeons)
+                    lastDungeon = 1;
+            }
+
+            sceneName = "Dungeon_" + lastDungeon;
+            //sceneName = "Dungeon_1";
         }
 
         private void Start()
@@ -79,8 +80,22 @@ namespace Network
             }
 
             _playersReady++;
-            if (_playersReady > 2) _playersReady = 2;
-            if (_playersReady == 2) OnPlayersReady();
+            switch (_playersReady)
+            {
+                case < 2:
+                    PlayerUI.instance.ShowMessage("Waiting for other player...");
+                    break;
+                case > 2:
+                    _playersReady = 2;
+                    break;
+            }
+
+            //TODO: different if room is hub or dungeon or to boss room
+            if (_playersReady != 2) return;
+            if (toDungeon) PlayerUI.instance.ShowMessage("Entering dungeon.");
+            else if (toBoss) PlayerUI.instance.ShowMessage("Entering final area.");
+            else PlayerUI.instance.ShowMessage("Returning to hub.");
+            OnPlayersReady();
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -100,6 +115,7 @@ namespace Network
             if (door)
             {
                 door.sprite = openDoorSprite;
+                activationArea.color = Color.green;
             }
 
             if (_sceneManager)
@@ -113,27 +129,12 @@ namespace Network
             //StartCoroutine(LoadScene());
         }
 
-        private IEnumerator LoadScene()
-        {
-            TransitionBackground.instance.FadeOut();
-            yield return new WaitForSeconds(1f);
-            //TransitionBackground.instance.FadeIn();
-
-            if (_sceneManager)
-            {
-                _sceneManager.LoadSceneSingle(sceneName);
-            }
-            else
-            {
-                Debug.LogWarning("Scene manager is null, Ok is appear in client");
-            }
-        }
-
         public void Unlock()
         {
             // To call when miniboss is killed
             isBlocked = false;
-            PlayerUI.instance.ShowMessage("Final Area unlocked.");
+            if (toBoss) PlayerUI.instance.ShowMessage("Final Area unlocked.");
+            else PlayerUI.instance.ShowMessage("Return to hub unlocked.");
         }
 
         [ContextMenu("ForceNextAreaLoader")]

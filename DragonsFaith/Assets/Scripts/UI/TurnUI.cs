@@ -60,20 +60,6 @@ namespace UI
                 var newCell = Instantiate(cellPrefab, transform, true);
                 var cell = newCell.GetComponent<TurnUICell>();
                 cell.SetUnit(_charList[i % _charList.Count]);
-                /*if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
-                    _charList[i % _charList.Count] == _localPlayer)
-                {
-                    cellSprite.sprite = PlayerUI.Instance.portrait.sprite;
-                }
-                else if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
-                         _charList[i % _charList.Count] != _localPlayer)
-                {
-                    cellSprite.sprite = _otherPlayerSprite;
-                }
-                else
-                {
-                    cellSprite.sprite = _charList[i % _charList.Count].turnSprite;
-                }*/
                 _cellList.Add(newCell);
             }
             
@@ -113,20 +99,6 @@ namespace UI
                 {
                     cell.ownImage.color = Color.gray;
                 }
-                /*if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
-                    _charList[i % _charList.Count] == _localPlayer)
-                {
-                    cellSprite.sprite = PlayerUI.Instance.portrait.sprite;
-                }
-                else if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
-                         _charList[i % _charList.Count] != _localPlayer)
-                {
-                    cellSprite.sprite = _otherPlayerSprite;
-                }
-                else
-                {
-                    cellSprite.sprite = _charList[i % _charList.Count].turnSprite;
-                }*/
                 _cellList.Add(newCell);
             }
         }
