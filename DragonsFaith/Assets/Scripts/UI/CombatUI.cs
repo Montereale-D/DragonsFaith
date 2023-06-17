@@ -93,7 +93,7 @@ namespace UI
 
         public void OnCombatEnd()
         {
-            _turnUI.isCombatEnd = true;
+            //_turnUI.isCombatEnd = true;
         }
 
         private void SetItemsTab()

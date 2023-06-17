@@ -33,7 +33,7 @@ namespace UI
         
         public void SetUpList(List<PlayerGridMovement> characterList)
         {
-            isCombatEnd = false;
+            //isCombatEnd = false;
             _charList = characterList;
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
             Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
@@ -94,10 +94,10 @@ namespace UI
             }
         }
 
-        public bool isCombatEnd;
+        //public bool isCombatEnd;
         private void Update()
         {
-            if(isCombatEnd) return;
+            //if(isCombatEnd) return;
             
             if (_cellList.Count < threshold && !_isUpdating)
             {

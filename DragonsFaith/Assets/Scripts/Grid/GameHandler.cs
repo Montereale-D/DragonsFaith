@@ -119,6 +119,14 @@ public class GameHandler : NetworkBehaviour
         {
             popUpUI.HideUI();
         }
+
+        foreach (var playerGridMovement in FindObjectsOfType<PlayerGridMovement>())
+        {
+            if (playerGridMovement.gameObject != NetworkManager.LocalClient.PlayerObject.gameObject)
+            {
+                playerGridMovement.movement = 0;
+            }
+        }
         
         PlayerUI.instance.HideCombatUI();
 

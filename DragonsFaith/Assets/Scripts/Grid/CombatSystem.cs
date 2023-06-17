@@ -72,12 +72,13 @@ namespace Grid
                 .ThenBy(x => x.name)
                 .ThenBy(x => x.enemyLocalOrder)
                 .ToList();
-            
-            /*Debug.Log("Print enemies list");
+
+            Debug.Log("Print enemies list");
             foreach (var character in characterList)
             {
-                Debug.Log(character.transform.position);
-            }*/
+                Debug.Log(character.gameObject.name + ": " + character.transform.position);
+            }
+
 
             obstacleList = obstacles.ToList();
 
@@ -170,7 +171,8 @@ namespace Grid
                     {
                         character.SetGridPosition(NetworkManager.Singleton.IsHost ? hostPos : clientPos);
                         NotifyPopUpInfoToPlayer(character.GetComponent<CharacterInfo>().characterName,
-                            character.GetComponent<CharacterInfo>().GetMaxHealth(), character.GetComponent<CharacterInfo>().GetMaxMana());
+                            character.GetComponent<CharacterInfo>().GetMaxHealth(),
+                            character.GetComponent<CharacterInfo>().GetMaxMana());
                     }
                     else
                     {
@@ -931,13 +933,13 @@ namespace Grid
             _playerUI.SkillButtonAction("Show");
         }
 
-    public void CheckSkillAttack()
-    {
+        public void CheckSkillAttack()
+        {
             if (!_isUsingSkill || !_canAttackThisTurn) return;
             int mana = activeUnit.GetComponent<CharacterInfo>().mana;
             if (mana < 10) _playerUI.SetCombatPopUp(true, "not enough mana to perform a skill");
             activeUnit.GetComponent<CharacterInfo>().UseMana(10);
-            
+
             _isUsingSkill = false;
             _canAttackThisTurn = false;
 
@@ -1244,10 +1246,10 @@ namespace Grid
                 var character = characterList[targetIndex];
                 character.GetComponent<EnemyGridBehaviour>().Damage(damage);
                 character.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
-                
+
                 if (skillElement != "")
                     character.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-                else 
+                else
                     character.GetComponent<CharacterGridPopUpUI>().ShowBlood();
 
                 activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
