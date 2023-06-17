@@ -54,6 +54,7 @@ namespace UI
 
         [Header("Player UI")] public GameObject playerUI;
         public GameObject settingsButton;
+        public GameObject dungeonTutorial;
         public Image portrait;
         public Sprite[] portraitSprites;
 
@@ -385,7 +386,7 @@ namespace UI
         public void SetAir()
         {
             SetFaithSprite(Element.Air);
-            var skill = ExchangeManager.Instance.CreateSkill("Thunder Bolt");
+            var skill = ExchangeManager.Instance.CreateSkill("Thunder Strike");
             var passive1 = ExchangeManager.Instance.CreateSkill("Dexterity increase");
             var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
             InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
@@ -569,6 +570,7 @@ namespace UI
         {
             if (!combatUI.gameObject.activeSelf)
             {
+                if (dungeonTutorial.activeSelf) dungeonTutorial.SetActive(false);
                 combatUI.gameObject.SetActive(true);
                 FadeInElement(combatUI, turnUIFadeInTime);
                 _combatUI = combatUI.GetComponent<CombatUI>();
@@ -596,6 +598,11 @@ namespace UI
         public void SkillButtonAction(string mode)
         {
             _combatUI.SkillButtonAction(mode);
+        }
+
+        public void StartDungeonTutorial()
+        {
+            dungeonTutorial.SetActive(true);
         }
 
         public void ReturnToMainMenu()

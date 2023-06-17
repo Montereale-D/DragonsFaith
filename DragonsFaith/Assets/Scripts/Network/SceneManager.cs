@@ -19,6 +19,7 @@ namespace Network
 
         private ClientNetworkTransform[] _players;
         private bool _isLoading;
+        private bool isFirstDungeon = true;
 
         private void Awake()
         {
@@ -182,6 +183,7 @@ namespace Network
                 ReturnToMainMenuClientRpc();
             }
 
+            isFirstDungeon = true;
             NetworkManager.Singleton.Shutdown();
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
@@ -398,6 +400,9 @@ namespace Network
         {
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
+            if (!isFirstDungeon) return;
+            PlayerUI.instance.StartDungeonTutorial();
+            isFirstDungeon = false;
         }
 
         public void ReloadSceneSingleDungeon()

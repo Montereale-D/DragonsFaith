@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Fire Breath
   m_EditorClassIdentifier: 
   itemName: Fire Breath
-  description: Exhale a fiery breath in a cone area that deals fire damage and has
-    a chance of setting enemies on fire.
+  description: Exhale a fiery breath that deals damage in a cone area.
   id: 24864e68-3eae-4e00-85fc-78c6845d660c
   tile: {fileID: 0}
   image: {fileID: 21300000, guid: c584f782e9ce03444b6cd36893975997, type: 3}
