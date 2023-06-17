@@ -91,6 +91,11 @@ namespace UI
             _turnUI.DestroyList();
         }
 
+        public void OnCombatEnd()
+        {
+            _turnUI.isCombatEnd = true;
+        }
+
         private void SetItemsTab()
         {
             equippedItemsTab.SetActive(!equippedItemsTab.activeSelf);

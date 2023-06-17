@@ -70,8 +70,14 @@ namespace Grid
             Debug.Log("CombatSystem Setup");
             characterList = characters.OrderByDescending(x => x.movement)
                 .ThenBy(x => x.name)
-                .ThenBy(x => x.GetHashCode())
+                .ThenBy(x => x.enemyLocalOrder)
                 .ToList();
+            
+            Debug.Log("Print enemies list");
+            foreach (var character in characterList)
+            {
+                Debug.Log(character.transform.position);
+            }
 
             obstacleList = obstacles.ToList();
 
@@ -565,7 +571,7 @@ namespace Grid
 
             // Turns character toward the selected tile
             activeUnit.TurnTowardTile(_selectedTile);
-            
+
             var character = _selectedTile.GetCharacter();
             var obstacle = _selectedTile.GetObstacle();
             if (character)
@@ -604,7 +610,7 @@ namespace Grid
                             {
                                 present = true;
                             }
-                            
+
                             if (!present)
                             {
                                 _playerUI.SkillButtonAction("Hide");
@@ -836,7 +842,7 @@ namespace Grid
         public void CheckSkillRange()
         {
             if (!_selectedTile) _playerUI.ShowMessage("A cell is required to show the skill's range.");
-            
+
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
 
             switch (PlayerUI.instance.chosenFaith)
@@ -847,7 +853,7 @@ namespace Grid
                     var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
                     _skillRange = ConeAttack(searchable);
                     _isUsingSkill = true;
-                    
+
                     var character = _selectedTile.GetCharacter();
                     if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
                     {
@@ -868,7 +874,7 @@ namespace Grid
                         _playerUI.SkillButtonAction("Hide");
                         _playerUI.SetCombatPopUp(true, "No target selected.");
                     }
-                    
+
                     break;
                 }
 
@@ -884,7 +890,7 @@ namespace Grid
                     var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
                     _skillRange = ConeAttack(searchable);
                     _isUsingSkill = true;
-                    
+
                     var character = _selectedTile.GetCharacter();
                     if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
                     {
@@ -905,7 +911,7 @@ namespace Grid
                         _playerUI.SkillButtonAction("Hide");
                         _playerUI.SetCombatPopUp(true, "No target selected.");
                     }
-                    
+
                     break;
                 }
 
@@ -934,7 +940,7 @@ namespace Grid
             
             _isUsingSkill = false;
             _canAttackThisTurn = false;
-            
+
             switch (PlayerUI.instance.chosenFaith)
             {
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
@@ -983,14 +989,14 @@ namespace Grid
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             _playerUI.SkillButtonAction("Show");
         }
 
         #endregion
 
         #region AttackAction
-        
+
         public void ButtonAttackAction()
         {
             if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
@@ -1212,12 +1218,14 @@ namespace Grid
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, bool isProtected, string weaponName,
+        private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, bool isProtected,
+            string weaponName,
             string skillElement = "")
         {
             if (!IsHost) return;
             characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>()
+                .ShowDamageCounter(damage, false, isProtected);
             if (skillElement != "")
                 characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
             else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
@@ -1225,23 +1233,28 @@ namespace Grid
         }
 
         [ClientRpc]
-        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, bool isProtected, string weaponName,
+        private void NotifyAttackFromHostToEnemyClientRpc(int targetIndex, int damage, bool isProtected,
+            string weaponName,
             string skillElement = "")
         {
             if (IsHost) return;
 
             try
             {
-                characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+                var character = characterList[targetIndex];
+                character.GetComponent<EnemyGridBehaviour>().Damage(damage);
+                character.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+                
                 if (skillElement != "")
-                    characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-                else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
+                    character.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+                else 
+                    character.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
                 activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
             }
             catch (Exception e)
             {
-                Debug.LogWarning("Ok if at the end " + e);
+                Debug.LogError("NotifyAttackFromHostToEnemyClientRpc " + e);
             }
         }
 
@@ -1264,7 +1277,8 @@ namespace Grid
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
 
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>()
+                .ShowDamageCounter(damage, false, isProtected);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
@@ -1286,13 +1300,15 @@ namespace Grid
                 characterList[targetIndex].GetComponent<CharacterInfo>().Damage(damage);
             }
 
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>()
+                .ShowDamageCounter(damage, false, isProtected);
             characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
         #endregion
-        
+
         #region Obstacle
+
         public void ButtonDestroyAction()
         {
             DestroyObstacle(_selectedTile.GetObstacle());

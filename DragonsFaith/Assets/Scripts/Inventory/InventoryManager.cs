@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Grid;
 using Inventory.Items;
 using Player;
 using Save;
@@ -145,12 +146,12 @@ namespace Inventory
         /// <summary>
         /// Use this slot
         /// </summary>
-        public void OnSlotUse(InventorySlot slot, InventoryItem item)
+        public bool OnSlotUse(InventorySlot slot, InventoryItem item)
         {
             switch (item.item.type)
             {
                 case ItemType.Consumable:
-                    OnConsumableUse(item);
+                    return OnConsumableUse(item);
                     break;
                 case ItemType.Weapon:
                     break;
@@ -161,9 +162,11 @@ namespace Inventory
                 case ItemType.Skill:
                     break;
             }
+
+            return true;
         }
 
-        private void OnConsumableUse(InventoryItem item)
+        private bool OnConsumableUse(InventoryItem item)
         {
             var consumable = item.item as Consumable;
             if (consumable == null) throw new Exception("Not valid casting");
@@ -173,11 +176,21 @@ namespace Inventory
                     CharacterManager.Instance.Heal(20);
                     break;
                 case Consumable.ConsumableType.Revival:
-                    CharacterManager.Instance.GiveRevive();
+                    if (CharacterManager.Instance.mode == CharacterManager.Mode.Grid)
+                    {
+                        CharacterManager.Instance.GiveRevive();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            return true;
         }
 
         private InventorySlot _sendSlot;

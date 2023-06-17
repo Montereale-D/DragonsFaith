@@ -11,6 +11,7 @@ public class PlayerGridMovement : MonoBehaviour
 {
     [SerializeField] private Team team;
     [SerializeField] private float pathMovementSpeed = 5f;
+    public int enemyLocalOrder;
     public State state { get; private set; }
     public Tile onTile { get; private set; }
     public int movement { get; set; }

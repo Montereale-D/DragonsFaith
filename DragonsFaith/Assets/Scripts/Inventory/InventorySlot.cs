@@ -79,7 +79,10 @@ namespace Inventory
         public virtual void OnItemUse(InventoryItem inventoryItem)
         {
             Debug.Log("Use item " + inventoryItem);
-            if (inventoryItem.item.consumable)
+
+            var used = InventoryManager.Instance.OnSlotUse(this, inventoryItem);
+            
+            if (inventoryItem.item.consumable && used)
             {
                 UpdateItemQuantity(inventoryItem);
             }
@@ -87,8 +90,6 @@ namespace Inventory
             {
                 // activate item
             }
-            
-            InventoryManager.Instance.OnSlotUse(this, inventoryItem);
         }
 
         public void OnItemSend(InventoryItem inventoryItem)

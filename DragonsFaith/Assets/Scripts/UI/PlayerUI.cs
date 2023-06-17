@@ -559,6 +559,7 @@ namespace UI
 
         public void HideCombatUI()
         {
+            _combatUI.OnCombatEnd();
             combatUI.gameObject.SetActive(false);
         }
 

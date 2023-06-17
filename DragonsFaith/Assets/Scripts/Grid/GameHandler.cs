@@ -119,9 +119,11 @@ public class GameHandler : NetworkBehaviour
         {
             popUpUI.HideUI();
         }
+        
+        PlayerUI.instance.HideCombatUI();
 
         CharacterManager.Instance.SetPlayerFreeMode();
-        PlayerUI.instance.HideCombatUI();
+        
 
         if (!isBossRoom)
         {

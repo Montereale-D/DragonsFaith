@@ -93,8 +93,11 @@ namespace UI
             }
         }
 
+        public bool isCombatEnd;
         private void Update()
         {
+            if(isCombatEnd) return;
+            
             if (_cellList.Count < threshold && !_isUpdating)
             {
                 FetchNewCells();

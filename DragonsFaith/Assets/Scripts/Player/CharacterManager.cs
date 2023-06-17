@@ -14,6 +14,12 @@ namespace Player
         private CharacterInfo _characterInfo;
 
         public static CharacterManager Instance { get; private set; }
+        public Mode mode;
+
+        public enum Mode
+        {
+            Free, Grid
+        }
 
         private void Awake()
         {
@@ -160,6 +166,7 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
+            mode = Mode.Grid;
         }
 
         public void SetPlayerFreeMode()
@@ -169,6 +176,7 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
+            mode = Mode.Free;
         }
         
         [ContextMenu("Increase Max Health")]
