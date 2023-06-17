@@ -238,7 +238,17 @@ namespace Inventory
             _prevSelectedSlot = inventorySlot;
         }
 
-        public void BlockEquipmentSlots(bool b)
+        public void LockEquipmentSlots()
+        {
+            LockEquipmentSlots(true);
+        }
+
+        public void UnlockEquipmentSlots()
+        {
+            LockEquipmentSlots(false);
+        }
+
+        private void LockEquipmentSlots(bool b)
         {
             foreach (var slot in equipmentSlots)
             {
@@ -330,13 +340,13 @@ namespace Inventory
         [ContextMenu("Lock Equipment")]
         private void LockEquipmentFromMenu()
         {
-            BlockEquipmentSlots(true);
+            LockEquipmentSlots(true);
         }
 
         [ContextMenu("Unlock Equipment")]
         private void UnlockEquipmentFromMenu()
         {
-            BlockEquipmentSlots(false);
+            LockEquipmentSlots(false);
         }
 
 

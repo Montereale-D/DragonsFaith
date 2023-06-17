@@ -166,6 +166,7 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
+            InventoryManager.Instance.LockEquipmentSlots();
             mode = Mode.Grid;
         }
 
@@ -176,6 +177,7 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
+            InventoryManager.Instance.UnlockEquipmentSlots();
             mode = Mode.Free;
         }
         
