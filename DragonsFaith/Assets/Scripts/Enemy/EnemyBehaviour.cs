@@ -194,8 +194,14 @@ namespace Enemy
                 Debug.Log("Not ready to CombatStart || already started");
                 return;
             }
-
+            
             _isReadyToFight = false;
+
+            if (!IsHost)
+            {
+                StopMovementServerRpc();
+            }
+
             fieldOfView.Stop();
             _keepMoving = false;
 
@@ -224,6 +230,13 @@ namespace Enemy
                     OnCombatStartClientRpc(position);
                 }
             }
+        }
+
+        [ServerRpc]
+        private void StopMovementServerRpc()
+        {
+            fieldOfView.Stop();
+            _keepMoving = false;
         }
 
         [ClientRpc]

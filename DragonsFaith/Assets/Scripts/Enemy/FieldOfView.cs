@@ -22,8 +22,10 @@ public class FieldOfView : MonoBehaviour {
     {
         _stop = true;
     }
+    
+    bool alerted = false;
     private void LateUpdate() {
-        if(_stop) return;
+        //if(_stop) return;
         
         var angle = _startingAngle;
         var angleIncrease = fov / RayCount;
@@ -36,7 +38,7 @@ public class FieldOfView : MonoBehaviour {
 
         int vertexIndex = 1;
         int triangleIndex = 0;
-        bool alerted = false;
+        
         for (var i = 0; i <= RayCount; i++) {
             Vector3 vertex;
             var direction = GetVectorFromAngle(angle);
