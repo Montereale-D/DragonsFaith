@@ -927,12 +927,12 @@ namespace Grid
 
     public void CheckSkillAttack()
     {
-            if (!isUsingSkill || !_canAttackThisTurn) return;
+            if (!_isUsingSkill || !_canAttackThisTurn) return;
             int mana = activeUnit.GetComponent<CharacterInfo>().mana;
             if (mana < 10) _playerUI.SetCombatPopUp(true, "not enough mana to perform a skill");
             activeUnit.GetComponent<CharacterInfo>().UseMana(10);
             
-            isUsingSkill = false;
+            _isUsingSkill = false;
             _canAttackThisTurn = false;
             
             switch (PlayerUI.instance.chosenFaith)
