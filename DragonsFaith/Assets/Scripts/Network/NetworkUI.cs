@@ -39,9 +39,9 @@ public class NetworkUI : NetworkBehaviour
     
     const int m_MaxConnections = 2;
     [SerializeField] private TextMeshProUGUI relayJoinCodeHost;
-    [SerializeField] private TextMeshProUGUI nameTextHost;
+    [SerializeField] private TMP_InputField nameTextHost;
     [SerializeField] private TextMeshProUGUI relayJoinCodeClient;
-    [SerializeField] private TextMeshProUGUI nameTextClient;
+    [SerializeField] private TMP_InputField nameTextClient;
 
     private void Awake()
     {
@@ -266,9 +266,8 @@ public class NetworkUI : NetworkBehaviour
         {
             _isReady = true;
             hostReadyButton.image.color = onButtonColor;
-            if(nameTextHost.text == "") PlayerPrefs.SetString("playerName", "Host");
-            else PlayerPrefs.SetString("playerName", nameTextHost.text);
-            
+            PlayerPrefs.SetString("playerName", string.IsNullOrEmpty(nameTextHost.text) ? "Host" : nameTextHost.text);
+
             /*HostReadyClientRpc();
             //PlayerPrefs.SetString("playerName", "host");
             if (hostName.text == "") PlayerPrefs.SetString("playerName", "host");
@@ -293,8 +292,8 @@ public class NetworkUI : NetworkBehaviour
             _isReady = true;
             clientReadyButton.image.color = onButtonColor;
             //NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().gameObject.name = "Client";
-            if(nameTextClient.text == "") PlayerPrefs.SetString("playerName", "Client");
-            else PlayerPrefs.SetString("playerName", nameTextClient.text);
+            PlayerPrefs.SetString("playerName",
+                string.IsNullOrEmpty(nameTextClient.text) ? "Client" : nameTextClient.text);
 
             StartCoroutine(Example_ConfigureTransportAndStartNgoAsConnectingPlayer());
 
