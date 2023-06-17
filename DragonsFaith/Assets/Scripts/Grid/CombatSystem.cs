@@ -843,7 +843,11 @@ namespace Grid
         //the switch is "useless" because of this, but would be needed if other faiths are included
         public void CheckSkillRange()
         {
-            if (!_selectedTile) _playerUI.ShowMessage("A cell is required to show the skill's range.");
+            if (!_selectedTile)
+            {
+                _playerUI.ShowMessage("A cell is required to show the skill's range.");
+                return;
+            }
 
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
 
