@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   itemName: Shotgun
-  description: 'Short range weapon that deals TOT damage points per hit.
+  description: 'Range = 2 cells
 
-    Can
-    hit multiple targets in a cone area.'
+    Damage = 10 hp
+
+    Ammo = 2'
   id: f8a775c3-dd5d-48b0-bd95-a3015d386a5f
   tile: {fileID: 0}
   image: {fileID: 334628651, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
   range: 2
-  damage: 1
-  capacity: 1
+  damage: 10
+  capacity: 2
   weaponObject: {fileID: 7563764566049780249, guid: c2e1f546bb04099448b6d96832f74833, type: 3}

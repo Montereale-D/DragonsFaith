@@ -25,8 +25,9 @@ public class CharacterInfo : MonoBehaviour
     {
         health = maxHealth;
         mana = maxMana;
+        //characterName = PlayerPrefs.GetString("playerName");
         _characterUI = GetComponent<CharacterGridPopUpUI>();
-        _characterUI.SetUI(characterName, maxHealth);
+        //_characterUI.SetUI(characterName, maxHealth);
         _gridMovement = GetComponent<PlayerGridMovement>();
     }
 
@@ -39,12 +40,13 @@ public class CharacterInfo : MonoBehaviour
             _playerUI.manaSlider.maxValue = maxMana;
             _playerUI.UpdateHealthBar(maxHealth, maxHealth);
             _playerUI.UpdateManaBar(maxMana, maxMana);
-            _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
+            characterName = _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
+            _characterUI.SetUI(characterName, maxHealth, maxMana);
         }
         else
         {
             _characterUI = GetComponent<CharacterGridPopUpUI>();
-            _characterUI.SetUI(characterName, maxHealth);
+            _characterUI.SetUI(characterName, maxHealth, maxMana);
         }
     }
 
@@ -111,14 +113,18 @@ public class CharacterInfo : MonoBehaviour
             health = maxHealth;
         }
 
-        if (isLocalPlayer)
+        if (isLocalPlayer && _playerUI)
         {
             _playerUI.UpdateHealthBar(health, maxHealth);
         }
         else
         {
             _characterUI.UpdateHealth(health);
-            GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(heal, true);
+            var popUI = GetComponent<CharacterGridPopUpUI>();
+            if (popUI)
+            {
+                popUI.ShowDamageCounter(heal, true, false);
+            }
         }
     }
 
@@ -152,7 +158,7 @@ public class CharacterInfo : MonoBehaviour
             mana = maxMana;
         }
 
-        if (isLocalPlayer)
+        if (isLocalPlayer && _playerUI)
         {
             _playerUI.UpdateManaBar(mana, maxMana);
         }
@@ -186,7 +192,7 @@ public class CharacterInfo : MonoBehaviour
 
         if (_characterUI)
         {
-            _characterUI.SetUI(characterName, maxHealth);
+            _characterUI.SetUI(characterName, maxHealth, maxMana);
         }
     }
 

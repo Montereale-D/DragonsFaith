@@ -15,12 +15,27 @@ EditorBuildSettings:
     path: Assets/Scenes/Hub.unity
     guid: 881d656fc12335d459d56628d128e821
   - enabled: 1
-    path: Assets/Scenes/BossRoom.unity
-    guid: d73bfa0c756a5d542a8d996f2df7d33e
-  - enabled: 1
     path: Assets/Scenes/Dungeon_1.unity
     guid: a25e8a9d0d22df342ad74532eb5c2517
   - enabled: 1
+    path: Assets/Scenes/Dungeon_2.unity
+    guid: 88a5fe6602ba1564ab8b12d27afccb76
+  - enabled: 1
+    path: Assets/Scenes/Dungeon_3.unity
+    guid: 3d4d3de2c353e7443a6f501df57f8d92
+  - enabled: 1
+    path: Assets/Scenes/Dungeon_4.unity
+    guid: 0aec0595fcda9574596ebede86bbebaf
+  - enabled: 1
+    path: Assets/Scenes/Dungeon_5.unity
+    guid: 176a9e6c7f3f6ea458da84ab0c63c61e
+  - enabled: 1
+    path: Assets/Scenes/BossRoom.unity
+    guid: aa20babe464189743b49807221a01bb3
+  - enabled: 1
     path: Assets/Scenes/Grid.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: f7588db5758b708469c718d002029e14
   m_configObjects: {}

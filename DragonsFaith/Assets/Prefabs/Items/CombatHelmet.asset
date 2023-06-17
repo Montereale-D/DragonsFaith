@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CombatHelmet
   m_EditorClassIdentifier: 
   itemName: CombatHelmet
-  description: item description
+  description: Increases constitution by 1.
   id: 7dec52e2-7a18-4263-9217-8cd39ef46992
   tile: {fileID: 0}
   image: {fileID: 1559230527, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}

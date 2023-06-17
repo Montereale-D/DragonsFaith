@@ -338,7 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 136
+    m_Bits: 200
   meshFilter: {fileID: 562601070528347330}
   fov: 90
   viewDistance: 10
@@ -865,7 +865,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Mind Controlled Soldier
+  m_text: Patrolling Soldier
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
   m_sharedMaterial: {fileID: -2713363486176451765, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
@@ -1223,6 +1223,7 @@ MonoBehaviour:
   fieldOfView: {fileID: 8735649658286024878}
   speed: 5
   characterTransform: {fileID: 8153550609629111729}
+  minibossColor: {r: 1, g: 0.39215687, b: 0.39215687, a: 1}
 --- !u!114 &838008916999264998
 MonoBehaviour:
   m_ObjectHideFlags: 0

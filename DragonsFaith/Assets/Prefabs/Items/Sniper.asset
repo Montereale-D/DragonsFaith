@@ -12,13 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
   m_Name: Sniper
   m_EditorClassIdentifier: 
-  itemName: Sniper
-  description: Long range weapon that deals TOT damage per hit.
+  itemName: Sniper Rifle
+  description: 'Range = 7 cells
+
+    Damage = 10 hp
+
+    Max ammo = 1'
   id: 73cc3261-00ae-4a96-bc79-fe4f9d1ff07c
   tile: {fileID: 0}
   image: {fileID: -1652146166, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
-  range: 5
-  damage: 1
+  range: 7
+  damage: 10
   capacity: 1
   weaponObject: {fileID: 7563764566049780249, guid: 50aa591fbc252d143b6564f5523ee349, type: 3}

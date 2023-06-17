@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CombatPants
   m_EditorClassIdentifier: 
   itemName: CombatPants
-  description: item description
+  description: Increases constitution and agility by 1.
   id: 777225e7-ea15-4ea2-bb10-40a5d2dbac4a
   tile: {fileID: 0}
   image: {fileID: -2018716907, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}

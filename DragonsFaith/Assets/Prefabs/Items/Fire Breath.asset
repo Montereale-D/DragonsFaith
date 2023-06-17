@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
+  m_Name: Fire Breath
+  m_EditorClassIdentifier: 
+  itemName: Fire Breath
+  description: item description
+  id: 7a903cbb-ad73-43cb-b35f-112545bf4d75
+  tile: {fileID: 0}
+  image: {fileID: 0}
+  weaponType: 1
+  range: 3
+  damage: 10
+  capacity: 1000
+  weaponObject: {fileID: 0}

@@ -14,6 +14,12 @@ namespace Player
         private CharacterInfo _characterInfo;
 
         public static CharacterManager Instance { get; private set; }
+        public Mode mode;
+
+        public enum Mode
+        {
+            Free, Grid
+        }
 
         private void Awake()
         {
@@ -40,6 +46,10 @@ namespace Player
         {
             _characterInfo.Heal(value);
         }
+        public void RestoreMana(int value)
+        {
+            _characterInfo.RestoreMana(value);
+        }
 
         public void GiveRevive()
         {
@@ -50,6 +60,16 @@ namespace Player
         public void ReceiveRevive()
         {
             _characterInfo.Revive();
+        }
+        
+        public int GetMaxHealth()
+        {
+            return _characterInfo.GetMaxHealth();
+        }
+
+        public int GetMaxMana()
+        {
+            return _characterInfo.GetMaxMana();
         }
 
         public void Damage(int value)
@@ -146,8 +166,8 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
-            /*//TODO: the weapon is spawning only for host and can't be seen
-            localPlayer.GetComponentInChildren<WeaponHolder>().SetUpWeapon();*/
+            InventoryManager.Instance.LockEquipmentSlots();
+            mode = Mode.Grid;
         }
 
         public void SetPlayerFreeMode()
@@ -157,9 +177,8 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
-            /*//TODO: test
-            localPlayer.GetComponentInChildren<WeaponHolder>().DestroyWeapon();*/
-            
+            InventoryManager.Instance.UnlockEquipmentSlots();
+            mode = Mode.Free;
         }
         
         [ContextMenu("Increase Max Health")]

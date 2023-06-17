@@ -14,6 +14,7 @@ public class SpawnPointerGrid : NetworkBehaviour
     [SerializeField] private int halfWidthMap = 7;
     [SerializeField] private Vector2Int spawnPointPlayer1;
     [SerializeField] private Vector2Int spawnPointPlayer2;
+    /*[SerializeField] private bool isBossRoom;*/
     
     private List<Vector2Int> spawnPointEnemies;
     private List<Vector2Int> spawnPointObstacles;
@@ -21,6 +22,7 @@ public class SpawnPointerGrid : NetworkBehaviour
     
     public GameObject[] enemyPrefabs;
     public GameObject[] obstaclePrefabs;
+
 
     private void Awake()
     {
@@ -34,6 +36,14 @@ public class SpawnPointerGrid : NetworkBehaviour
         
         spawnPointEnemies = new List<Vector2Int>();
         spawnPointObstacles = new List<Vector2Int>();
+    }
+
+    public override void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -72,7 +82,7 @@ public class SpawnPointerGrid : NetworkBehaviour
         var topLeft = new Vector2Int(-halfWidthMap, halfHeightMap);
         var topMiddle = new Vector2Int(0, halfHeightMap);
         var bottomRight = new Vector2Int(halfWidthMap, -halfHeightMap);
-        
+        /*if (!isBossRoom) */
         SpawnEnemy(topMiddle, bottomRight, enemyCount);
         SpawnObstacle(topLeft, bottomRight, obstaclesCount);
     }
@@ -104,15 +114,16 @@ public class SpawnPointerGrid : NetworkBehaviour
             var position = new Vector3(spawnPoint.x, spawnPoint.y, 0);
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
             var go = Instantiate(randomPrefab, position, Quaternion.identity);
+            go.GetComponent<PlayerGridMovement>().enemyLocalOrder = i;
             var networkObject = go.GetComponent<NetworkObject>();
             
             networkObject.Spawn(true);
-            SetUpEnemyClientRpc(networkObject.NetworkObjectId, position);
+            SetUpEnemyClientRpc(networkObject.NetworkObjectId, position, i);
         }
     }
     
     [ClientRpc]
-    private void SetUpEnemyClientRpc(ulong objectIdToSet, Vector3 position)
+    private void SetUpEnemyClientRpc(ulong objectIdToSet, Vector3 position, int enemyLocalOrder)
     {
         if(IsHost) return;
         
@@ -125,6 +136,7 @@ public class SpawnPointerGrid : NetworkBehaviour
         }
 
         objToSet.transform.position = position;
+        objToSet.GetComponent<PlayerGridMovement>().enemyLocalOrder = enemyLocalOrder;
     }
     
     [ClientRpc]
@@ -158,7 +170,7 @@ public class SpawnPointerGrid : NetworkBehaviour
             var y = Random.Range(minY, maxY + 1);
             var point = new Vector2Int(x, y);
             
-            if (IsAvailable(point))
+            if (!tmpList.Contains(point) && IsAvailable(point))
             {
                 tmpList.Add(point);
                 i++;

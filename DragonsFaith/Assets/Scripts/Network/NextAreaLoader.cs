@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,7 +11,7 @@ namespace Network
     public class NextAreaLoader : MonoBehaviour
     {
         [Header("Debug")] [SerializeField] private bool activateOnFirstTrigger;
-    
+
         private SceneManager _sceneManager;
         [SerializeField] private string sceneName;
         [SerializeField] private int numberOfDungeons;
@@ -18,16 +20,52 @@ namespace Network
         public Sprite openDoorSprite;
         public bool isBlocked;
         public bool toDungeon;
+        public bool toBoss;
+        public SpriteRenderer activationArea;
+
+        private bool _offSetActive;
+        private static int lastDungeon;
 
         private void Awake()
         {
             GetComponent<Collider2D>().isTrigger = true;
             _sceneManager = FindObjectOfType<SceneManager>();
+            activationArea.color = Color.red;
 
-            if (toDungeon)
+            if (!toDungeon) return;
+            if (lastDungeon == 0)
             {
-                //todo rimuovere sceneName = "Dungeon_" + Random.Range(1, numberOfDungeons+1);
-                sceneName = "Dungeon_1";
+                lastDungeon = Random.Range(1, numberOfDungeons + 1);
+            }
+            else
+            {
+                lastDungeon++;
+                if (lastDungeon > numberOfDungeons)
+                    lastDungeon = 1;
+            }
+
+            sceneName = "Dungeon_" + lastDungeon;
+            //sceneName = "Dungeon_1";
+        }
+
+        private void Start()
+        {
+            StartCoroutine(WaitToActivate());
+        }
+
+        private IEnumerator WaitToActivate()
+        {
+            yield return new WaitForSeconds(2f);
+            _offSetActive = true;
+
+            if (DungeonProgressManager.instance != null)
+            {
+                Debug.Log("IsMinibossDefeated? " + DungeonProgressManager.instance.IsMinibossDefeated());
+            
+                if (DungeonProgressManager.instance.IsMinibossDefeated())
+                {
+                    Unlock();
+                }
             }
         }
 
@@ -40,49 +78,69 @@ namespace Network
             {
                 OnPlayersReady();
             }
-        
+
             _playersReady++;
-            if (_playersReady > 2) _playersReady = 2;
-            if (_playersReady == 2) OnPlayersReady();
+            switch (_playersReady)
+            {
+                case < 2:
+                    PlayerUI.instance.ShowMessage("Waiting for other player...");
+                    break;
+                case > 2:
+                    _playersReady = 2;
+                    break;
+            }
+
+            //TODO: different if room is hub or dungeon or to boss room
+            if (_playersReady != 2) return;
+            if (toDungeon) PlayerUI.instance.ShowMessage("Entering dungeon.");
+            else if (toBoss) PlayerUI.instance.ShowMessage("Entering final area.");
+            else PlayerUI.instance.ShowMessage("Returning to hub.");
+            OnPlayersReady();
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             Debug.Log("TriggerExit");
             if (isBlocked) return;
-            
+
             _playersReady--;
             if (_playersReady < 0) _playersReady = 0;
         }
 
         private void OnPlayersReady()
         {
-            StartCoroutine(LoadScene());
-        }
-
-        private IEnumerator LoadScene()
-        {
+            if(!_offSetActive)
+                return;
+            
             if (door)
             {
                 door.sprite = openDoorSprite;
-                yield return new WaitForSeconds(0.5f);
+                activationArea.color = Color.green;
             }
 
             if (_sceneManager)
             {
-                _sceneManager.LoadSceneSingle(sceneName);
+                _sceneManager.LoadSceneSingleDungeon(sceneName);
             }
             else
             {
                 Debug.LogWarning("Scene manager is null, Ok is appear in client");
             }
-            
+            //StartCoroutine(LoadScene());
         }
 
         public void Unlock()
         {
             // To call when miniboss is killed
             isBlocked = false;
+            if (toBoss) PlayerUI.instance.ShowMessage("Final Area unlocked.");
+            else PlayerUI.instance.ShowMessage("Return to hub unlocked.");
+        }
+
+        [ContextMenu("ForceNextAreaLoader")]
+        public void ForceNextAreaLoader()
+        {
+            OnPlayersReady();
         }
     }
 }

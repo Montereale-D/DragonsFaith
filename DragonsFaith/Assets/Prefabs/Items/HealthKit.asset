@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HealthKit
   m_EditorClassIdentifier: 
   itemName: Health Kit
-  description: Restores TOT health points.
+  description: Restores 20 health points.
   id: 190cd2eb-04ba-42df-af91-dbb48316af90
   tile: {fileID: 0}
   image: {fileID: -561074673, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}

@@ -11,13 +11,22 @@ public class FieldOfView : MonoBehaviour {
     private const int RayCount = 50;
     private Vector3 _origin = Vector3.zero;
     private float _startingAngle;
+    private bool _stop;
 
     private void Start() {
         _mesh = new Mesh();
         meshFilter.mesh = _mesh;
     }
 
+    public void Stop()
+    {
+        _stop = true;
+    }
+    
+    bool alerted = false;
     private void LateUpdate() {
+        //if(_stop) return;
+        
         var angle = _startingAngle;
         var angleIncrease = fov / RayCount;
 
@@ -29,6 +38,7 @@ public class FieldOfView : MonoBehaviour {
 
         int vertexIndex = 1;
         int triangleIndex = 0;
+        
         for (var i = 0; i <= RayCount; i++) {
             Vector3 vertex;
             var direction = GetVectorFromAngle(angle);
@@ -42,8 +52,15 @@ public class FieldOfView : MonoBehaviour {
                 if (raycastHit2D.transform.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     Debug.Log("Enemy start combat!");
-                    GetComponentInParent<EnemyBehaviour>().OnCombatStart();
-                    return;
+                    if (!alerted)
+                    {
+                        GetComponentInParent<EnemyBehaviour>().OnCombatStart();
+                        alerted = true;
+                    }
+                    
+                    //_stop = true;
+                    
+                    //return;
                 }
             }
             vertices[vertexIndex] = vertex;

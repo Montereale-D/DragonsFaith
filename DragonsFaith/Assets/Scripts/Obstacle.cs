@@ -20,7 +20,7 @@ public class Obstacle : MonoBehaviour
         SetTile(tile);
         tile.SetObstacleOnTile(this);
         
-        if (!destroyable) GetComponent<SpriteRenderer>().color = Color.gray;
+        //if (!destroyable) GetComponent<SpriteRenderer>().color = Color.gray;
     }
 
     public void SetTile(Tile tile)

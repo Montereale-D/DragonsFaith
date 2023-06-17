@@ -1,4 +1,11 @@
 using System;
+using Grid;
+using Inventory;
+using Player;
+using Save;
+using UI;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +18,8 @@ namespace Network
         public Scene _loadedScene { get; private set; }
 
         private ClientNetworkTransform[] _players;
+        private bool _isLoading;
+        private bool isFirstDungeon = true;
 
         private void Awake()
         {
@@ -24,12 +33,39 @@ namespace Network
             DontDestroyOnLoad(this);
         }
 
+        public override void OnDestroy()
+        {
+            if (instance == this)
+            {
+                instance = null;
+            }
+            base.OnDestroy();
+        }
+
         public override void OnNetworkSpawn()
         {
             if (IsServer)
             {
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
+                //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
+
+            NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnPlayerDisconnect;
+        }
+
+        private void OnSceneLoaded(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
+        {
+            if(!_isLoading) return;
+            
+            Debug.Log("On scene loaded");
+            TransitionBackground.instance.FadeIn();
+            _isLoading = false;
+        }
+
+        private void OnPlayerDisconnect(ulong clientId)
+        {
+            ReturnToMainMenu(false);
         }
 
         public bool sceneIsLoaded => _loadedScene.IsValid() && _loadedScene.isLoaded;
@@ -50,27 +86,187 @@ namespace Network
         [ClientRpc]
         private void ResetDungeonProgressClientRpc()
         {
-            if(IsHost) return;
-            
+            if (IsHost) return;
+
             if (DungeonProgressManager.instance != null)
             {
                 DungeonProgressManager.instance.Reset();
             }
         }
 
-        public void LoadSceneSingle(string sceneName)
+        public bool LoadSceneSingle(string sceneName)
         {
+            if(_isLoading) return false;
+
+            _isLoading = true;
+            
             //EnableInterpolation(false);
             if (sceneName == "Hub")
             {
                 ResetDungeonProgress();
             }
 
-            if (!IsHost) return;
+            //if (!IsHost) return;
 
+            StartCoroutine(StartTransition(sceneName));
+            
+            //var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            //CheckStatus(status); 
+            return true;
+        }
+        
+        private IEnumerator StartTransition(string sceneName)
+        {
+            TransitionBackground.instance.FadeOut();
+            
+            /*if (IsHost)
+            {
+                StartTransitionClientRpc();
+            }*/
+            /*else
+            {
+                StartTransitionServerRpc();
+            }*/
 
+            yield return new WaitForSeconds(2f);
+
+            if (!IsHost) yield break;
+            
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
+
+            //yield return new WaitForSecondsRealtime(1.5f);
+            //TransitionBackground.instance.FadeIn();
+            
+            /*if (IsHost)
+            {
+                EndTransitionClientRpc();
+            }
+            else
+            {
+                EndTransitionServerRpc();
+            }*/
+        }
+
+        [ClientRpc]
+        private void StartTransitionClientRpc()
+        {
+            TransitionBackground.instance.FadeOut();
+        }
+        
+        /*[ServerRpc(RequireOwnership = false)]
+        private void StartTransitionServerRpc()
+        {
+            TransitionBackground.instance.FadeOut();
+        }
+        
+        [ClientRpc]
+        private void EndTransitionClientRpc()
+        {
+            TransitionBackground.instance.FadeIn();
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        private void EndTransitionServerRpc()
+        {
+            TransitionBackground.instance.FadeIn();
+        }*/
+
+        public void ReturnToMainMenu(bool notifyClient)
+        {
+            Debug.Log("ReturnToMainMenu");
+            _isLoading = true;
+            CleanDontDestroy();
+
+            if (IsHost && notifyClient)
+            {
+                ReturnToMainMenuClientRpc();
+            }
+
+            isFirstDungeon = true;
+            NetworkManager.Singleton.Shutdown();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
+
+        private static void CleanDontDestroy()
+        {
+            if (PlayerUI.instance != null)
+            {
+                Destroy(PlayerUI.instance.gameObject);
+            }
+
+            if (CharacterManager.Instance != null)
+            {
+                Destroy(CharacterManager.Instance.gameObject);
+            }
+
+            if (InventoryManager.Instance != null)
+            {
+                Destroy(InventoryManager.Instance.gameObject);
+            }
+
+            if (SceneManager.instance != null)
+            {
+                Destroy(SceneManager.instance.gameObject);
+            }
+
+            if (OptionsManager.Instance != null)
+            {
+                Destroy(OptionsManager.Instance.gameObject);
+            }
+
+            if (GameHandler.instance != null)
+            {
+                Destroy(GameHandler.instance.gameObject);
+            }
+
+            if (MapHandler.instance != null)
+            {
+                Destroy(MapHandler.instance.gameObject);
+            }
+
+            if (CombatSystem.instance != null)
+            {
+                Destroy(CombatSystem.instance.gameObject);
+            }
+
+            if (SpawnPointerGrid.instance != null)
+            {
+                Destroy(SpawnPointerGrid.instance.gameObject);
+            }
+
+            if (SpawnPointerGridBoss.instance != null)
+            {
+                Destroy(SpawnPointerGridBoss.instance.gameObject);
+            }
+
+            if (HubProgressManager.instance != null)
+            {
+                Destroy(HubProgressManager.instance.gameObject);
+            }
+
+            if (ExchangeManager.Instance != null)
+            {
+                Destroy(ExchangeManager.Instance.gameObject);
+            }
+
+            if (DungeonProgressManager.instance != null)
+            {
+                Destroy(DungeonProgressManager.instance.gameObject);
+            }
+
+            if (DataManager.Instance != null)
+            {
+                Destroy(DataManager.Instance.gameObject);
+            }
+        }
+
+        [ClientRpc]
+        private void ReturnToMainMenuClientRpc()
+        {
+            if (IsHost) return;
+
+            ReturnToMainMenu(false);
         }
 
         private void LoadPlayers()
@@ -150,6 +346,8 @@ namespace Network
                         Debug.LogWarning("Load event timed out for the following client " +
                                          $"identifiers:({sceneEvent.ClientsThatTimedOut})");
                     }
+                    
+                    
 
                     /*if (_loadedScene.name != "Grid")
                     {
@@ -195,6 +393,22 @@ namespace Network
 
             var status = NetworkManager.SceneManager.UnloadScene(_loadedScene);
             CheckStatus(status, false);
+        }
+
+        private string dungeonSceneName;
+        public void LoadSceneSingleDungeon(string sceneName)
+        {
+            dungeonSceneName = sceneName;
+            LoadSceneSingle(sceneName);
+            if (!isFirstDungeon) return;
+            PlayerUI.instance.StartDungeonTutorial();
+            isFirstDungeon = false;
+        }
+
+        public void ReloadSceneSingleDungeon()
+        {
+            Debug.Log("ReloadSceneSingleDungeon");
+            LoadSceneSingle(dungeonSceneName);
         }
     }
 }

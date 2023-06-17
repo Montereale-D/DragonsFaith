@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Grid;
 using Player;
 using Unity.Netcode;
 
@@ -10,6 +11,7 @@ public class PlayerGridMovement : MonoBehaviour
 {
     [SerializeField] private Team team;
     [SerializeField] private float pathMovementSpeed = 5f;
+    public int enemyLocalOrder;
     public State state { get; private set; }
     public Tile onTile { get; private set; }
     public int movement { get; set; }
@@ -17,14 +19,18 @@ public class PlayerGridMovement : MonoBehaviour
     public bool isMoving;
 
     public Sprite turnSprite;
+
+    [HideInInspector] public string charName;
     
     private Animator _animator;
     private static readonly int IsMoving = Animator.StringToHash("isMoving");
-    private static readonly int IsRunning = Animator.StringToHash("isRunning");
     private static readonly int X = Animator.StringToHash("x");
-    private float _previousDir;
     private static readonly int Downed = Animator.StringToHash("downed");
     private static readonly int Revive = Animator.StringToHash("revive");
+    private static readonly int Melee = Animator.StringToHash("Melee");
+    private static readonly int Pistol = Animator.StringToHash("Pistol");
+    private static readonly int Rifle = Animator.StringToHash("Rifle");
+    private static readonly int Skill = Animator.StringToHash("Skill");
 
     public enum Team
     {
@@ -97,6 +103,7 @@ public class PlayerGridMovement : MonoBehaviour
 
         state = State.Moving;
         SetTile(tile);
+        Debug.Log("PerformEnemyMovement set tile InterpToTile");
         //StartCoroutine(UpdateMovementAnimation());
     }
 
@@ -126,7 +133,14 @@ public class PlayerGridMovement : MonoBehaviour
 
     private IEnumerator MoveAlongPath(List<Tile> path)
     {
-        if (path.Count < 1) throw new Exception("Path has 0 elements");
+        if (path.Count < 1)
+        {
+            Debug.LogError("Path has 0 elements");
+            _animator.SetBool(IsMoving, false);
+            Debug.Log("PerformEnemyMovement unlock");
+            CombatSystem.instance._moveInProgress = false;
+            yield break;
+        }
 
         var direction = (path[^1].transform.position - transform.position).normalized.x;
         _animator.SetBool(IsMoving, true);
@@ -139,12 +153,14 @@ public class PlayerGridMovement : MonoBehaviour
         }
         
         _animator.SetBool(IsMoving, false);
+        Debug.Log("PerformEnemyMovement unlock");
+        CombatSystem.instance._moveInProgress = false;
     }
 
     #region Pathfinding
 
     // Called to get path from tile A to tile B
-    private List<Tile> FindPath(Tile start, Tile end, List<Tile> searchableTiles)
+    public List<Tile> FindPath(Tile start, Tile end, List<Tile> searchableTiles)
     {
         List<Tile> openList = new List<Tile>();
         List<Tile> closedList = new List<Tile>();
@@ -164,7 +180,7 @@ public class PlayerGridMovement : MonoBehaviour
             List<Tile> neighbourTiles = MapHandler.instance.GetNeighbourTiles(current, searchableTiles);
             foreach (Tile tile in neighbourTiles)
             {
-                if ( !tile.navigable ||  closedList.Contains(tile))
+                if (!tile.navigable || closedList.Contains(tile))
                     continue;
 
                 tile.g = GetManhattanDistance(start, tile);
@@ -247,5 +263,24 @@ public class PlayerGridMovement : MonoBehaviour
     public void OnRevive()
     {
         _animator.SetTrigger(Revive);
+    }
+
+    public void TriggerAttackAnimation(string weaponName)
+    {
+        switch (weaponName)
+        {
+            case "Pistol":
+                _animator.SetTrigger(Pistol);
+                break;
+            case "Assault Rifle" or "Shotgun" or "Sniper Rifle":
+                _animator.SetTrigger(Rifle);
+                break;
+            case "Skill":
+                _animator.SetTrigger(Skill);
+                break;
+            default:
+                _animator.SetTrigger(Melee);
+                break;
+        }
     }
 }

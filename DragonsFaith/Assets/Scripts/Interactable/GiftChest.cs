@@ -23,7 +23,7 @@ namespace Interactable
             base.OnNetworkSpawn();
             GetComponent<NetworkObject>().DestroyWithScene = true;
 
-            if (DungeonProgressManager.instance.IsChestOpened(saveId))
+            if (DungeonProgressManager.instance.IsChestOpened(saveId, gameObject))
             {
                 Debug.Log(gameObject.name + " was already activated");
                 /*if (IsHost)
@@ -53,7 +53,7 @@ namespace Interactable
             }
 
             Debug.Log("Item  picked up");
-            DungeonProgressManager.instance.ChestOpened(saveId);
+            DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
             Notify();
 
             if (IsHost)
@@ -85,7 +85,7 @@ namespace Interactable
         {
             if(IsHost) return;
             
-            DungeonProgressManager.instance.ChestOpened(saveId);
+            DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
         }
         
         [ServerRpc (RequireOwnership = false)]
@@ -93,7 +93,7 @@ namespace Interactable
         {
             if(!IsHost) return;
             
-            DungeonProgressManager.instance.ChestOpened(saveId);
+            DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
         }
 
         public override void OnDestroy()

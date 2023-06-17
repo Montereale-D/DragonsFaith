@@ -13,11 +13,11 @@ public class GameHandler : NetworkBehaviour
 {
     public static GameHandler instance { get; private set; }
     public Camera mainCamera { get; private set; }
-    
+
     private PlayerGridMovement[] _characters;
 
     private Obstacle[] _obstacles;
-    
+    public bool isBossRoom;
 
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class GameHandler : NetworkBehaviour
         //Assign main camera
         mainCamera = Camera.main;
         if (mainCamera == null) Debug.LogError("No main camera assigned");
-        
+
         CharacterManager.Instance.SetPlayerGridMode();
     }
 
@@ -63,7 +63,7 @@ public class GameHandler : NetworkBehaviour
 
             //SetTileUnderCharacter(character);
         }
-        
+
         StartCoroutine(WaitMovementInfo(_characters, _obstacles));
     }
 
@@ -71,6 +71,7 @@ public class GameHandler : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsHost)
         {
+            Debug.Log("AskMovementClientRpc");
             AskMovementClientRpc(askedIndex);
         }
         else
@@ -106,28 +107,55 @@ public class GameHandler : NetworkBehaviour
     {
         Debug.Log("GAME OVER");
         //todo UI show GameOver screen
+        SceneManager.instance.LoadSceneSingle("GameOver");
         //FindObjectOfType<SceneManager>().LoadSceneAdditive("Menu");
     }
 
     public void CombatWin()
     {
         Debug.Log("COMBAT WIN");
-        
+
         foreach (var popUpUI in FindObjectsOfType<CharacterGridPopUpUI>())
         {
             popUpUI.HideUI();
         }
+
+        foreach (var playerGridMovement in FindObjectsOfType<PlayerGridMovement>())
+        {
+            if (playerGridMovement.gameObject != NetworkManager.LocalClient.PlayerObject.gameObject)
+            {
+                playerGridMovement.movement = 0;
+            }
+        }
         
-        CharacterManager.Instance.SetPlayerFreeMode();
         PlayerUI.instance.HideCombatUI();
-        //todo aggiornare con level manager
-        SceneManager.instance.LoadSceneSingle("Dungeon_1");
+
+        CharacterManager.Instance.SetPlayerFreeMode();
+        
+
+        if (!isBossRoom)
+        {
+            SceneManager.instance.ReloadSceneSingleDungeon();
+        }
+        else
+        {
+            isBossRoom = false;
+            StartCoroutine(WaitToReturnToMainMenu());
+        }
+    }
+
+    private IEnumerator WaitToReturnToMainMenu()
+    {
+        yield return new WaitForSeconds(1f);
+        SceneManager.instance.ReturnToMainMenu(IsHost);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void AskMovementServerRpc(int askedIndex)
     {
         if (!NetworkManager.Singleton.IsHost) return;
+
+        Debug.Log("AskMovementServerRpc");
 
         var movement = (int)CharacterManager.Instance.GetTotalAgi();
         ReplyMovementClientRpc(askedIndex, movement);
@@ -137,6 +165,9 @@ public class GameHandler : NetworkBehaviour
     private void ReplyMovementServerRpc(int askedIndex, int movement)
     {
         if (!NetworkManager.Singleton.IsHost) return;
+
+        Debug.Log("ReplyMovementServerRpc");
+
         _characters[askedIndex].movement = movement;
         Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }
@@ -146,6 +177,7 @@ public class GameHandler : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsHost) return;
 
+        Debug.Log("AskMovementClientRpc");
         var movement = (int)CharacterManager.Instance.GetTotalAgi();
         ReplyMovementServerRpc(askedIndex, movement);
     }
@@ -154,6 +186,7 @@ public class GameHandler : NetworkBehaviour
     private void ReplyMovementClientRpc(int askedIndex, int movement)
     {
         if (NetworkManager.Singleton.IsHost) return;
+        Debug.Log("ReplyMovementClientRpc");
         _characters[askedIndex].movement = movement;
         Debug.Log(_characters[askedIndex].gameObject.name + " movement is " + movement);
     }
@@ -178,7 +211,7 @@ public class GameHandler : NetworkBehaviour
 
         CombatSystem.instance.Setup(characters, _obstacles);
     }*/
-    
+
     private static void SetTileUnderObstacle(Obstacle o)
     {
         if (o.onTile == null)

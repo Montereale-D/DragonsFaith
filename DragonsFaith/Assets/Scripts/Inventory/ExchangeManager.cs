@@ -28,7 +28,15 @@ namespace Inventory
                 DontDestroyOnLoad(this);
             } 
         }
-        
+
+        public override void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
         /// <summary>
         /// Get an item
         /// </summary>

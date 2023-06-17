@@ -36,6 +36,8 @@ public class Tile : MonoBehaviour
         c.a = alpha;
         _spriteRenderer.color = c;
     }
+
+
     public void HoverTile()
     {
         Color c = _characterOnTile ? occupiedColor : hoveringColor;
@@ -87,5 +89,15 @@ public class Tile : MonoBehaviour
     public Obstacle GetObstacle()
     {
         return _obstacleOnTile;
+    }
+
+    public bool IsOccupied()
+    {
+        return GetCharacter() != null || GetObstacle() != null;
+    }
+
+    public override string ToString()
+    {
+        return mapPosition + " is occupied: " + IsOccupied();
     }
 }

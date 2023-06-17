@@ -232,7 +232,7 @@ namespace UI
 
         public void QuitGame()
         {
-            animator.SetTrigger(Quit);
+            //animator.SetTrigger(Quit);
             Debug.Log("Quit game...");
             StartCoroutine(QuitCoroutine());
         }

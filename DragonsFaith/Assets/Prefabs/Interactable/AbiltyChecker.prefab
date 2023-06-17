@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4411962178672604481}
   - component: {fileID: 2444328468891494127}
   - component: {fileID: 8403036609258905593}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3242192006503103246}
   - component: {fileID: 2048906484173360612}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 9056945334946390816}
   - component: {fileID: 4711083725818997478}
   - component: {fileID: 8249299156600929132}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 1903108883621488136}
   - component: {fileID: 219339536092419909}
   - component: {fileID: 3792251988095568237}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 555139263663050442}
   - component: {fileID: 3178762734973586170}
   - component: {fileID: 1278420724051494247}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -490,7 +490,7 @@ GameObject:
   - component: {fileID: 5314013237988372189}
   - component: {fileID: 6658175673000552548}
   - component: {fileID: 6658175673000552568}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AbiltyChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -628,6 +628,7 @@ MonoBehaviour:
   onSuccess:
     m_PersistentCalls:
       m_Calls: []
+  saveId: 
 --- !u!1 &7063720747624519365
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,7 +641,7 @@ GameObject:
   - component: {fileID: 7063720747624519367}
   - component: {fileID: 7063720747624519366}
   - component: {fileID: 2779655179280606292}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: KeyPressController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -727,7 +728,7 @@ GameObject:
   - component: {fileID: 9088300157277548886}
   - component: {fileID: 1952790216816328816}
   - component: {fileID: 5341213841995188608}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,7 +753,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3, y: 0.5}
+  m_SizeDelta: {x: 2.5, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1952790216816328816
 CanvasRenderer:
@@ -809,8 +810,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.5
-  m_fontSizeBase: 0.5
+  m_fontSize: 0.4
+  m_fontSizeBase: 0.4
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -862,7 +863,7 @@ GameObject:
   - component: {fileID: 2413990000507502146}
   - component: {fileID: 1747161641974930923}
   - component: {fileID: 2663350881064746581}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -917,7 +918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Name
+  m_text: Chest
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
   m_sharedMaterial: {fileID: -2713363486176451765, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}

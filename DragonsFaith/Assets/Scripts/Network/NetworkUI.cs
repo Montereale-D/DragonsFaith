@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Network;
 using TMPro;
 using UI;
 using Unity.Netcode;
@@ -13,10 +14,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using SceneManager = Network.SceneManager;
 
 /// <summary>
 /// This class is used to handle connections in the lobby screen
@@ -33,8 +31,6 @@ public class NetworkUI : NetworkBehaviour
     [SerializeField] private Color offButtonColor;
 
     [SerializeField] private TextMeshProUGUI logText;
-    [SerializeField] private SceneManager sceneManager;
-    
     [SerializeField] private string sceneName;
 
     private bool _isReady;
@@ -270,9 +266,12 @@ public class NetworkUI : NetworkBehaviour
         {
             _isReady = true;
             hostReadyButton.image.color = onButtonColor;
-            PlayerPrefs.SetString("playerName", nameTextHost.text);
+            if(nameTextHost.text == "") PlayerPrefs.SetString("playerName", "Host");
+            else PlayerPrefs.SetString("playerName", nameTextHost.text);
             
             /*HostReadyClientRpc();
+            //PlayerPrefs.SetString("playerName", "host");
+            if (hostName.text == "") PlayerPrefs.SetString("playerName", "host");
 
             if (!_isClientReady) return;
 
@@ -294,8 +293,11 @@ public class NetworkUI : NetworkBehaviour
             _isReady = true;
             clientReadyButton.image.color = onButtonColor;
             //NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().gameObject.name = "Client";
-            PlayerPrefs.SetString("playerName", nameTextClient.text);
+            if(nameTextClient.text == "") PlayerPrefs.SetString("playerName", "Client");
+            else PlayerPrefs.SetString("playerName", nameTextClient.text);
+
             StartCoroutine(Example_ConfigureTransportAndStartNgoAsConnectingPlayer());
+
         }
     }
 
@@ -311,15 +313,29 @@ public class NetworkUI : NetworkBehaviour
 
     private void OnBothPlayersReady()
     {
-        GetComponent<NetworkObject>().Despawn();
+        if (IsHost)
+        {
+            OnBothPlayersReadyClientRpc();
+            GetComponent<NetworkObject>().Despawn();
+        }
+        
         logText.text = "Log: NEXT SCENE";
-        sceneManager.LoadSceneSingle(sceneName);
+        
+        SceneManager.instance.LoadSceneSingle(sceneName);
 
         if (IsHost)
         {
             ShowUI();
             ShowUIClientRpc();
         }
+    }
+
+    [ClientRpc]
+    private void OnBothPlayersReadyClientRpc()
+    {
+        if(IsHost) return;
+        
+        OnBothPlayersReady();
     }
 
     private void ShowUI()

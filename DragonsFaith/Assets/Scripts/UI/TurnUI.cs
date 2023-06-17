@@ -20,6 +20,7 @@ namespace UI
         private List<GameObject> _cellList = new List<GameObject>();
 
         private Sprite _otherPlayerSprite;
+        private string _otherPlayerName;
         private PlayerGridMovement _localPlayer;
         private int _currentCellIdx;
         private PlayerGridMovement _dead;
@@ -29,27 +30,44 @@ namespace UI
         public float animFadeInDuration = 1;
         public float animFadeOutDuration = 1;
         private static LTDescr delay;
-        
+
         public void SetUpList(List<PlayerGridMovement> characterList)
         {
+            //isCombatEnd = false;
+            if (_cellList != null && _cellList.Count > 0)
+            {
+                DestroyList();
+            }
+
+            _cellList = new List<GameObject>();
+            
             _charList = characterList;
-            _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
-            Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
+            _localPlayer =
+                NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
+            Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null,
                 "CombatSystem.instance.otherPlayerSpriteIdx != null");
             _otherPlayerSprite = PlayerUI.instance.portraitSprites[(int)CombatSystem.instance.otherPlayerSpriteIdx];
+            _otherPlayerName = CombatSystem.instance.otherPlayerName;
 
-            foreach (var character in _charList.Where(character => character.GetTeam() == PlayerGridMovement.Team.Players))
+            foreach (var character in _charList.Where(character =>
+                         character.GetTeam() == PlayerGridMovement.Team.Players))
             {
-                character.SetTurnSprite(character == _localPlayer ? PlayerUI.instance.portrait.sprite : _otherPlayerSprite);
+                character.SetTurnSprite(character == _localPlayer
+                    ? PlayerUI.instance.portrait.sprite
+                    : _otherPlayerSprite);
+                character.charName =
+                    character == _localPlayer
+                        ? character.GetComponent<CharacterInfo>().characterName
+                        : _otherPlayerName;
             }
-            
+
             if (_charList.Count < threshold)
             {
                 _multiplier = threshold / _charList.Count + 1;
                 _numberOfCells = _charList.Count * _multiplier;
             }
             else _numberOfCells = _charList.Count;
-        
+
             for (var i = 0; i < _numberOfCells; i++)
             {
                 var newCell = Instantiate(cellPrefab, transform, true);
@@ -71,25 +89,27 @@ namespace UI
                 }*/
                 _cellList.Add(newCell);
             }
-            
+
             newTurnUI.gameObject.SetActive(true);
-            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text = 
+            newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text =
                 "Turn of " + _cellList[0].GetComponent<TurnUICell>().charName;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
 
         public void DestroyList()
         {
-            var listLength = _cellList.Count;
-            for (var i = 0; i < listLength; i++)
+            for (var i = _cellList.Count - 1; i >= 0; i--)
             {
-                Destroy(_cellList[0]);
-                _cellList.RemoveAt(0);
+                DestroyImmediate(_cellList[i]);
+                _cellList.RemoveAt(i);
             }
         }
 
+        //public bool isCombatEnd;
         private void Update()
         {
+            //if(isCombatEnd) return;
+
             if (_cellList.Count < threshold && !_isUpdating)
             {
                 FetchNewCells();
@@ -108,6 +128,7 @@ namespace UI
                 {
                     cell.ownImage.color = Color.gray;
                 }
+
                 /*if (_charList[i % _charList.Count].GetTeam() == PlayerGridMovement.Team.Players && 
                     _charList[i % _charList.Count] == _localPlayer)
                 {
@@ -130,18 +151,19 @@ namespace UI
         {
             Destroy(_cellList[0]);
             _cellList.RemoveAt(0);
-            
+
             newTurnUI.gameObject.SetActive(true);
             newTurnUI.GetComponentInChildren<TextMeshProUGUI>().text =
                 "Turn of " + _cellList[0].GetComponent<TurnUICell>().charName;
             FadeInElement(newTurnUI, animFadeInDuration);
         }
-        
+
         private void FadeInElement(RectTransform rectTransform, float fadeInDuration)
         {
-            LeanTween.alpha(rectTransform, 1f, fadeInDuration).setEase(LeanTweenType.linear).setOnComplete(AnimComplete);
+            LeanTween.alpha(rectTransform, 1f, fadeInDuration).setEase(LeanTweenType.linear)
+                .setOnComplete(AnimComplete);
         }
-        
+
         private void FadeOutElement(RectTransform rectTransform, float fadeOutDuration)
         {
             LeanTween.alpha(rectTransform, 0f, fadeOutDuration).setEase(LeanTweenType.linear).setOnComplete(DisableUI);
@@ -172,8 +194,8 @@ namespace UI
             else
             {
                 _isUpdating = true;
-                var listLength = _cellList.Count; 
-                for (var i = listLength-1; i > 0; i--)
+                var listLength = _cellList.Count;
+                for (var i = listLength - 1; i > 0; i--)
                 {
                     if (_cellList[i].GetComponent<TurnUICell>().unit != deadUnit) continue;
                     Destroy(_cellList[i]);

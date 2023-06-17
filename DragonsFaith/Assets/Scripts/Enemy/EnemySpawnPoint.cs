@@ -13,8 +13,13 @@ public class EnemySpawnPoint : MonoBehaviour
     {
         return "Patrol: " + patrol + " WaitTime " + waitOnPatrolPosition + " Points Number " + patrolPositions.Count;
     }
-    
-    
+
+    private void Awake()
+    {
+        Debug.Log("EnemySpawn id " + saveId);
+    }
+
+
     [ContextMenu("Generate guid")]
     private void GenerateGuid()
     {

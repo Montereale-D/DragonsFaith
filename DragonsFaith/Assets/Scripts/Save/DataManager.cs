@@ -30,6 +30,15 @@ namespace Save
             DontDestroyOnLoad(this);
         }
 
+        public override void OnDestroy()
+        {
+            if (Instance ==  this)
+            {
+                Instance = null;
+            }
+        }
+
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -186,39 +195,5 @@ namespace Save
 
             _fileData.Save(_gameData);
         }
-        
-        /*public void SendPortraitSprite(int idx)
-        {
-            if (IsHost)
-            {
-                Debug.Log("I'm host and i'm sending idx: " + idx);
-                SendPortraitSpriteClientRpc(idx);
-            }
-            else
-            {
-                Debug.Log("I'm client and i'm sending idx: " + idx);
-                SendPortraitSpriteServerRpc(idx);
-            }
-        }
-
-        [ServerRpc(RequireOwnership = false)]
-        private void SendPortraitSpriteServerRpc(int portraitIdx)
-        {
-            if (!IsHost) return;
-            Debug.Log("I'm host and i received: " + portraitIdx);
-            otherPlayerSpriteIdx = portraitIdx;
-            received = true;
-            Debug.Log("host: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
-        }
-
-        [ClientRpc]
-        private void SendPortraitSpriteClientRpc(int portraitIdx)
-        {
-            if (IsHost) return;
-            Debug.Log("I'm client and i received: " + portraitIdx);
-            otherPlayerSpriteIdx = portraitIdx;
-            received = true;
-            Debug.Log("client: my portraitIdx=" + PlayerUI.Instance.portraitIdx + " otherPlayerIdx=" + otherPlayerSpriteIdx);
-        }*/
     }
 }

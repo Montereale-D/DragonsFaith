@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Grid;
+using Inventory;
+using Inventory.Items;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -37,10 +39,19 @@ namespace UI
 
         public void SetUp(List<PlayerGridMovement> characterList)
         {
-            //TODO: uncomment when player weapons
-            /*SetWeaponRangeUI((int)InventoryManager.Instance.GetWeapon().GetRange());
-            SetWeaponDamageUI((int)InventoryManager.Instance.GetWeapon().GetDamage());
-            SetAmmoCounter(InventoryManager.Instance.GetWeapon().GetAmmo());*/
+            var weapon = InventoryManager.Instance.GetWeapon();
+            if (!weapon)
+            {
+                weapon = ScriptableObject.CreateInstance<Weapon>();
+                weapon.range = 1;
+                weapon.weaponType = Weapon.WeaponType.Melee;
+                weapon.damage = 1;
+            }
+
+            SetWeaponRangeUI(weapon.range);
+            SetWeaponDamageUI((int)weapon.damage);
+            if (weapon.weaponType == Weapon.WeaponType.Melee) SetMeleeAmmoCounter();
+            else SetAmmoCounter(weapon.GetAmmo());
                 
             _turnUI = GetComponentInChildren<TurnUI>();
             _turnUI.SetUpList(characterList);
@@ -53,30 +64,36 @@ namespace UI
                     _moveOrAttackImage = img;
             }
                 
-            //skillButton.onClick.AddListener(add use skill function);
-            blockButton.onClick.AddListener(CombatSystem.instance.BlockAction);
-            reloadButton.onClick.AddListener(CombatSystem.instance.ReloadAction);
+            //skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+            SkillButtonAction("Show");
+            blockButton.onClick.AddListener(CombatSystem.instance.ButtonBlockAction);
+            reloadButton.onClick.AddListener(CombatSystem.instance.ButtonReloadAction);
             itemsButton.onClick.AddListener(SetItemsTab);
-            skipTurnButton.onClick.AddListener(() =>
-            {
+            skipTurnButton.onClick.AddListener(CombatSystem.instance.ButtonSkipTurn);
+            /*{
                 var localPlayer =
                     NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
                 if (CombatSystem.instance.activeUnit == localPlayer)
                 {
                     CombatSystem.instance.SkipTurn();
                 }
-            });
+            });*/
         }
 
         public void Destroy()
         {
             moveOrAttackButton.onClick.RemoveAllListeners();
-            //skillButton.onClick.RemoveAllListeners();
+            skillButton.onClick.RemoveAllListeners();
             blockButton.onClick.RemoveAllListeners();
             reloadButton.onClick.RemoveAllListeners();
             itemsButton.onClick.RemoveAllListeners();
             skipTurnButton.onClick.RemoveAllListeners();
             _turnUI.DestroyList();
+        }
+
+        public void OnCombatEnd()
+        {
+            //_turnUI.isCombatEnd = true;
         }
 
         private void SetItemsTab()
@@ -98,6 +115,11 @@ namespace UI
         {
             ammoCounter.text = "Ammo left: " + value;
         }
+
+        public void SetMeleeAmmoCounter()
+        {
+            ammoCounter.text = "No ammo needed";
+        }
         
         public void SetCombatPopUp(bool state, string text = "")
         {
@@ -112,6 +134,35 @@ namespace UI
         public TurnUI GetTurnUI()
         {
             return _turnUI;
+        }
+
+        public void SkillButtonAction(string mode)
+        {
+            //var aoe = new List<Tile>();
+            switch (mode)
+            { 
+                case "Unleash":
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Unleash";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Unleash the skill.";
+                    skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillAttack);
+                    break;
+                case "Show":
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Show";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Show the skill's area of effect." + System.Environment.NewLine +
+                                                                         "Range is shown in the direction of the selected cell.";
+                    skillButton.onClick.AddListener(CombatSystem.instance.ButtonSkillRange);
+                    break;
+                case "Hide":
+                    skillButton.onClick.RemoveAllListeners();
+                    skillButton.GetComponent<TooltipTrigger>().header = "Hide";
+                    skillButton.GetComponent<TooltipTrigger>().content = "Hide the skill's area of effect.";
+                    skillButton.onClick.AddListener(CombatSystem.instance.HideSkillRange);
+                    break;
+            }
+
+            
         }
         
         public void ToggleMoveAttackButton(string mode)
