@@ -33,6 +33,7 @@ namespace UI
         
         public void SetUpList(List<PlayerGridMovement> characterList)
         {
+            isCombatEnd = false;
             _charList = characterList;
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerGridMovement>();
             Debug.Assert(CombatSystem.instance.otherPlayerSpriteIdx != null, 
