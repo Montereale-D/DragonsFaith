@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4607639176340208365}
   - component: {fileID: 2531041236785408323}
   - component: {fileID: 8527137173234356309}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 396228165847040358}
   - component: {fileID: 3375118683210433878}
   - component: {fileID: 1402365177768512203}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 9001516453160353530}
   - component: {fileID: 1860649694210904028}
   - component: {fileID: 5247857821081830956}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 2543364250127790574}
   - component: {fileID: 1942394026238530119}
   - component: {fileID: 2755623327908573689}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +666,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 73406232505805076, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 73406232505805076, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: m_IsActive
@@ -674,7 +674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3073582223120684591, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4221211796238866682, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -726,7 +726,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4826330658006689847, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4826330658006689851, guid: c57eea1d917e6ed4e8646da25dac245f, type: 3}
       propertyPath: m_Pivot.x
