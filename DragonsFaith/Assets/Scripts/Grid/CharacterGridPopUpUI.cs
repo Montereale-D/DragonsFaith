@@ -15,6 +15,11 @@ namespace Grid
         public TextMeshProUGUI healthNumber;
         public TextMeshProUGUI characterName;
         private int _maxHealth;
+        public Slider manaBar;
+        public TextMeshProUGUI manaNumber;
+        private int _maxMana;
+
+
 
         [Header("Damage Counter")]
         public GameObject damageCounter;
@@ -33,12 +38,15 @@ namespace Grid
         [Header("Shield")] 
         public GameObject shield;
 
-        public void SetUI(string charName, int maxHealth)
+        public void SetUI(string charName, int maxHealth, int maxMana)
         {
             ShowUI();
             _maxHealth = maxHealth;
             healthBar.maxValue = maxHealth;
+            _maxMana = maxMana;
+            manaBar.maxValue = maxMana;
             UpdateHealth(maxHealth);
+            UpdateMana(maxMana);
             characterName.text = charName;
             HideUI();
         }
@@ -51,7 +59,8 @@ namespace Grid
     
         public void UpdateMana(int mana)
         {
-            //nothing
+            manaBar.value = mana;
+            manaNumber.text = "Mana: " + mana + "/" + _maxMana;
         }
     
         public void ShowUI()
