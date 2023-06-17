@@ -41,12 +41,12 @@ public class CharacterInfo : MonoBehaviour
             _playerUI.UpdateHealthBar(maxHealth, maxHealth);
             _playerUI.UpdateManaBar(maxMana, maxMana);
             characterName = _playerUI.nameText.text = PlayerPrefs.GetString("playerName");
-            _characterUI.SetUI(characterName, maxHealth);
+            _characterUI.SetUI(characterName, maxHealth, maxMana);
         }
         else
         {
             _characterUI = GetComponent<CharacterGridPopUpUI>();
-            _characterUI.SetUI(characterName, maxHealth);
+            _characterUI.SetUI(characterName, maxHealth, maxMana);
         }
     }
 
@@ -188,7 +188,7 @@ public class CharacterInfo : MonoBehaviour
 
         if (_characterUI)
         {
-            _characterUI.SetUI(characterName, maxHealth);
+            _characterUI.SetUI(characterName, maxHealth, maxMana);
         }
     }
 

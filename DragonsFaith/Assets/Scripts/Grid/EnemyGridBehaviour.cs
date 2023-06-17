@@ -45,9 +45,8 @@ public class EnemyGridBehaviour : MonoBehaviour
     {
         _enemyPlan = behaviourType == EnemyBehaviourType.Melee ? MeleePlan : RangedPlan;
         _health = healthMax;
-
         _popUpUI = GetComponent<CharacterGridPopUpUI>();
-        _popUpUI.SetUI(enemyName, healthMax);
+        _popUpUI.SetUI(enemyName, healthMax, 0);
 
         _characterInfo = GetComponent<CharacterInfo>();
         _characterInfo.characterName = enemyName;

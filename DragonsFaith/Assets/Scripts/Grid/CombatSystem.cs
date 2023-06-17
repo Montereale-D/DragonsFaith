@@ -131,7 +131,7 @@ namespace Grid
                     {
                         character.SetGridPosition(NetworkManager.Singleton.IsHost ? hostPos : clientPos);
                         NotifyPopUpInfoToPlayer(character.GetComponent<CharacterInfo>().characterName,
-                            character.GetComponent<CharacterInfo>().GetMaxHealth());
+                            character.GetComponent<CharacterInfo>().GetMaxHealth(), character.GetComponent<CharacterInfo>().GetMaxMana());
                     }
                     else
                     {
@@ -144,39 +144,39 @@ namespace Grid
             ResetTurnActions();
         }
 
-        private void NotifyPopUpInfoToPlayer(string charName, int health)
+        private void NotifyPopUpInfoToPlayer(string charName, int health, int mana)
         {
             if (IsHost)
             {
-                NotifyPopUpInfoToPlayerClientRpc(charName, health);
+                NotifyPopUpInfoToPlayerClientRpc(charName, health, mana);
             }
             else
             {
-                NotifyPopUpInfoToPlayerServerRpc(charName, health);
+                NotifyPopUpInfoToPlayerServerRpc(charName, health, mana);
             }
         }
     
         [ServerRpc(RequireOwnership = false)]
-        private void NotifyPopUpInfoToPlayerServerRpc(string charName, int health)
+        private void NotifyPopUpInfoToPlayerServerRpc(string charName, int health, int mana)
         {
             if (!IsHost) return;
             var players = 
                 characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
             foreach (var player in players.Where(player => player != _localPlayer.GetComponent<PlayerGridMovement>()))
             {
-                player.GetComponent<CharacterGridPopUpUI>().SetUI(charName, health);
+                player.GetComponent<CharacterGridPopUpUI>().SetUI(charName, health, mana);
             }
         }
 
         [ClientRpc]
-        private void NotifyPopUpInfoToPlayerClientRpc(string charName, int health)
+        private void NotifyPopUpInfoToPlayerClientRpc(string charName, int health, int mana)
         {
             if (IsHost) return;
             var players = 
                 characterList.FindAll(x => x.GetTeam() == PlayerGridMovement.Team.Players);
             foreach (var player in players.Where(player => player != _localPlayer.GetComponent<PlayerGridMovement>()))
             {
-                player.GetComponent<CharacterGridPopUpUI>().SetUI(charName, health);
+                player.GetComponent<CharacterGridPopUpUI>().SetUI(charName, health, mana);
             }
         }
 
@@ -807,6 +807,10 @@ namespace Grid
     public void CheckSkillAttack()
     {
             if (!isUsingSkill || !_canAttackThisTurn) return;
+            int mana = activeUnit.GetComponent<CharacterInfo>().mana;
+            if (mana < 10) _playerUI.SetCombatPopUp(true, "not enough mana to perform a skill");
+            activeUnit.GetComponent<CharacterInfo>().UseMana(10);
+            
             isUsingSkill = false;
             _canAttackThisTurn = false;
             switch (PlayerUI.instance.chosenFaith)
