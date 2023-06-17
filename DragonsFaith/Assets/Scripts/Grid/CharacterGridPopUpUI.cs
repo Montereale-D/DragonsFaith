@@ -43,10 +43,7 @@ namespace Grid
             ShowUI();
             _maxHealth = maxHealth;
             healthBar.maxValue = maxHealth;
-            _maxMana = maxMana;
-            manaBar.maxValue = maxMana;
             UpdateHealth(maxHealth);
-            UpdateMana(maxMana);
             characterName.text = charName;
             HideUI();
         }
