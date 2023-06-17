@@ -45,7 +45,7 @@ namespace Grid
             _health = healthMax;
 
             _popUpUI = GetComponent<CharacterGridPopUpUI>();
-            _popUpUI.SetUI(enemyName, healthMax);
+            _popUpUI.SetUI(enemyName, healthMax, 0);
 
             _characterInfo = GetComponent<CharacterInfo>();
             _characterInfo.characterName = enemyName;
