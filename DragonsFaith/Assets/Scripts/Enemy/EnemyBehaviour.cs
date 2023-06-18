@@ -104,7 +104,7 @@ namespace Enemy
             if (!IsHost) return;
             
             characterTransform.position = Vector3.MoveTowards(charPos, _nextPosition,
-                speed * 0.003f /*Time.deltaTime*/ );
+                speed /* 0.003f*/ * Time.deltaTime );
             _animator.SetBool(Moving, true);
             //_spriteRenderer.flipX = (_nextPosition - charPos).normalized == Vector3.left;
             if (_previousDir != 0) _animator.SetFloat(X, _previousDir);
