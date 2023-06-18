@@ -352,6 +352,8 @@ namespace UI
             playerUI.SetActive(true);
             settingsButton.SetActive(true);
             CharacterManager.Instance.UnlockPlayerMovement();
+            InventoryManager.Instance.AddHealthKitContextMenu();
+            InventoryManager.Instance.AddWeaponContextMenu();
         }
 
         public void SetFire()

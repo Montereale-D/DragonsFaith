@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Assault Rifle
   description: 'Range = 5 cells
 
-    Damage = 5 hp
+    Damage = 7 hp
 
     Max Ammo = 3'
   id: 99d77a64-4242-4495-811f-b279f88b7ddb
@@ -23,6 +23,6 @@ MonoBehaviour:
   image: {fileID: -763692750, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
   range: 5
-  damage: 5
+  damage: 7
   capacity: 3
   weaponObject: {fileID: 7563764566049780249, guid: 33c21b990a352f442b51f512f1d3c786, type: 3}
