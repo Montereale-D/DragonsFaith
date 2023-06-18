@@ -122,6 +122,8 @@ namespace Grid
         
         private IEnumerator SkillEffectAnimation(string skill)
         {
+            if(!skillAnimator) yield break;
+            
             skillAnimator.gameObject.SetActive(true);
             switch (skill)
             {
