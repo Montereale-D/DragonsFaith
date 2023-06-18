@@ -816,6 +816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   pathMovementSpeed: 5
+  enemyLocalOrder: 0
   isMoving: 0
   turnSprite: {fileID: 0}
   charName: 
@@ -853,6 +854,8 @@ MonoBehaviour:
   healthBar: {fileID: 1727857382617533162}
   healthNumber: {fileID: 4279354511456742269}
   characterName: {fileID: 1071520357642809202}
+  manaBar: {fileID: 0}
+  manaNumber: {fileID: 0}
   damageCounter: {fileID: 2470388963438914685}
   damageCounterText: {fileID: 8438139397446917430}
   coveredSymbol: {fileID: 1078966865199079414}
@@ -1315,7 +1318,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3950288079348110185}
   - component: {fileID: 5134561099073809768}
-  - component: {fileID: 3769727946229548064}
   - component: {fileID: 4051641163719193643}
   m_Layer: 3
   m_Name: Camera
@@ -1382,14 +1384,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &3769727946229548064
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4950619437904188808}
-  m_Enabled: 0
 --- !u!114 &4051641163719193643
 MonoBehaviour:
   m_ObjectHideFlags: 0

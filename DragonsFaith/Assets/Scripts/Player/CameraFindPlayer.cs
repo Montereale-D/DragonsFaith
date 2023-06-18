@@ -13,4 +13,9 @@ public class CameraFindPlayer : NetworkBehaviour
             cameraHolder.GetComponentInChildren<Camera>().tag = "MainCamera";
         }
     }
+
+    public void ActivateListener()
+    {
+        cameraHolder.GetComponentInChildren<AudioListener>().enabled = true;
+    }
 }
