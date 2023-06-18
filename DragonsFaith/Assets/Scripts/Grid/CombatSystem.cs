@@ -386,6 +386,7 @@ namespace Grid
 
             return true;
         }
+
         public bool UseItem(Item item)
         {
             if (!_canAttackThisTurn)
@@ -397,7 +398,7 @@ namespace Grid
             {
                 return false;
             }
-                
+
             NotifyItemUseClientRpc(activeUnit.charName, item.itemName);
             _canAttackThisTurn = false;
             return true;
@@ -1260,10 +1261,15 @@ namespace Grid
             string skillElement = "")
         {
             var targetIndex = characterList.IndexOf(target);
+
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
-            if (skillElement != "") target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-            else target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
+            if (skillElement != "")
+                target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            else
+                target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
 
             if (IsHost)
@@ -1282,13 +1288,24 @@ namespace Grid
             string skillElement = "")
         {
             if (!IsHost) return;
-            characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>()
-                .ShowDamageCounter(damage, false, isProtected);
-            if (skillElement != "")
-                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-            else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
-            activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
+
+            try
+            {
+                var character = characterList[targetIndex];
+                character.GetComponent<EnemyGridBehaviour>().Damage(damage);
+                character.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+
+                if (skillElement != "")
+                    character.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+                else
+                    character.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
+                activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("NotifyAttackFromHostToEnemyClientRpc index " + e);
+            }
         }
 
         [ClientRpc]
@@ -1313,7 +1330,7 @@ namespace Grid
             }
             catch (Exception e)
             {
-                Debug.LogError("NotifyAttackFromHostToEnemyClientRpc " + e);
+                Debug.LogWarning("NotifyAttackFromHostToEnemyClientRpc index " + e);
             }
         }
 
