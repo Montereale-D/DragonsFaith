@@ -11,8 +11,7 @@ namespace Network
     public class NextAreaLoader : MonoBehaviour
     {
         [Header("Debug")] [SerializeField] private bool activateOnFirstTrigger;
-
-        private SceneManager _sceneManager;
+        
         [SerializeField] private string sceneName;
         [SerializeField] private int numberOfDungeons;
         private int _playersReady;
@@ -29,7 +28,6 @@ namespace Network
         private void Awake()
         {
             GetComponent<Collider2D>().isTrigger = true;
-            _sceneManager = FindObjectOfType<SceneManager>();
             activationArea.color = Color.red;
 
             if (!toDungeon) return;
@@ -119,15 +117,7 @@ namespace Network
                 AudioManager.instance.PlayOpenGateSound();
             }
 
-            if (_sceneManager)
-            {
-                _sceneManager.LoadSceneSingleDungeon(sceneName);
-            }
-            else
-            {
-                Debug.LogWarning("Scene manager is null, Ok is appear in client");
-            }
-            //StartCoroutine(LoadScene());
+            SceneManager.instance.LoadSceneSingleDungeon(sceneName);
         }
 
         public void Unlock()

@@ -97,6 +97,7 @@ namespace Network
 
         public bool LoadSceneSingle(string sceneName)
         {
+            Debug.Log("LoadSceneSingle, isLoading " + _isLoading);
             if(_isLoading) return false;
 
             _isLoading = true;
