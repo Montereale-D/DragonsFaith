@@ -146,17 +146,20 @@ namespace Network
             _isFirstLoad = true;
             AudioManager.instance.StopSoundTrackExplore();
             NetworkManager.Singleton.Shutdown();
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
-            //StartCoroutine(ReturnToMainMenuCoroutine());
+            //UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+            StartCoroutine(ReturnToMainMenuCoroutine());
         }
 
-        /*private IEnumerator ReturnToMainMenuCoroutine()
+        private IEnumerator ReturnToMainMenuCoroutine()
         {
-            TransitionBackground.instance.FadeOut();
-            yield return new WaitForSeconds(1f);
+            if (!TransitionBackground.instance.IsFadedOut())
+            {
+                TransitionBackground.instance.FadeOut();
+                yield return new WaitForSeconds(1f);
+            }
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
             TransitionBackground.instance.FadeIn();
-        }*/
+        }
 
         private static void CleanDontDestroy()
         {

@@ -37,4 +37,9 @@ public class TransitionBackground : MonoBehaviour
     {
         _animator.SetTrigger(In);
     }
+
+    public bool IsFadedOut()
+    {
+        return _animator.GetCurrentAnimatorStateInfo(0).IsName("fadeout");
+    }
 }
