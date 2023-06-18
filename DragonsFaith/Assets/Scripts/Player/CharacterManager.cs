@@ -167,7 +167,12 @@ namespace Player
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
             InventoryManager.Instance.LockEquipmentSlots();
-            InventoryManager.Instance.GetWeapon().Reload();
+            var weapon = InventoryManager.Instance.GetWeapon();
+            if (weapon)
+            {
+                weapon.Reload();    
+            }
+            
             mode = Mode.Grid;
         }
 
