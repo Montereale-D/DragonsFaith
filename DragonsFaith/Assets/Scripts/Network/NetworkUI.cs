@@ -36,11 +36,11 @@ public class NetworkUI : NetworkBehaviour
     private bool _isReady;
     private bool _isClientReady;
     private static string joinCode;
-    
+
     const int m_MaxConnections = 2;
     [SerializeField] private TextMeshProUGUI relayJoinCodeHost;
     [SerializeField] private TMP_InputField nameTextHost;
-    [SerializeField] private TextMeshProUGUI relayJoinCodeClient;
+    [SerializeField] private TMP_InputField relayJoinCodeClient;
     [SerializeField] private TMP_InputField nameTextClient;
 
     private void Awake()
@@ -64,7 +64,7 @@ public class NetworkUI : NetworkBehaviour
             ClientReadyServerRpc();
         }
     }
-    
+
     async void Example_AuthenticatingAPlayer()
     {
         try
@@ -103,9 +103,28 @@ public class NetworkUI : NetworkBehaviour
     private IEnumerator Example_ConfigureTransportAndStartNgoAsConnectingPlayer()
     {
         // Populate RelayJoinCode beforehand through the UI
+        if (string.IsNullOrEmpty(relayJoinCodeClient.text))
+        {
+            _isReady = false;
+            clientReadyButton.image.color = offButtonColor;
+            yield break;
+        }
+
         joinCode = relayJoinCodeClient.text.Substring(0, 6);
         Debug.Log("Join code is " + joinCode);
-        var clientRelayUtilityTask = JoinRelayServerFromJoinCode(joinCode);
+
+        Task<RelayServerData> clientRelayUtilityTask;
+        try
+        {
+            clientRelayUtilityTask = JoinRelayServerFromJoinCode(joinCode);
+        }
+        catch (JoinCodeException e)
+        {
+            Debug.LogWarning(e);
+            _isReady = false;
+            clientReadyButton.image.color = offButtonColor;
+            yield break;
+        }
 
         while (!clientRelayUtilityTask.IsCompleted)
         {
@@ -114,7 +133,8 @@ public class NetworkUI : NetworkBehaviour
 
         if (clientRelayUtilityTask.IsFaulted)
         {
-            Debug.LogError("Exception thrown when attempting to connect to Relay Server. Exception: " + clientRelayUtilityTask.Exception.Message);
+            Debug.LogError("Exception thrown when attempting to connect to Relay Server. Exception: " +
+                           clientRelayUtilityTask.Exception?.Message);
             yield break;
         }
 
@@ -136,8 +156,7 @@ public class NetworkUI : NetworkBehaviour
         }
         catch
         {
-            Debug.LogError("Relay create join code request failed");
-            throw;
+            throw new JoinCodeException("Wrong join code or something went wrong");
         }
 
         Debug.Log($"client: {allocation.ConnectionData[0]} {allocation.ConnectionData[1]}");
@@ -171,7 +190,7 @@ public class NetworkUI : NetworkBehaviour
         //Only host can click on HostReadyButton
         hostReadyButton.onClick.AddListener(OnHostReadyButtonClick);
     }
-    
+
     private IEnumerator Example_ConfigureTransportAndStartNgoAsHost()
     {
         var serverRelayUtilityTask = AllocateRelayServerAndGetJoinCode(m_MaxConnections);
@@ -179,9 +198,11 @@ public class NetworkUI : NetworkBehaviour
         {
             yield return null;
         }
+
         if (serverRelayUtilityTask.IsFaulted)
         {
-            Debug.LogError("Exception thrown when attempting to start Relay Server. Server not started. Exception: " + serverRelayUtilityTask.Exception.Message);
+            Debug.LogError("Exception thrown when attempting to start Relay Server. Server not started. Exception: " +
+                           serverRelayUtilityTask.Exception.Message);
             yield break;
         }
 
@@ -194,7 +215,9 @@ public class NetworkUI : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
         yield return null;
     }
-    private static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections, string region = null)
+
+    private static async Task<RelayServerData> AllocateRelayServerAndGetJoinCode(int maxConnections,
+        string region = null)
     {
         Allocation allocation;
         joinCode = null;
@@ -281,23 +304,23 @@ public class NetworkUI : NetworkBehaviour
 
     private void OnClientReadyButtonClick()
     {
-        if (_isReady)
+        /*if (_isReady)
         {
             _isReady = false;
             clientReadyButton.image.color = offButtonColor;
             ClientNotReadyServerRpc();
         }
         else
-        {
-            _isReady = true;
-            clientReadyButton.image.color = onButtonColor;
-            //NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().gameObject.name = "Client";
-            PlayerPrefs.SetString("playerName",
-                string.IsNullOrEmpty(nameTextClient.text) ? "Client" : nameTextClient.text);
+        {*/
+        _isReady = true;
+        clientReadyButton.image.color = onButtonColor;
+        //NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().gameObject.name = "Client";
+        PlayerPrefs.SetString("playerName",
+            string.IsNullOrEmpty(nameTextClient.text) ? "Client" : nameTextClient.text);
 
-            StartCoroutine(Example_ConfigureTransportAndStartNgoAsConnectingPlayer());
+        StartCoroutine(Example_ConfigureTransportAndStartNgoAsConnectingPlayer());
 
-        }
+        //}
     }
 
     private void OnClientConnected(ulong clientId)
@@ -317,9 +340,9 @@ public class NetworkUI : NetworkBehaviour
             OnBothPlayersReadyClientRpc();
             GetComponent<NetworkObject>().Despawn();
         }
-        
+
         logText.text = "Log: NEXT SCENE";
-        
+
         SceneManager.instance.LoadSceneSingle(sceneName);
 
         if (IsHost)
@@ -332,8 +355,8 @@ public class NetworkUI : NetworkBehaviour
     [ClientRpc]
     private void OnBothPlayersReadyClientRpc()
     {
-        if(IsHost) return;
-        
+        if (IsHost) return;
+
         OnBothPlayersReady();
     }
 
@@ -351,7 +374,7 @@ public class NetworkUI : NetworkBehaviour
     {
         ShowUI();
     }
-    
+
     [ClientRpc]
     private void HostDisconnectedClientRpc()
     {
@@ -363,7 +386,7 @@ public class NetworkUI : NetworkBehaviour
     private void HostReadyClientRpc()
     {
         if (IsHost) return;
-        
+
         hostReadyButton.image.color = onButtonColor;
     }
 
@@ -381,10 +404,10 @@ public class NetworkUI : NetworkBehaviour
         //if (NetworkManager.ConnectedClients.ContainsKey(OwnerClientId))
         //{
         //    clientReadyButton.image.color = onButtonColor;
-            _isClientReady = true;
+        _isClientReady = true;
 
-            if (_isReady)
-                OnBothPlayersReady();
+        if (_isReady)
+            OnBothPlayersReady();
         //}
     }
 
