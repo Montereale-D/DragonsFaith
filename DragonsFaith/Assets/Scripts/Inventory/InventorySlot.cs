@@ -1,5 +1,6 @@
 using System;
 using Inventory.Items;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -84,6 +85,7 @@ namespace Inventory
             
             if (inventoryItem.item.consumable && used)
             {
+                AudioManager.instance.PlayUseItemSound();
                 UpdateItemQuantity(inventoryItem);
             }
             else

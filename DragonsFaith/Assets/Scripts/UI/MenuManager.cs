@@ -112,13 +112,15 @@ namespace UI
         
             //_playerInput.SwitchCurrentActionMap("UI");
 
-            _optionsManager = OptionsManager.Instance;
+            _optionsManager = OptionsManager.instance;
             
             _optionsManager.SetDropdown(resolutionDropdown);
         
             playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
             enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
             backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
+            
+            AudioManager.instance.PlaySoundTrackMenu();
         }
 
         private void Update()
@@ -246,11 +248,11 @@ namespace UI
         //UI AUDIO
         public void PlayOverUIButtonSound()
         {
-            //AudioManager.Instance.PlayOverUIButtonSound();
+            AudioManager.instance.PlayOverUIButtonSound();
         }
         public void PlayClickUIButtonSound()
         {
-            //AudioManager.Instance.PlayClickUIButtonSound();
+            AudioManager.instance.PlayClickUIButtonSound();
         }
 
         //OPTION SETTINGS

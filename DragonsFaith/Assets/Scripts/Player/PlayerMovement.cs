@@ -44,7 +44,6 @@ namespace Player
             _speed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : speed;
 
             transform.position += moveDir * (_speed * Time.deltaTime);
-            //TODO: interrupt animation when entering combat
             if (moveDir != Vector3.zero)
             {
                 _animator.SetBool(IsRunning, Math.Abs(_speed - fastSpeed) < 0.1f);

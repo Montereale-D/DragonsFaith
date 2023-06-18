@@ -136,7 +136,7 @@ namespace UI
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
 
-            _optionsManager = OptionsManager.Instance;
+            _optionsManager = OptionsManager.instance;
 
             _optionsManager.SetDropdown(resolutionDropdown);
 
@@ -157,6 +157,7 @@ namespace UI
         private void Start()
         {
             InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots, passiveSkillSlots);
+            CharacterManager.Instance.LockPlayerMovement();
         }
 
         private void Update()
@@ -244,14 +245,8 @@ namespace UI
                     skillsTab.SetActive(!skillsTab.activeSelf);
                     break;
                 case Tab.Faith:
-                    //FadeOutElement(_rectTransformFaithTab, faithTabFadeOutTime);
                     LeanTween.alpha(_rectTransformFaithTab, 0f, faithTabFadeOutTime).setEase(LeanTweenType.linear)
                         .setOnComplete(FaithTabAnimComplete);
-                    /*delay = LeanTween.delayedCall(faithTabFadeOutTime, () =>
-                    {
-                        faithTab.SetActive(false);
-                    });*/
-                    //faithTab.SetActive(false);
                     _faithChoiceDone = true;
                     break;
                 case Tab.Main:
@@ -299,22 +294,7 @@ namespace UI
             var spriteIdx = Random.Range(0, portraitSprites.Length);
             portraitIdx = spriteIdx;
             portrait.sprite = portraitSprites[spriteIdx];
-            //StartCoroutine(GetOtherPlayerSprite(portraitIdx));
         }
-
-        /*private IEnumerator GetOtherPlayerSprite(int idx)
-        {
-            _dataManager.SendPortraitSprite(idx);
-            while (!_dataManager.received)
-            {
-                Debug.Log("waiting...");
-                yield return new WaitForSeconds(0.2f);
-            }
-
-            /*Debug.Assert(_dataManager.otherPlayerSpriteIdx != null, 
-                "_dataManager.otherPlayerSpriteIdx != null");#1#
-            otherPlayerSprite = portraitSprites[_dataManager.otherPlayerSpriteIdx];
-        }*/
 
         public void OpenMenu()
         {
@@ -365,6 +345,7 @@ namespace UI
             SetPortraitSprite();
             playerUI.SetActive(true);
             settingsButton.SetActive(true);
+            CharacterManager.Instance.UnlockPlayerMovement();
         }
 
         public void SetFire()

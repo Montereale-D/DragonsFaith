@@ -19,4 +19,6 @@ MonoBehaviour:
   image: {fileID: 0}
   weaponType: 0
   range: 1
-  damage: 1
+  damage: 2
+  capacity: 1
+  weaponObject: {fileID: 0}

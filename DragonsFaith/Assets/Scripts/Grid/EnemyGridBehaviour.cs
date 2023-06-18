@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory.Items;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -85,8 +86,12 @@ namespace Grid
                 _health = 0;
                 Die();
             }
-
-            _animator.SetTrigger(Hurt);
+            else
+            {
+                _animator.SetTrigger(Hurt);
+                AudioManager.instance.PlayPLayerHurtSound();
+            }
+        
             _popUpUI.UpdateHealth(_health);
         }
 
@@ -99,6 +104,8 @@ namespace Grid
         {
             CombatSystem.instance.CharacterDied(GetComponent<PlayerGridMovement>());
             _animator.SetTrigger(Dead);
+            AudioManager.instance.PlayPLayerDieSound();
+            
             yield return new WaitForSeconds(3f);
 
             if (NetworkManager.Singleton.IsHost)
@@ -430,11 +437,20 @@ namespace Grid
             var direction = (target.transform.position - transform.position).normalized.x;
             _animator.SetFloat(X, direction);
             _animator.SetTrigger(behaviourType == EnemyBehaviourType.Ranged ? Ranged : Melee);
+            if (behaviourType == EnemyBehaviourType.Ranged && weapon.itemName == "Assault Rifle")
+            {
+                AudioManager.instance.PlayEnemyAssaultAttackSound();
+            }
+            else
+            {
+                AudioManager.instance.PlayEnemyKnifeAttackSound();
+            }
         }
 
         public void TriggerReloadAnimation()
         {
             _animator.SetTrigger(Reload);
+            AudioManager.instance.PlayEnemyAssaultReloadSound();
         }
     
         #endregion

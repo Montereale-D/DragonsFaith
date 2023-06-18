@@ -198,5 +198,17 @@ namespace Player
         {
             return _characterInfo.characterName;
         }
+
+        public void LockPlayerMovement()
+        {
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().enabled = false;
+        }
+
+        public void UnlockPlayerMovement()
+        {
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().enabled = true;
+        }
     }
 }
