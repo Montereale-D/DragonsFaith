@@ -32975,7 +32975,7 @@ MonoBehaviour:
   otherPlayerName: 
   coverLayerMaskHit:
     serializedVersion: 2
-    m_Bits: 904
+    m_Bits: 256
   _moveInProgress: 0
 --- !u!114 &1993676594
 MonoBehaviour:
