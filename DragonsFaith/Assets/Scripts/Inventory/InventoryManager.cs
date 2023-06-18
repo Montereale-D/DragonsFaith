@@ -155,7 +155,7 @@ namespace Inventory
                     var isUsed = false;
                     if (CharacterManager.Instance.mode == CharacterManager.Mode.Free)
                     {
-                        isUsed = OnConsumableUse(item);
+                        isUsed = OnConsumableUse(item, CharacterManager.Mode.Free);
                     }
                     else if(CombatSystem.instance != null && CombatSystem.instance.CanUseItem())
                     {
@@ -179,7 +179,7 @@ namespace Inventory
 
         
         /// <returns>true if used, false otherwise</returns>
-        private bool OnConsumableUse(InventoryItem item)
+        private bool OnConsumableUse(InventoryItem item, CharacterManager.Mode mode)
         {
             var consumable = item.item as Consumable;
             if (consumable == null) throw new Exception("Not valid casting");
@@ -187,6 +187,10 @@ namespace Inventory
             {
                 case Consumable.ConsumableType.PotionHealing:
                     CharacterManager.Instance.Heal(20);
+                    if (mode == CharacterManager.Mode.Free)
+                    {
+                        ExchangeManager.Instance.NotifyHealToAnother(20);
+                    }
                     break;
                 case Consumable.ConsumableType.Revival:
                     if (CharacterManager.Instance.mode == CharacterManager.Mode.Grid)

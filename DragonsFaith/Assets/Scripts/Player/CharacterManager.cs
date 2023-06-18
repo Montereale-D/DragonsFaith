@@ -67,6 +67,11 @@ namespace Player
             return _characterInfo.GetMaxHealth();
         }
 
+        public int GetHealth()
+        {
+            return _characterInfo.GetHealth();
+        }
+
         public int GetMaxMana()
         {
             return _characterInfo.GetMaxMana();

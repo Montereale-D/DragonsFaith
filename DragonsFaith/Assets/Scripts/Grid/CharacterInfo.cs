@@ -210,6 +210,11 @@ public class CharacterInfo : MonoBehaviour
         return maxHealth;
     }
 
+    public int GetHealth()
+    {
+        return health;
+    }
+
     public int GetMaxMana()
     {
         return maxMana;
