@@ -316,8 +316,8 @@ namespace Network
                         Debug.LogWarning("Load event timed out for the following client " +
                                          $"identifiers:({sceneEvent.ClientsThatTimedOut})");
                     }
-                    
-                    
+
+                    ForceFadeInClientRpc();
 
                     /*if (_loadedScene.name != "Grid")
                     {
@@ -341,6 +341,14 @@ namespace Network
                     break;
                 }
             }
+        }
+
+        [ClientRpc]
+        private void ForceFadeInClientRpc()
+        {
+            Debug.Log("ForceFadeInClientRpc");
+            TransitionBackground.instance.FadeIn();
+            _isLoading = false;
         }
 
         /*[ClientRpc]
@@ -368,6 +376,44 @@ namespace Network
         private string dungeonSceneName;
         public void LoadSceneSingleDungeon(string sceneName)
         {
+            NotifyPlayerLoadSceneSingleDungeon(sceneName);
+            dungeonSceneName = sceneName;
+            LoadSceneSingle(sceneName);
+            if (!_isFirstDungeon) return;
+            PlayerUI.instance.StartDungeonTutorial();
+            _isFirstDungeon = false;
+        }
+        
+
+        private void NotifyPlayerLoadSceneSingleDungeon(string sceneName)
+        {
+            if (IsHost)
+            {
+                LoadSceneSingleDungeonClientRpc(sceneName);
+            }
+            else
+            {
+                LoadSceneSingleDungeonServerRpc(sceneName);
+            }
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        private void LoadSceneSingleDungeonServerRpc(string sceneName)
+        {
+            if (!IsHost) return;
+            
+            dungeonSceneName = sceneName;
+            LoadSceneSingle(sceneName);
+            if (!_isFirstDungeon) return;
+            PlayerUI.instance.StartDungeonTutorial();
+            _isFirstDungeon = false;
+        }
+
+        [ClientRpc]
+        private void LoadSceneSingleDungeonClientRpc(string sceneName)
+        {
+            if(IsHost) return;
+            
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
             if (!_isFirstDungeon) return;

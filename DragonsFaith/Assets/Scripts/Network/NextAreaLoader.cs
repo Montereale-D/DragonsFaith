@@ -109,6 +109,7 @@ namespace Network
         {
             if(!_offSetActive)
                 return;
+            _offSetActive = false;
             
             if (door)
             {
@@ -116,7 +117,7 @@ namespace Network
                 activationArea.color = Color.green;
                 AudioManager.instance.PlayOpenGateSound();
             }
-
+            
             SceneManager.instance.LoadSceneSingleDungeon(sceneName);
         }
 
