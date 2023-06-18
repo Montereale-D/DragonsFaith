@@ -91,6 +91,7 @@ public class NetworkUI : NetworkBehaviour
         logText.text = "Log: you are a client";
         hostButton.enabled = false;
         clientButton.enabled = false;
+        relayJoinCodeClient.text = "";
 
         //Make ready buttons appear
         clientReadyButton.gameObject.SetActive(true);
@@ -103,7 +104,7 @@ public class NetworkUI : NetworkBehaviour
     private IEnumerator Example_ConfigureTransportAndStartNgoAsConnectingPlayer()
     {
         // Populate RelayJoinCode beforehand through the UI
-        if (string.IsNullOrEmpty(relayJoinCodeClient.text))
+        if (string.IsNullOrEmpty(relayJoinCodeClient.text) || relayJoinCodeClient.text.Length < 6)
         {
             _isReady = false;
             clientReadyButton.image.color = offButtonColor;
@@ -133,18 +134,34 @@ public class NetworkUI : NetworkBehaviour
 
         if (clientRelayUtilityTask.IsFaulted)
         {
-            Debug.LogError("Exception thrown when attempting to connect to Relay Server. Exception: " +
+            Debug.LogWarning("Exception thrown when attempting to connect to Relay Server. Exception: " +
                            clientRelayUtilityTask.Exception?.Message);
+            clientReadyButton.image.color = offButtonColor;
             yield break;
         }
 
         var relayServerData = clientRelayUtilityTask.Result;
+        cancelButton.onClick.RemoveListener(OnCancelButtonClick);
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
         NetworkManager.Singleton.StartClient();
 
+        StartCoroutine(WaitForLoadOrCancel());
+
         yield return null;
+    }
+
+    private bool waitingHost = false;
+    private IEnumerator WaitForLoadOrCancel()
+    {
+        waitingHost = true;
+        yield return new WaitForSecondsRealtime(8);
+
+        if (waitingHost)
+        {
+            OnCancelButtonClick();
+        }
     }
 
     private static async Task<RelayServerData> JoinRelayServerFromJoinCode(string joinCode)
@@ -182,6 +199,7 @@ public class NetworkUI : NetworkBehaviour
         logText.text = "Log: you are a host";
         hostButton.enabled = false;
         clientButton.enabled = false;
+        relayJoinCodeHost.text = "";
 
         //Make ready buttons appear
         clientReadyButton.gameObject.SetActive(true);
@@ -253,11 +271,14 @@ public class NetworkUI : NetworkBehaviour
         {
             if (_isReady)
             {
-                _isReady = false;
-                hostReadyButton.image.color = offButtonColor;
-                HostNotReadyClientRpc();
+                //HostNotReadyClientRpc();
             }
             
+            _isReady = false;
+            hostReadyButton.image.color = offButtonColor;
+            nameTextHost.text = "";
+            relayJoinCodeHost.text = "";
+
             //Unregister to client connection events
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
@@ -265,12 +286,17 @@ public class NetworkUI : NetworkBehaviour
             //Warn client
             HostDisconnectedClientRpc();
         }
-        else if (!IsHost && _isReady)
+        else if (!IsHost)
         {
-            Debug.Log("not ready");
+            if (_isReady)
+            {
+                //ClientNotReadyServerRpc();
+            }
+            
             _isReady = false;
             clientReadyButton.image.color = offButtonColor;
-            ClientNotReadyServerRpc();
+            nameTextClient.text = "";
+            relayJoinCodeClient.text = "";
         }
 
         clientReadyButton.onClick.RemoveAllListeners();
@@ -286,10 +312,11 @@ public class NetworkUI : NetworkBehaviour
         //Make ready buttons disappear
         clientReadyButton.gameObject.SetActive(false);
         hostReadyButton.gameObject.SetActive(false);
-
+        
         NetworkManager.Singleton.Shutdown();
         
         MenuManager.Instance.BackToPlayAsScreen();
+        
     }
 
     private void OnHostReadyButtonClick()
@@ -403,6 +430,8 @@ public class NetworkUI : NetworkBehaviour
         if (IsHost) return;
 
         hostReadyButton.image.color = onButtonColor;
+        Debug.Log("HostReadyClientRpc");
+        waitingHost = false;
     }
 
     [ClientRpc]
