@@ -88,7 +88,6 @@ namespace Network
                     break;
             }
 
-            //TODO: different if room is hub or dungeon or to boss room
             if (_playersReady != 2) return;
             if (toDungeon) PlayerUI.instance.ShowMessage("Entering dungeon.");
             else if (toBoss) PlayerUI.instance.ShowMessage("Entering final area.");
