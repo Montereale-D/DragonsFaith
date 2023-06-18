@@ -59,7 +59,8 @@ namespace UI
         public static bool isChangingKey;
 
         private OptionsManager _optionsManager;
-    
+        private AudioManager _audioManager;
+
         //private UnityEngine.InputSystem.PlayerInput _playerInput;
 
 
@@ -113,12 +114,13 @@ namespace UI
             //_playerInput.SwitchCurrentActionMap("UI");
 
             _optionsManager = OptionsManager.instance;
-            
+            _audioManager = AudioManager.instance;
+
             _optionsManager.SetDropdown(resolutionDropdown);
         
-            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
-            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
-            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
+            playerVolumeSlider.value = _audioManager.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = _audioManager.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = _audioManager.GetBackgroundVolumeSound();
             
             AudioManager.instance.PlaySoundTrackMenu();
         }
@@ -258,15 +260,17 @@ namespace UI
         //OPTION SETTINGS
         public void SetBackgroundVolume(float value)
         {
-            _optionsManager.SetBackgroundVolume(value);
+            _audioManager.SetBackgroundVolume(value);
         }
+
         public void SetPlayerVolume(float value)
         {
-            _optionsManager.SetPlayerVolume(value);
+            _audioManager.SetPlayerVolume(value);
         }
+
         public void SetEnemyVolume(float value)
         {
-            _optionsManager.SetEnemyVolume(value);
+            _audioManager.SetEnemyVolume(value);
         }
 
         public void SetQuality(int qualityIndex)

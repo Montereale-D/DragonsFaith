@@ -115,6 +115,7 @@ namespace UI
         private float turnUIFadeOutTime = 0.5f;
 
         private OptionsManager _optionsManager;
+        private AudioManager _audioManager;
 
         private UnityAction _moveOrAttackAction;
         private Image _moveOrAttackImage;
@@ -143,14 +144,15 @@ namespace UI
             faithTab.SetActive(true);
 
             _optionsManager = OptionsManager.instance;
+            _audioManager = AudioManager.instance;
 
             _optionsManager.SetDropdown(resolutionDropdown);
 
             //nameText.text = _optionsManager.RetrievePlayerName();
 
-            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
-            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
-            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
+            playerVolumeSlider.value = _audioManager.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = _audioManager.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = _audioManager.GetBackgroundVolumeSound();
 
             //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
 
@@ -486,17 +488,17 @@ namespace UI
 
         public void SetBackgroundVolume(float value)
         {
-            _optionsManager.SetBackgroundVolume(value);
+            _audioManager.SetBackgroundVolume(value);
         }
 
         public void SetPlayerVolume(float value)
         {
-            _optionsManager.SetPlayerVolume(value);
+            _audioManager.SetPlayerVolume(value);
         }
 
         public void SetEnemyVolume(float value)
         {
-            _optionsManager.SetEnemyVolume(value);
+            _audioManager.SetEnemyVolume(value);
         }
 
         public void SetQuality(int qualityIndex)

@@ -242,5 +242,36 @@ namespace UI
         }
 
         #endregion
+
+        #region SettersAndGetters
+        
+        public void SetPlayerVolume(float value)
+        {
+            playerSound.volume = value;
+        }
+        public float GetPlayerVolumeSound()
+        {
+            return playerSound.volume;
+        }
+        
+        public void SetEnemyVolume(float value)
+        {
+            enemySound.volume = value;
+        }
+        public float GetEnemyVolumeSound()
+        {
+            return enemySound.volume;
+        }
+        
+        public void SetBackgroundVolume(float value)
+        {
+            backgroundMusic.volume = value;
+        }
+        public float GetBackgroundVolumeSound()
+        {
+            return backgroundMusic.volume;
+        }
+        
+        #endregion
     }
 }
