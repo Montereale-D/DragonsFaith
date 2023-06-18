@@ -129,6 +129,7 @@ public class CharacterInfo : MonoBehaviour
         else
         {
             _characterUI.UpdateHealth(health);
+            if (!CombatSystem.instance) return;
             var popUI = GetComponent<CharacterGridPopUpUI>();
             if (popUI)
             {

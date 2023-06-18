@@ -12,7 +12,10 @@ namespace Network
         {
             if (instance != null && instance != this)
             {
-                Destroy(gameObject);
+                Destroy(instance.gameObject);
+                instance = this;
+                GetComponent<NetworkManager>().SetSingleton();
+                DontDestroyOnLoad(this);
             }
             else
             {

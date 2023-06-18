@@ -79,7 +79,7 @@ namespace Grid
             coveredSymbol.SetActive(isProtected);
             damageCounterText.color = heal ? Color.green : Color.red;
             _isOpening = true;
-            AudioManager.instance.PlayPLayerHurtSound();
+            if (!heal) AudioManager.instance.PlayPLayerHurtSound();
             //ShowBlood();
         }
 

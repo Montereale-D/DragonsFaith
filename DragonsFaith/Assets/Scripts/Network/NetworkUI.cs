@@ -43,8 +43,13 @@ public class NetworkUI : NetworkBehaviour
     [SerializeField] private TMP_InputField relayJoinCodeClient;
     [SerializeField] private TMP_InputField nameTextClient;
 
-    private void Awake()
+    private NetworkManager _networkManager;
+
+    private void Start()
     {
+        //_networkManager = FindObjectOfType<NetworkManager>();
+        //_networkManager = NetworkManager.Singleton;
+
         hostButton.onClick.AddListener(OnHostButtonClick);
         clientButton.onClick.AddListener(OnClientButtonClick);
         cancelButton.onClick.AddListener(OnCancelButtonClick);
@@ -269,11 +274,6 @@ public class NetworkUI : NetworkBehaviour
     {
         if (IsHost)
         {
-            if (_isReady)
-            {
-                //HostNotReadyClientRpc();
-            }
-            
             _isReady = false;
             hostReadyButton.image.color = offButtonColor;
             nameTextHost.text = "";
@@ -380,7 +380,7 @@ public class NetworkUI : NetworkBehaviour
         if (IsHost)
         {
             OnBothPlayersReadyClientRpc();
-            GetComponent<NetworkObject>().Despawn();
+            //GetComponent<NetworkObject>().Despawn();
         }
 
         logText.text = "Log: NEXT SCENE";

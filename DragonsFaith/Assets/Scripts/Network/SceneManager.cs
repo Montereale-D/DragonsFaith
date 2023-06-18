@@ -21,6 +21,7 @@ namespace Network
         private bool _isLoading;
         private bool _isFirstDungeon = true;
         private bool _isFirstLoad = true;
+        public bool isFirstEntering = true;
 
         private void Awake()
         {
@@ -160,6 +161,7 @@ namespace Network
             }
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
             TransitionBackground.instance.FadeIn();
+            Destroy(instance.gameObject);
         }
 
         private static void CleanDontDestroy()
@@ -173,16 +175,15 @@ namespace Network
             {
                 Destroy(CharacterManager.Instance.gameObject);
             }
-            /*
             if (InventoryManager.Instance != null)
             {
                 Destroy(InventoryManager.Instance.gameObject);
             }
 
-            if (SceneManager.instance != null)
+            /*if (SceneManager.instance != null)
             {
                 Destroy(SceneManager.instance.gameObject);
-            }
+            }*/
 
             if (OptionsManager.instance != null)
             {
@@ -232,7 +233,7 @@ namespace Network
             if (DataManager.instance != null)
             {
                 Destroy(DataManager.instance.gameObject);
-            }*/
+            }
         }
 
         [ClientRpc]
