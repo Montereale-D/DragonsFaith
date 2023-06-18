@@ -234,7 +234,7 @@ namespace Enemy
             }
         }
 
-        [ServerRpc]
+        [ServerRpc (RequireOwnership = false)]
         private void StopMovementServerRpc()
         {
             fieldOfView.Stop();
