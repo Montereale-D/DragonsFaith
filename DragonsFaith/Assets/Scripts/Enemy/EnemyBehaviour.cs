@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Network;
 using Save;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -204,6 +205,7 @@ namespace Enemy
 
             fieldOfView.Stop();
             _keepMoving = false;
+            AudioManager.instance.PlaySpottedSound();
 
             Debug.Log("OnCombatStart " + position);
             
@@ -237,6 +239,7 @@ namespace Enemy
         {
             fieldOfView.Stop();
             _keepMoving = false;
+            AudioManager.instance.PlaySpottedSound();
         }
 
         [ClientRpc]

@@ -60,6 +60,8 @@ namespace Grid
             _playerUI = PlayerUI.instance;
             _mapHandler = MapHandler.instance;
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
+            
+            AudioManager.instance.PlaySoundTrackCombat();
 
             /*_turnDelay = 2.1f;
         _turnDelayCounter = 0;*/
@@ -370,6 +372,7 @@ namespace Grid
 
         #endregion
 
+        #region Items
         public bool CanUseItem()
         {
             if (!_canAttackThisTurn)
@@ -410,6 +413,8 @@ namespace Grid
             _playerUI.ShowMessage(playerName + " use " + itemName);
         }
 
+        #endregion
+        
         public void CharacterDied(PlayerGridMovement character)
         {
             _turnUI.OnDeath(character);
@@ -463,6 +468,7 @@ namespace Grid
             if (activeUnit == _localPlayer.GetComponent<PlayerGridMovement>())
             {
                 _playerUI.SetAmmoCounter(weapon.GetAmmo());
+                _localPlayer.GetComponent<PlayerGridMovement>().TriggerReloadSound(weapon.itemName);
                 _playerUI.ShowMessage("Weapon reloaded.");
             }
             else if (activeUnit.GetTeam() == PlayerGridMovement.Team.Enemies)
@@ -915,7 +921,11 @@ namespace Grid
                     _isUsingSkill = true;
 
                     var character = _selectedTile.GetCharacter();
-                    if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
+                    if (!_canAttackThisTurn)
+                    {
+                        _playerUI.SetCombatPopUp(true, "Already performed action.");
+                    }
+                    else if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
                     {
                         var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
                         if (distance >= 5)
@@ -952,7 +962,11 @@ namespace Grid
                     _isUsingSkill = true;
 
                     var character = _selectedTile.GetCharacter();
-                    if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
+                    if (!_canAttackThisTurn)
+                    {
+                        _playerUI.SetCombatPopUp(true, "Already performed action.");
+                    }
+                    else if (character && character.GetTeam() != PlayerGridMovement.Team.Players)
                     {
                         var distance = PlayerGridMovement.GetManhattanDistance(activeUnit.onTile, _selectedTile);
                         if (distance >= 5)
@@ -1401,6 +1415,7 @@ namespace Grid
             NotifyDestroyedObstacle(obstacle);
             obstacle.onTile.ClearTile();
             Destroy(obstacle.gameObject);
+            AudioManager.instance.PlayObstacleDestroyedSound();
 
             _canAttackThisTurn = false;
         }
@@ -1429,6 +1444,7 @@ namespace Grid
             var obstacle = tile.GetObstacle();
             tile.ClearTile();
             Destroy(obstacle.gameObject);
+            AudioManager.instance.PlayObstacleDestroyedSound();
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -1442,6 +1458,7 @@ namespace Grid
             var obstacle = tile.GetObstacle();
             tile.ClearTile();
             Destroy(obstacle.gameObject);
+            AudioManager.instance.PlayObstacleDestroyedSound();
         }
 
         #endregion

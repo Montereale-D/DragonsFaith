@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using Grid;
 using Player;
+using UI;
 using Unity.Netcode;
 
 public class PlayerGridMovement : MonoBehaviour
@@ -145,6 +146,8 @@ public class PlayerGridMovement : MonoBehaviour
         var direction = (path[^1].transform.position - transform.position).normalized.x;
         _animator.SetBool(IsMoving, true);
         _animator.SetFloat(X, direction);
+        /*if (team == Team.Players) AudioManager.instance.PlayPlayerWalkSound();
+        else AudioManager.instance.PlayEnemyWalkSound();*/
         
         while (path.Count > 0)
         {
@@ -153,6 +156,8 @@ public class PlayerGridMovement : MonoBehaviour
         }
         
         _animator.SetBool(IsMoving, false);
+        /*if (team == Team.Players) AudioManager.instance.StopPlayerWalkSound();
+        else AudioManager.instance.PlayEnemyWalkSound();*/
         Debug.Log("PerformEnemyMovement unlock");
         CombatSystem.instance._moveInProgress = false;
     }
@@ -271,15 +276,47 @@ public class PlayerGridMovement : MonoBehaviour
         {
             case "Pistol":
                 _animator.SetTrigger(Pistol);
+                AudioManager.instance.PlayPlayerPistolAttackSound();
                 break;
-            case "Assault Rifle" or "Shotgun" or "Sniper Rifle":
+            case "Assault Rifle":
                 _animator.SetTrigger(Rifle);
+                AudioManager.instance.PlayPlayerAssaultAttackSound();
+                break;
+            case "Shotgun":
+                _animator.SetTrigger(Rifle);
+                AudioManager.instance.PlayShotgunAttackSound();
+                break;
+            case "Sniper Rifle":
+                _animator.SetTrigger(Rifle);
+                AudioManager.instance.PlaySniperAttackSound();
                 break;
             case "Skill":
                 _animator.SetTrigger(Skill);
                 break;
             default:
                 _animator.SetTrigger(Melee);
+                AudioManager.instance.PlayPlayerKnifeAttackSound();
+                break;
+        }
+    }
+    
+    public void TriggerReloadSound(string weaponName)
+    {
+        switch (weaponName)
+        {
+            case "Pistol":
+                AudioManager.instance.PlayPlayerPistolReloadSound();
+                break;
+            case "Assault Rifle":
+                AudioManager.instance.PlayPlayerAssaultReloadSound();
+                break;
+            case "Shotgun":
+                AudioManager.instance.PlayShotgunReloadSound();
+                break;
+            case "Sniper Rifle":
+                AudioManager.instance.PlaySniperReloadSound();
+                break;
+            default:
                 break;
         }
     }

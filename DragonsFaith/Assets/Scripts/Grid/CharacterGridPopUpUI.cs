@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,6 +79,7 @@ namespace Grid
             coveredSymbol.SetActive(isProtected);
             damageCounterText.color = heal ? Color.green : Color.red;
             _isOpening = true;
+            AudioManager.instance.PlayPLayerHurtSound();
             //ShowBlood();
         }
 

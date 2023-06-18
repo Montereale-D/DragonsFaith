@@ -25188,7 +25188,7 @@ MonoBehaviour:
     direction you want to launch it, then press the skill button in the action bar.
     This will highlight the tiles in range of the skill. You can then press again
     the button to hide it, or you can select the tile of an enemy in range, and then
-    press the button again to unleash it, spending 20 mana.
+    press the button again to unleash it, spending 10 mana.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
   m_sharedMaterial: {fileID: -2713363486176451765, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}

@@ -116,6 +116,7 @@ namespace Network
             {
                 door.sprite = openDoorSprite;
                 activationArea.color = Color.green;
+                AudioManager.instance.PlayOpenGateSound();
             }
 
             if (_sceneManager)

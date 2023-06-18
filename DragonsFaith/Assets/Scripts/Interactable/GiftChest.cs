@@ -1,5 +1,6 @@
 using Inventory;
 using Inventory.Items;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -54,6 +55,7 @@ namespace Interactable
 
             Debug.Log("Item  picked up");
             DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
+            AudioManager.instance.PlayOpenChestSound();
             Notify();
 
             if (IsHost)
@@ -85,6 +87,7 @@ namespace Interactable
         {
             if(IsHost) return;
             
+            AudioManager.instance.PlayOpenChestSound();
             DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
         }
         
@@ -93,6 +96,7 @@ namespace Interactable
         {
             if(!IsHost) return;
             
+            AudioManager.instance.PlayOpenChestSound();
             DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
         }
 

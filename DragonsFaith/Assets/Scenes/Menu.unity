@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 27594955}
   - component: {fileID: 27594954}
   - component: {fileID: 27594957}
+  - component: {fileID: 27594958}
   m_Layer: 0
   m_Name: HostButton
   m_TagString: Untagged
@@ -290,6 +291,35 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &27594958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27594952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1052567675}
+          m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+          m_MethodName: PlayOverUIButtonSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &31211776
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,10 +354,10 @@ RectTransform:
   m_Father: {fileID: 2004341393}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 119.18063, y: -50}
+  m_SizeDelta: {x: 238.36127, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &31211778
 MonoBehaviour:
@@ -1225,10 +1255,10 @@ RectTransform:
   m_Father: {fileID: 2004341393}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 469.18063, y: -50}
+  m_SizeDelta: {x: 461.63873, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &126216538
 MonoBehaviour:
@@ -3273,7 +3303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &325507767
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3947,9 +3977,9 @@ RectTransform:
   m_Father: {fileID: 178841149}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -121.25}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &394957489
@@ -4833,9 +4863,9 @@ RectTransform:
   m_Father: {fileID: 178841149}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -626.25}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &488476775
@@ -5847,10 +5877,10 @@ RectTransform:
   m_Father: {fileID: 1338090959}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 469.18063, y: -50}
+  m_SizeDelta: {x: 461.63873, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &592007638
 MonoBehaviour:
@@ -6412,6 +6442,7 @@ GameObject:
   - component: {fileID: 633726384}
   - component: {fileID: 633726383}
   - component: {fileID: 633726386}
+  - component: {fileID: 633726387}
   m_Layer: 0
   m_Name: ClientButton
   m_TagString: Untagged
@@ -6566,6 +6597,35 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &633726387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633726381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1052567675}
+          m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+          m_MethodName: PlayOverUIButtonSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &661389156
 GameObject:
   m_ObjectHideFlags: 0
@@ -7101,10 +7161,10 @@ RectTransform:
   m_Father: {fileID: 1338090959}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 119.18063, y: -50}
+  m_SizeDelta: {x: 238.36127, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &710215740
 MonoBehaviour:
@@ -9945,6 +10005,7 @@ GameObject:
   - component: {fileID: 914171877}
   - component: {fileID: 914171876}
   - component: {fileID: 914171875}
+  - component: {fileID: 914171879}
   m_Layer: 0
   m_Name: ClientReadyButton
   m_TagString: Untagged
@@ -10087,6 +10148,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914171873}
   m_CullTransparentMesh: 1
+--- !u!114 &914171879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914171873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1052567675}
+          m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+          m_MethodName: PlayOverUIButtonSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &917869077
 GameObject:
   m_ObjectHideFlags: 0
@@ -12623,10 +12713,10 @@ RectTransform:
   m_Father: {fileID: 386154701}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 119.18063, y: -50}
-  m_SizeDelta: {x: 238.36127, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1108535717
 MonoBehaviour:
@@ -13229,10 +13319,10 @@ RectTransform:
   m_Father: {fileID: 386154701}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 469.18063, y: -50}
-  m_SizeDelta: {x: 461.63873, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1170146757
 MonoBehaviour:
@@ -14437,6 +14527,7 @@ GameObject:
   - component: {fileID: 1257892968}
   - component: {fileID: 1257892967}
   - component: {fileID: 1257892966}
+  - component: {fileID: 1257892970}
   m_Layer: 0
   m_Name: HostReadyButton
   m_TagString: Untagged
@@ -14579,6 +14670,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1257892964}
   m_CullTransparentMesh: 1
+--- !u!114 &1257892970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257892964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1052567675}
+          m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+          m_MethodName: PlayOverUIButtonSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1261660417
 GameObject:
   m_ObjectHideFlags: 0
@@ -17052,10 +17172,10 @@ RectTransform:
   m_Father: {fileID: 1398794967}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 469.18063, y: -50}
-  m_SizeDelta: {x: 461.63873, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1440308029
 MonoBehaviour:
@@ -18255,9 +18375,9 @@ RectTransform:
   m_Father: {fileID: 178841149}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -373.75}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1529461905
@@ -19527,13 +19647,29 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
+      propertyPath: uiSound
+      value: 
+      objectReference: {fileID: 1803269806}
+    - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
+      propertyPath: enemySound
+      value: 
+      objectReference: {fileID: 1803269805}
+    - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
       propertyPath: playerName
       value: 
       objectReference: {fileID: 715710196}
     - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
+      propertyPath: playerSound
+      value: 
+      objectReference: {fileID: 1803269804}
+    - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
       propertyPath: playerNameHost
       value: 
       objectReference: {fileID: 715710196}
+    - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
+      propertyPath: backgroundMusic
+      value: 
+      objectReference: {fileID: 1803269807}
     - target: {fileID: 4872802638695015208, guid: ea94cb133821396439fdc4608253f8aa, type: 3}
       propertyPath: playerNameClient
       value: 
@@ -21601,13 +21737,52 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 858696182090611390, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+      propertyPath: uiSound
+      value: 
+      objectReference: {fileID: 1803269806}
+    - target: {fileID: 858696182090611390, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+      propertyPath: soundBank
+      value: 
+      objectReference: {fileID: 11400000, guid: 1d8134fc5049ac748ba4b06bcdabde75, type: 2}
+    - target: {fileID: 858696182090611390, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+      propertyPath: enemySound
+      value: 
+      objectReference: {fileID: 1803269805}
+    - target: {fileID: 858696182090611390, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+      propertyPath: playerSound
+      value: 
+      objectReference: {fileID: 1803269804}
+    - target: {fileID: 858696182090611390, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+      propertyPath: backgroundMusic
+      value: 
+      objectReference: {fileID: 1803269807}
     - target: {fileID: 858696182090611391, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 858696182090611390, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+--- !u!82 &1803269804 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 858696181166159098, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+  m_PrefabInstance: {fileID: 1803269803}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1803269805 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 858696182992480515, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+  m_PrefabInstance: {fileID: 1803269803}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1803269806 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 295365860131251210, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+  m_PrefabInstance: {fileID: 1803269803}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1803269807 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 858696182069835295, guid: 44b90a4547e27ad488923ff08c4a1bde, type: 3}
+  m_PrefabInstance: {fileID: 1803269803}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1822946648
 GameObject:
   m_ObjectHideFlags: 0
@@ -23363,6 +23538,7 @@ GameObject:
   - component: {fileID: 1960329158}
   - component: {fileID: 1960329157}
   - component: {fileID: 1960329156}
+  - component: {fileID: 1960329160}
   m_Layer: 0
   m_Name: CancelButton
   m_TagString: Untagged
@@ -23505,6 +23681,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1960329154}
   m_CullTransparentMesh: 1
+--- !u!114 &1960329160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960329154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1052567675}
+          m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+          m_MethodName: PlayOverUIButtonSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1963586083
 GameObject:
   m_ObjectHideFlags: 0
@@ -24032,9 +24237,9 @@ RectTransform:
   m_Father: {fileID: 178841149}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -878.75}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2020544680
@@ -24206,10 +24411,10 @@ RectTransform:
   m_Father: {fileID: 1398794967}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 119.18063, y: -50}
-  m_SizeDelta: {x: 238.36127, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2022523831
 MonoBehaviour:

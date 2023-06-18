@@ -107,6 +107,7 @@ public class GameHandler : NetworkBehaviour
     {
         Debug.Log("GAME OVER");
         //todo UI show GameOver screen
+        AudioManager.instance.StopSoundTrackExplore();
         SceneManager.instance.LoadSceneSingle("GameOver");
         //FindObjectOfType<SceneManager>().LoadSceneAdditive("Menu");
     }
@@ -135,6 +136,7 @@ public class GameHandler : NetworkBehaviour
 
         if (!isBossRoom)
         {
+            AudioManager.instance.StopSoundTrackCombat();
             SceneManager.instance.ReloadSceneSingleDungeon();
         }
         else

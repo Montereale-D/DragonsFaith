@@ -19,7 +19,8 @@ namespace Network
 
         private ClientNetworkTransform[] _players;
         private bool _isLoading;
-        private bool isFirstDungeon = true;
+        private bool _isFirstDungeon = true;
+        private bool _isFirstLoad = true;
 
         private void Awake()
         {
@@ -99,6 +100,12 @@ namespace Network
             if(_isLoading) return false;
 
             _isLoading = true;
+
+            if (_isFirstLoad)
+            {
+                _isFirstLoad = false;
+                AudioManager.instance.PlaySoundTrackExplore();
+            }
             
             //EnableInterpolation(false);
             if (sceneName == "Hub")
@@ -106,27 +113,13 @@ namespace Network
                 ResetDungeonProgress();
             }
 
-            //if (!IsHost) return;
-
             StartCoroutine(StartTransition(sceneName));
-            
-            //var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-            //CheckStatus(status); 
             return true;
         }
         
         private IEnumerator StartTransition(string sceneName)
         {
             TransitionBackground.instance.FadeOut();
-            
-            /*if (IsHost)
-            {
-                StartTransitionClientRpc();
-            }*/
-            /*else
-            {
-                StartTransitionServerRpc();
-            }*/
 
             yield return new WaitForSeconds(2f);
 
@@ -134,44 +127,8 @@ namespace Network
             
             var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckStatus(status);
-
-            //yield return new WaitForSecondsRealtime(1.5f);
-            //TransitionBackground.instance.FadeIn();
-            
-            /*if (IsHost)
-            {
-                EndTransitionClientRpc();
-            }
-            else
-            {
-                EndTransitionServerRpc();
-            }*/
-        }
-
-        [ClientRpc]
-        private void StartTransitionClientRpc()
-        {
-            TransitionBackground.instance.FadeOut();
         }
         
-        /*[ServerRpc(RequireOwnership = false)]
-        private void StartTransitionServerRpc()
-        {
-            TransitionBackground.instance.FadeOut();
-        }
-        
-        [ClientRpc]
-        private void EndTransitionClientRpc()
-        {
-            TransitionBackground.instance.FadeIn();
-        }
-        
-        [ServerRpc(RequireOwnership = false)]
-        private void EndTransitionServerRpc()
-        {
-            TransitionBackground.instance.FadeIn();
-        }*/
-
         public void ReturnToMainMenu(bool notifyClient)
         {
             Debug.Log("ReturnToMainMenu");
@@ -183,7 +140,9 @@ namespace Network
                 ReturnToMainMenuClientRpc();
             }
 
-            isFirstDungeon = true;
+            _isFirstDungeon = true;
+            _isFirstLoad = true;
+            AudioManager.instance.StopSoundTrackExplore();
             NetworkManager.Singleton.Shutdown();
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
@@ -210,9 +169,9 @@ namespace Network
                 Destroy(SceneManager.instance.gameObject);
             }
 
-            if (OptionsManager.Instance != null)
+            if (OptionsManager.instance != null)
             {
-                Destroy(OptionsManager.Instance.gameObject);
+                Destroy(OptionsManager.instance.gameObject);
             }
 
             if (GameHandler.instance != null)
@@ -400,9 +359,9 @@ namespace Network
         {
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
-            if (!isFirstDungeon) return;
+            if (!_isFirstDungeon) return;
             PlayerUI.instance.StartDungeonTutorial();
-            isFirstDungeon = false;
+            _isFirstDungeon = false;
         }
 
         public void ReloadSceneSingleDungeon()
