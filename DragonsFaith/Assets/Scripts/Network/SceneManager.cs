@@ -51,16 +51,17 @@ namespace Network
             {
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
                 //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+                NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
             }
 
-            NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+            //NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
             //NetworkManager.SceneManager.OnLoadEventCompleted += TransitionBackground.instance.FadeIn;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnPlayerDisconnect;
         }
 
         private void OnSceneLoaded(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
         {
-            if(!_isLoading) return;
+            //if(!_isLoading) return;
             
             Debug.Log("On scene loaded");
             TransitionBackground.instance.FadeIn();
@@ -101,15 +102,15 @@ namespace Network
         public bool LoadSceneSingle(string sceneName)
         {
             Debug.Log("LoadSceneSingle, isLoading " + _isLoading);
-            if(_isLoading) return false;
+            //if(_isLoading) return false;
 
-            _isLoading = true;
+            //_isLoading = true;
 
-            if (_isFirstLoad)
+            /*if (_isFirstLoad)
             {
                 _isFirstLoad = false;
                 AudioManager.instance.PlaySoundTrackExplore();
-            }
+            }*/
             
             //EnableInterpolation(false);
             if (sceneName == "Hub")
@@ -381,12 +382,12 @@ namespace Network
         private string dungeonSceneName;
         public void LoadSceneSingleDungeon(string sceneName)
         {
-            NotifyPlayerLoadSceneSingleDungeon(sceneName);
+            //NotifyPlayerLoadSceneSingleDungeon(sceneName);
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
-            if (!_isFirstDungeon) return;
+            /*if (!_isFirstDungeon) return;
             PlayerUI.instance.StartDungeonTutorial();
-            _isFirstDungeon = false;
+            _isFirstDungeon = false;*/
         }
         
 
@@ -409,9 +410,9 @@ namespace Network
             
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
-            if (!_isFirstDungeon) return;
+            /*if (!_isFirstDungeon) return;
             PlayerUI.instance.StartDungeonTutorial();
-            _isFirstDungeon = false;
+            _isFirstDungeon = false;*/
         }
 
         [ClientRpc]
@@ -421,15 +422,23 @@ namespace Network
             
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
-            if (!_isFirstDungeon) return;
+            /*if (!_isFirstDungeon) return;
             PlayerUI.instance.StartDungeonTutorial();
-            _isFirstDungeon = false;
+            _isFirstDungeon = false;*/
         }
 
         public void ReloadSceneSingleDungeon()
         {
             Debug.Log("ReloadSceneSingleDungeon");
             LoadSceneSingle(dungeonSceneName);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                TransitionBackground.instance.FadeIn();
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UI;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -116,8 +117,11 @@ namespace Network
                 activationArea.color = Color.green;
                 AudioManager.instance.PlayOpenGateSound();
             }
-            
-            SceneManager.instance.LoadSceneSingleDungeon(sceneName);
+
+            if (NetworkManager.Singleton.IsHost)
+            {
+                SceneManager.instance.LoadSceneSingleDungeon(sceneName);
+            }
         }
 
         public void Unlock()

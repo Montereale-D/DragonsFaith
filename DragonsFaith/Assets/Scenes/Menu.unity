@@ -4483,7 +4483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
       propertyPath: LogLevel
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
       propertyPath: NetworkConfig.TickRate
@@ -4493,6 +4493,14 @@ PrefabInstance:
       propertyPath: NetworkConfig.PlayerPrefab
       value: 
       objectReference: {fileID: 2957025528055389465, guid: 7705d1188bc919846af7e13e87e2ea58, type: 3}
+    - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
+      propertyPath: NetworkConfig.LoadSceneTimeOut
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
+      propertyPath: NetworkConfig.ConnectionApproval
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 709259343300550214, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
       propertyPath: NetworkConfig.Prefabs.NetworkPrefabsLists.Array.size
       value: 1
