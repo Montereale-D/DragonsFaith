@@ -305,11 +305,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628be7f6d1cd1534e982bd38eabc5193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundBank: {fileID: 0}
-  backgroundMusic: {fileID: 0}
-  uiSound: {fileID: 0}
-  enemySound: {fileID: 0}
-  playerSound: {fileID: 0}
+  soundBank: {fileID: 11400000, guid: 1d8134fc5049ac748ba4b06bcdabde75, type: 2}
+  backgroundMusic: {fileID: 858696182069835295}
+  uiSound: {fileID: 295365860131251210}
+  enemySound: {fileID: 858696182992480515}
+  playerSound: {fileID: 858696181166159098}
 --- !u!81 &8354391061238899556
 AudioListener:
   m_ObjectHideFlags: 0

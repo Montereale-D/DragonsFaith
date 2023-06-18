@@ -26,7 +26,7 @@ namespace Network
         {
             if (instance != null)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
 
@@ -40,6 +40,7 @@ namespace Network
             {
                 instance = null;
             }
+            //StartCoroutine(ReturnToMainMenuCoroutine());
             base.OnDestroy();
         }
 
@@ -172,7 +173,7 @@ namespace Network
             {
                 Destroy(CharacterManager.Instance.gameObject);
             }
-
+            /*
             if (InventoryManager.Instance != null)
             {
                 Destroy(InventoryManager.Instance.gameObject);
@@ -231,7 +232,7 @@ namespace Network
             if (DataManager.instance != null)
             {
                 Destroy(DataManager.instance.gameObject);
-            }
+            }*/
         }
 
         [ClientRpc]
