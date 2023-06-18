@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using Network;
 using Player;
 using Unity.Netcode;
@@ -26,8 +27,12 @@ public class HubProgressManager : MonoBehaviour
 
         if (!SceneManager.instance.isFirstEntering)
         {
-            CharacterManager.Instance.Heal(CharacterManager.Instance.GetMaxHealth());
-            CharacterManager.Instance.RestoreMana(CharacterManager.Instance.GetMaxMana());
+            var maxHealth = CharacterManager.Instance.GetMaxHealth();
+            CharacterManager.Instance.Heal(maxHealth);
+            ExchangeManager.Instance.NotifyHealToAnother(maxHealth);
+
+            var maxMana = CharacterManager.Instance.GetMaxMana();
+            CharacterManager.Instance.RestoreMana(maxMana);
         }
 
         SceneManager.instance.isFirstEntering = false;
