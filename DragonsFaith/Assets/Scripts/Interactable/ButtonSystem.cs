@@ -1,4 +1,5 @@
 ﻿using System;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Interactable
     {
         [Tooltip("Reference to the openable object")] [SerializeField]
         private Openable openable;
+
+        private bool _playSound = true;
 
         //counter of buttons active
         private int _buttonPressedCounter;
@@ -36,8 +39,7 @@ namespace Interactable
             if (DungeonProgressManager.instance.IsButtonPressed(saveId, gameObject))
             {
                 Debug.Log(gameObject.name + " was already activated");
-                //openable.OpenAction();
-                //_isActive.Value = true;
+                _playSound = false;
                 ChangeStatusProcedure(true);
             }
             else
@@ -51,6 +53,18 @@ namespace Interactable
             if (newValue)
             {
                 openable.OpenAction();
+                if (_playSound)
+                {
+                    if (openable.GetComponent<Door>())
+                    {
+                        AudioManager.instance.PlayOpenGateSound();
+                    }
+                    else if (openable.GetComponent<HiddenArea>())
+                    {
+                        AudioManager.instance.PlayOpenHiddenSound();
+                    }
+                    _playSound = false;
+                }
                 DungeonProgressManager.instance.ButtonChangeState(saveId, true, gameObject);
             }
             else
@@ -96,7 +110,6 @@ namespace Interactable
                 else
                 {
                     //ask host to change
-                    //ChangeStatusProcedureServerRpc();
                     OnStateChange(false, true);
                 }
             }
@@ -108,10 +121,6 @@ namespace Interactable
             if (IsHost) return;
 
             OnStateChange(false, true);
-            //if (_isActive.Value != isActive)
-            //{
-            //_isActive.Value = isActive;
-            //}
         }
 
         //Server receive a change status request from client

@@ -54,8 +54,8 @@ namespace Interactable
             }
 
             Debug.Log("Item  picked up");
-            DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
             AudioManager.instance.PlayOpenChestSound();
+            DungeonProgressManager.instance.ChestOpened(saveId, gameObject);
             Notify();
 
             if (IsHost)

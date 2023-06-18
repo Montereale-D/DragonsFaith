@@ -23,7 +23,7 @@ namespace Interactable
             Debug.Log("animator activating");
             animator.SetTrigger(Reveal);
             wall.SetActive(false);
-            AudioManager.instance.PlayOpenHiddenSound();
+            //AudioManager.instance.PlayOpenHiddenSound();
             return true;
         }
 
