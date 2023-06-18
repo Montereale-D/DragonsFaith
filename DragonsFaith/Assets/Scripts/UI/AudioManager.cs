@@ -19,14 +19,13 @@ namespace UI
         {
             if (instance != null && instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
             }
             else
             {
                 instance = this;
+                DontDestroyOnLoad(this);
             }
-
-            DontDestroyOnLoad(this);
         }
 
         #region UI

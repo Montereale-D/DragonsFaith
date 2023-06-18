@@ -28,7 +28,7 @@ public class SpawnPointerGrid : NetworkBehaviour
     {
         if (instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 

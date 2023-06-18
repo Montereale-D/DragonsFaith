@@ -51,7 +51,7 @@ namespace Grid
         {
             if (instance != null && instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
 

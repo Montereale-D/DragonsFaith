@@ -52,6 +52,7 @@ namespace Network
             }
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+            //NetworkManager.SceneManager.OnLoadEventCompleted += TransitionBackground.instance.FadeIn;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnPlayerDisconnect;
         }
 
@@ -146,7 +147,16 @@ namespace Network
             AudioManager.instance.StopSoundTrackExplore();
             NetworkManager.Singleton.Shutdown();
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+            //StartCoroutine(ReturnToMainMenuCoroutine());
         }
+
+        /*private IEnumerator ReturnToMainMenuCoroutine()
+        {
+            TransitionBackground.instance.FadeOut();
+            yield return new WaitForSeconds(1f);
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+            TransitionBackground.instance.FadeIn();
+        }*/
 
         private static void CleanDontDestroy()
         {
