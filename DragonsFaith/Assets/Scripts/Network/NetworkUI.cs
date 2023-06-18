@@ -87,7 +87,7 @@ public class NetworkUI : NetworkBehaviour
         Example_AuthenticatingAPlayer();
 
         //Update UI
-        clientButton.image.color = onButtonColor;
+        //clientButton.image.color = onButtonColor;
         logText.text = "Log: you are a client";
         hostButton.enabled = false;
         clientButton.enabled = false;
@@ -178,7 +178,7 @@ public class NetworkUI : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
 
         //Update UI
-        hostButton.image.color = onButtonColor;
+        //hostButton.image.color = onButtonColor;
         logText.text = "Log: you are a host";
         hostButton.enabled = false;
         clientButton.enabled = false;
@@ -251,6 +251,13 @@ public class NetworkUI : NetworkBehaviour
     {
         if (IsHost)
         {
+            if (_isReady)
+            {
+                _isReady = false;
+                hostReadyButton.image.color = offButtonColor;
+                HostNotReadyClientRpc();
+            }
+            
             //Unregister to client connection events
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
@@ -258,14 +265,20 @@ public class NetworkUI : NetworkBehaviour
             //Warn client
             HostDisconnectedClientRpc();
         }
-
+        else if (!IsHost && _isReady)
+        {
+            Debug.Log("not ready");
+            _isReady = false;
+            clientReadyButton.image.color = offButtonColor;
+            ClientNotReadyServerRpc();
+        }
 
         clientReadyButton.onClick.RemoveAllListeners();
         hostReadyButton.onClick.RemoveAllListeners();
 
         //Update UI
-        hostButton.image.color = offButtonColor;
-        clientButton.image.color = offButtonColor;
+        /*hostReadyButton.image.color = offButtonColor;*/
+        clientReadyButton.image.color = offButtonColor;
         logText.text = "Log: shut down";
         hostButton.enabled = true;
         clientButton.enabled = true;
@@ -275,6 +288,8 @@ public class NetworkUI : NetworkBehaviour
         hostReadyButton.gameObject.SetActive(false);
 
         NetworkManager.Singleton.Shutdown();
+        
+        MenuManager.Instance.BackToPlayAsScreen();
     }
 
     private void OnHostReadyButtonClick()

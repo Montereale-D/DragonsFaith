@@ -894,7 +894,7 @@ namespace Grid
 
         //The demo has only Fire and Air, with both these skills using a cone AOE;
         //the switch is "useless" because of this, but would be needed if other faiths are included
-        public void CheckSkillRange()
+        private void CheckSkillRange()
         {
             if (!_selectedTile)
             {
