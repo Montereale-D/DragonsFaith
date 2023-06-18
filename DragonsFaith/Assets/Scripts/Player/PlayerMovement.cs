@@ -56,6 +56,11 @@ namespace Player
             }
             if (_previousDir != 0) _animator.SetFloat(X, _previousDir);
             _previousDir = moveDir.x;
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                ForcePosition(new Vector3(18, 5, 0));
+            }
         }
 
         public override void OnNetworkSpawn()

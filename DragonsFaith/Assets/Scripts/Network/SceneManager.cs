@@ -225,9 +225,9 @@ namespace Network
                 Destroy(DungeonProgressManager.instance.gameObject);
             }
 
-            if (DataManager.Instance != null)
+            if (DataManager.instance != null)
             {
-                Destroy(DataManager.Instance.gameObject);
+                Destroy(DataManager.instance.gameObject);
             }
         }
 
