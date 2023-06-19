@@ -918,7 +918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Dragon Lord
   behaviourType: 1
-  agility: 20
+  agility: 3
   healthMax: 80
   weapon: {fileID: 11400000, guid: e5de230ab3c41694391ae5e7ce81d299, type: 2}
   skipTurn: 0
