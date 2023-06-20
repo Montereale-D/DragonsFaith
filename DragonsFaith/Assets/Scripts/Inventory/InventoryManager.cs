@@ -492,5 +492,41 @@ namespace Inventory
             var armor = ExchangeManager.Instance.CreateItem("73cc3261-00ae-4a96-bc79-fe4f9d1ff07c");
             Debug.Log("AddItem request " + AddItem(armor));
         }
+        [ContextMenu("Add Sniper")]
+        public void AddShotgunContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("f8a775c3-dd5d-48b0-bd95-a3015d386a5f");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
+        [ContextMenu("Add Sniper")]
+        public void AddAssaultContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("99d77a64-4242-4495-811f-b279f88b7ddb");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
+        [ContextMenu("Add Sniper")]
+        public void AddHelmetContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("7dec52e2-7a18-4263-9217-8cd39ef46992");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
+        [ContextMenu("Add boots")]
+        public void AddBootsContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("777225e7-ea15-4ea2-bb10-40a5d2dbac4a");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
+        [ContextMenu("Add boots")]
+        public void AddChestArmorContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("5bcae7d9-cda4-4a30-a251-bdbb8455201");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
+        [ContextMenu("Add boots")]
+        public void AddKnifeContextMenu()
+        {
+            var armor = ExchangeManager.Instance.CreateItem("e5cb1d3d-22e0-4f35-80dc-a157793b6f06");
+            Debug.Log("AddItem request " + AddItem(armor));
+        }
     }
 }

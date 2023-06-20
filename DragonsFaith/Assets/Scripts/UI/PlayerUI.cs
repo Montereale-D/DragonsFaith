@@ -355,6 +355,15 @@ namespace UI
             CharacterManager.Instance.UnlockPlayerMovement();
             InventoryManager.Instance.AddHealthKitContextMenu();
             InventoryManager.Instance.AddWeaponContextMenu();
+            
+            //unlocked equip
+            InventoryManager.Instance.AddArmorContextMenu();
+            InventoryManager.Instance.AddRevivalContextMenu();
+            InventoryManager.Instance.AddSniperContextMenu();
+            InventoryManager.Instance.AddShotgunContextMenu();
+            InventoryManager.Instance.AddBootsContextMenu();
+            InventoryManager.Instance.AddChestArmorContextMenu();
+            InventoryManager.Instance.AddKnifeContextMenu();
         }
 
         public void SetFire()
