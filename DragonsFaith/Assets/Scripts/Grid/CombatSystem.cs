@@ -46,6 +46,7 @@ namespace Grid
         private float _turnDelayCounter;*/
 
         private List<Tile> _skillRange;
+        private List<Tile> _skillAoE;
         private List<Tile> _explosionRange;
 
         #region Core
@@ -265,10 +266,7 @@ namespace Grid
 
             if (_isUsingSkill)
             {
-                foreach (var t in _skillRange)
-                {
-                    t.ShowTile();
-                }
+                CheckSkillRange();
             }
             else if (_explosionRange != null && _explosionRange.Count > 0)
             {
@@ -922,12 +920,13 @@ namespace Grid
         //the switch is "useless" because of this, but would be needed if other faiths are included
         private void CheckSkillRange()
         {
-            if (!_selectedTile)
+            _isUsingSkill = true;
+            _skillRange = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
+            foreach (Tile t in _skillRange)
             {
-                _playerUI.ShowMessage("A cell is required to show the skill's range.");
-                return;
+                t.ShowTile();
             }
-
+            if (!_selectedTile) return;
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
 
             switch (PlayerUI.instance.chosenFaith)
@@ -935,9 +934,11 @@ namespace Grid
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
                 {
-                    var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
-                    _skillRange = ConeAttack(searchable);
-                    _isUsingSkill = true;
+                   
+                    _skillAoE = ConeAttack(_skillRange);
+                    foreach (Tile t in _skillAoE){
+                            t.SkillTile();
+                            }
 
                     var character = _selectedTile.GetCharacter();
                     if (!_canAttackThisTurn)
@@ -976,11 +977,13 @@ namespace Grid
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
                 {
-                    var searchable = MapHandler.instance.GetTilesInRange(activeUnit.onTile, 4);
-                    _skillRange = ConeAttack(searchable);
-                    _isUsingSkill = true;
+                        _skillAoE = ConeAttack(_skillRange);
+                        foreach (Tile t in _skillAoE)
+                        {
+                            t.SkillTile();
+                        }
 
-                    var character = _selectedTile.GetCharacter();
+                        var character = _selectedTile.GetCharacter();
                     if (!_canAttackThisTurn)
                     {
                         _playerUI.SetCombatPopUp(true, "Already performed action.");
