@@ -113,6 +113,8 @@ namespace Grid
             _playerUI.ToggleCombatUI(characterList);
             _turnUI = _playerUI.GetCombatUI().GetTurnUI();
             _isUIReady = true;
+            
+            TransitionBackground.instance.FadeIn();
         }
 
         private Vector2Int GetHostPos(bool isBossFight)
