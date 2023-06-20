@@ -37,6 +37,14 @@ public class Tile : MonoBehaviour
         _spriteRenderer.color = c;
     }
 
+    public void SkillTile()
+    {
+        Color c = new Color(0f, 0f, 1f);
+        c.a = alpha;
+        _spriteRenderer.color = c;
+
+    }
+
 
     public void HoverTile()
     {
