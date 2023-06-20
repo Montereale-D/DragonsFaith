@@ -4513,6 +4513,10 @@ PrefabInstance:
       propertyPath: m_ProtocolType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 709259343300550215, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
+      propertyPath: m_MaxPacketQueueSize
+      value: 256
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 453e7c4dfa7358041aad1799c6c5d6bd, type: 3}
 --- !u!1 &450785127
