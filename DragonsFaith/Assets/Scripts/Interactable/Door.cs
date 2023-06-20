@@ -30,6 +30,11 @@ namespace Interactable
 
         }
 
+        public void Open()
+        {
+            OpenAction();
+        }
+
         public override bool CloseAction()
         {
             if (!base.CloseAction()) return false;
