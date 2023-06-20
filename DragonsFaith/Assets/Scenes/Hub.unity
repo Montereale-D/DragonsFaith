@@ -49370,8 +49370,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: Inside a dungeon you will encounter patrolling enemies that, if they spot
-    you, they will initiate a combat encounter. You are spotted if you enter the
-    vision cone of an enemy. In the final room of the dungeon, you will find a miniboss
+    you, will initiate a combat encounter. You are spotted if you enter the vision
+    cone of an enemy. In the final room of the dungeon, you will find a miniboss
     that needs to be defeated to unlock the door to return to the hub.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
