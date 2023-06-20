@@ -33003,10 +33003,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterList: []
   obstacleList: []
+  explosionRange: 1
+  explosiveDamage: 10
   otherPlayerName: 
   coverLayerMaskHit:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 776
   _moveInProgress: 0
 --- !u!114 &1993676594
 MonoBehaviour:
