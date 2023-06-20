@@ -19,6 +19,7 @@ namespace Grid
         [HideInInspector] public List<PlayerGridMovement> characterList;
         [HideInInspector] public List<Obstacle> obstacleList;
         private int _indexCharacterTurn = -1;
+        [SerializeField] private int explosionRange = 1;
         [SerializeField] private int explosiveDamage = 10;
 
         public PlayerGridMovement activeUnit { get; private set; }
@@ -45,6 +46,7 @@ namespace Grid
         private float _turnDelayCounter;*/
 
         private List<Tile> _skillRange;
+        private List<Tile> _explosionRange;
 
         #region Core
 
@@ -266,6 +268,13 @@ namespace Grid
                     t.ShowTile();
                 }
             }
+            else if (_explosionRange != null && _explosionRange.Count > 0)
+            {
+                foreach (var expTile in _explosionRange)
+                {
+                    expTile.ShowDamageArea();
+                }
+            }
             else if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
 
             if (_selectedTile)
@@ -314,6 +323,7 @@ namespace Grid
             _canMoveThisTurn = true;
             _canAttackThisTurn = true;
             _selectedTile = null;
+            _explosionRange = null;
             _isUsingSkill = false;
             activeUnit.GetComponent<CharacterInfo>().isBlocking = false;
             activeUnit.GetComponent<CharacterGridPopUpUI>().HideShield();
@@ -623,6 +633,7 @@ namespace Grid
                 UnselectTile();
             }
 
+            _explosionRange = null;
             _selectedTile = tile;
             _selectedTile.SelectTile();
 
@@ -720,6 +731,11 @@ namespace Grid
                             "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
                             "Strike object to destroy it");
                         _playerUI.ToggleMoveAttackButton("Destroy");
+
+                        if (obstacle.explosive)
+                        {
+                            _explosionRange = _mapHandler.GetTilesInRange(obstacle.onTile, explosionRange);
+                        }
                     }
                     else
                     {
@@ -1504,6 +1520,7 @@ namespace Grid
         public void ButtonDestroyAction()
         {
             DestroyObstacle(_selectedTile.GetObstacle(), true);
+            _explosionRange = null;
         }
 
         private void DestroyObstacle(Obstacle obstacle, bool notify)
@@ -1534,7 +1551,7 @@ namespace Grid
 
         private void ExplosiveObstacleDamage(Tile onTile, bool notify)
         {
-            var damageArea = MapHandler.instance.GetTilesInRange(onTile, 1);
+            var damageArea = MapHandler.instance.GetTilesInRange(onTile, explosionRange);
             damageArea.Remove(onTile);
             
             foreach (var tile in damageArea)
