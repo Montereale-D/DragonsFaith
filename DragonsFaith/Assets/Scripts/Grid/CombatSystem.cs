@@ -1519,6 +1519,7 @@ namespace Grid
 
         public void ButtonDestroyAction()
         {
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
             DestroyObstacle(_selectedTile.GetObstacle(), true);
             _explosionRange = null;
         }
@@ -1537,14 +1538,13 @@ namespace Grid
             }
 
             obstacle.onTile.ClearTile();
-
-            if (obstacle.explosive)
+            
+            if (!obstacle.explosive) obstacle.DestroyObj();
+            else
             {
                 ExplosiveObstacleDamage(obstacle.onTile, notify);
+                obstacle.TriggerExplosion();
             }
-            
-            Destroy(obstacle.gameObject);
-            AudioManager.instance.PlayObstacleDestroyedSound();
 
             _canAttackThisTurn = false;
         }
@@ -1601,8 +1601,8 @@ namespace Grid
             var obstacle = tile.GetObstacle();
 
             tile.ClearTile();
-            Destroy(obstacle.gameObject);
-            AudioManager.instance.PlayObstacleDestroyedSound();
+            if (!obstacle.explosive) obstacle.DestroyObj();
+            else obstacle.TriggerExplosion();
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -1615,8 +1615,8 @@ namespace Grid
             var obstacle = tile.GetObstacle();
 
             tile.ClearTile();
-            Destroy(obstacle.gameObject);
-            AudioManager.instance.PlayObstacleDestroyedSound();
+            if (!obstacle.explosive) obstacle.DestroyObj();
+            else obstacle.TriggerExplosion();
         }
 
         #endregion

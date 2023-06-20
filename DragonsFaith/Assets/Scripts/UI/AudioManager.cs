@@ -165,6 +165,15 @@ namespace UI
 
         #endregion
 
+        #region Dragon
+
+        public void PlayDragonAttackSound()
+        {
+            enemySound.PlayOneShot(soundBank.fireBreath);
+        }
+
+        #endregion
+
         #region Music
         
         public void PlaySoundTrackMenu()
@@ -213,7 +222,12 @@ namespace UI
 
         public void PlayObstacleDestroyedSound()
         {
-            playerSound.PlayOneShot(soundBank.obstacleDestruction);
+            enemySound.PlayOneShot(soundBank.obstacleDestruction);
+        }
+        
+        public void PlayBarrelExplosionSound()
+        {
+            enemySound.PlayOneShot(soundBank.barrelExplosion);
         }
         
         public void PlayOpenChestSound()

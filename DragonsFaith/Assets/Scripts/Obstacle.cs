@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using UI;
 using UnityEngine;
 
 public class Obstacle : MonoBehaviour
@@ -7,6 +9,8 @@ public class Obstacle : MonoBehaviour
     public Tile onTile;
     public bool destroyable;
     public bool explosive;
+    [OptionalField] public Animator animator;
+    private static readonly int Explode = Animator.StringToHash("Explode");
 
     public void SetGridPosition()
     {
@@ -28,6 +32,25 @@ public class Obstacle : MonoBehaviour
     {
         onTile = tile;
         transform.position = new Vector3(tile.transform.position.x, tile.transform.position.y, transform.position.z);
+    }
+
+    public void TriggerExplosion()
+    {
+        StartCoroutine(Explosion());
+    }
+
+    private IEnumerator Explosion()
+    {
+        animator.SetTrigger(Explode);
+        AudioManager.instance.PlayBarrelExplosionSound();
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+    }
+
+    public void DestroyObj()
+    {
+        AudioManager.instance.PlayObstacleDestroyedSound();
+        Destroy(gameObject);
     }
 
 }
