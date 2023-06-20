@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Pistol
   description: 'Range = 3 cells
 
-    Damage = 3 hp
+    Damage = 5 hp
 
     Max ammo = 5'
   id: 3785c742-f8ff-4016-a374-81d62dc75746
@@ -23,6 +23,6 @@ MonoBehaviour:
   image: {fileID: -10514552, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
   range: 3
-  damage: 3
+  damage: 5
   capacity: 5
   weaponObject: {fileID: 7563764566049780249, guid: ac47259529df24745a0af4aa771dcc9a, type: 3}

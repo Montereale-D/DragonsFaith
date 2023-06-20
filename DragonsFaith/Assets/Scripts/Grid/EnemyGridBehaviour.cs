@@ -437,9 +437,12 @@ namespace Grid
             var direction = (target.transform.position - transform.position).normalized.x;
             _animator.SetFloat(X, direction);
             _animator.SetTrigger(behaviourType == EnemyBehaviourType.Ranged ? Ranged : Melee);
-            if (behaviourType == EnemyBehaviourType.Ranged && weapon.itemName == "Assault Rifle")
+            if (behaviourType == EnemyBehaviourType.Ranged)
             {
-                AudioManager.instance.PlayEnemyAssaultAttackSound();
+                if (weapon.itemName == "Assault Rifle")
+                    AudioManager.instance.PlayEnemyAssaultAttackSound();
+                else 
+                    AudioManager.instance.PlayDragonAttackSound();
             }
             else
             {

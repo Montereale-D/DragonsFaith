@@ -16,25 +16,26 @@ namespace Save
         /*public int otherPlayerSpriteIdx;
         public bool received = false;*/
 
-        public static DataManager Instance { get; private set; }
+        public static DataManager instance { get; private set; }
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (instance != null && instance != this)
             {
-                Destroy(this);
-                return;
+                Destroy(gameObject);
             }
-
-            Instance = this;
-            DontDestroyOnLoad(this);
+            else
+            {
+                instance = this;
+                DontDestroyOnLoad(this);
+            }
         }
 
         public override void OnDestroy()
         {
-            if (Instance ==  this)
+            if (instance ==  this)
             {
-                Instance = null;
+                instance = null;
             }
         }
 

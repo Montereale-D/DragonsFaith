@@ -14,8 +14,12 @@ public class SpawnPointerGrid : NetworkBehaviour
     [SerializeField] private int halfWidthMap = 7;
     [SerializeField] private Vector2Int spawnPointPlayer1;
     [SerializeField] private Vector2Int spawnPointPlayer2;
-    /*[SerializeField] private bool isBossRoom;*/
-    
+
+    [SerializeField] private int minEnemyCount = 1;
+    [SerializeField] private int maxEnemyCount = 4;
+    [SerializeField] private int minObstacleCount = 10;
+    [SerializeField] private int maxObstacleCount = 15;
+
     private List<Vector2Int> spawnPointEnemies;
     private List<Vector2Int> spawnPointObstacles;
     private List<PlayerMovement> _players;
@@ -28,7 +32,7 @@ public class SpawnPointerGrid : NetworkBehaviour
     {
         if (instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
@@ -76,13 +80,12 @@ public class SpawnPointerGrid : NetworkBehaviour
 
     private void PopulateGrid()
     {
-        var enemyCount = Random.Range(1, 4);
-        var obstaclesCount = Random.Range(4, 7);
+        var enemyCount = Random.Range(minEnemyCount, maxEnemyCount);
+        var obstaclesCount = Random.Range(minObstacleCount, maxObstacleCount);
 
         var topLeft = new Vector2Int(-halfWidthMap, halfHeightMap);
         var topMiddle = new Vector2Int(0, halfHeightMap);
         var bottomRight = new Vector2Int(halfWidthMap, -halfHeightMap);
-        /*if (!isBossRoom) */
         SpawnEnemy(topMiddle, bottomRight, enemyCount);
         SpawnObstacle(topLeft, bottomRight, obstaclesCount);
     }

@@ -1105,7 +1105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Ranged Soldier
   behaviourType: 1
-  agility: 20
+  agility: 5
   healthMax: 30
   weapon: {fileID: 11400000, guid: f0828874982b53a49a39fcc879f20a1b, type: 2}
   skipTurn: 0

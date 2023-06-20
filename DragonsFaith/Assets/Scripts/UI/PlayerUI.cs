@@ -36,32 +36,38 @@ namespace UI
             Water
         };
 
-        [Header("Tabs")] public GameObject menuTab;
+        [Header("Tabs")]
+        public GameObject menuTab;
         public GameObject inventoryTab;
         public GameObject skillsTab;
         public GameObject faithTab;
-
-        [Header("Option Screens")] public GameObject mainScreen;
+        
+        [Header("Option Screens")]
+        public GameObject mainScreen;
         public GameObject optionsScreen;
         public GameObject audioScreen;
         public GameObject graphicsScreen;
         public GameObject keybindingsScreen;
-
-        [Header("Graphics and Audio")] public Dropdown resolutionDropdown;
+        
+        [Header("Graphics and Audio")]
+        public Dropdown resolutionDropdown;
         public Slider playerVolumeSlider;
         public Slider enemyVolumeSlider;
         public Slider backgroundVolumeSlider;
 
-        [Header("Player UI")] public GameObject playerUI;
+        [Header("Player UI")] 
+        public GameObject playerUI;
         public GameObject settingsButton;
         public GameObject dungeonTutorial;
         public Image portrait;
         public Sprite[] portraitSprites;
-
-        [Header("CombatUI")] public RectTransform combatUI;
+        
+        [Header("CombatUI")]
+        public RectTransform combatUI;
         private CombatUI _combatUI;
 
-        [Header("Character Info")] public TextMeshProUGUI nameText;
+        [Header("Character Info")] 
+        public TextMeshProUGUI nameText;
         public Slider healthSlider;
         public TextMeshProUGUI healthText;
         public Slider manaSlider;
@@ -109,6 +115,7 @@ namespace UI
         private float turnUIFadeOutTime = 0.5f;
 
         private OptionsManager _optionsManager;
+        private AudioManager _audioManager;
 
         private UnityAction _moveOrAttackAction;
         private Image _moveOrAttackImage;
@@ -117,8 +124,7 @@ namespace UI
         [HideInInspector] public int portraitIdx;
 
         public static PlayerUI instance { get; private set; }
-
-
+        
         private void Awake()
         {
             if (instance != null && instance != this)
@@ -137,14 +143,15 @@ namespace UI
             faithTab.SetActive(true);
 
             _optionsManager = OptionsManager.instance;
+            _audioManager = AudioManager.instance;
 
             _optionsManager.SetDropdown(resolutionDropdown);
 
             //nameText.text = _optionsManager.RetrievePlayerName();
 
-            playerVolumeSlider.value = _optionsManager.GetPlayerVolumeSound();
-            enemyVolumeSlider.value = _optionsManager.GetEnemyVolumeSound();
-            backgroundVolumeSlider.value = _optionsManager.GetBackgroundVolumeSound();
+            playerVolumeSlider.value = _audioManager.GetPlayerVolumeSound();
+            enemyVolumeSlider.value = _audioManager.GetEnemyVolumeSound();
+            backgroundVolumeSlider.value = _audioManager.GetBackgroundVolumeSound();
 
             //GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CharacterManager>().SetPlayerName();
 
@@ -346,6 +353,17 @@ namespace UI
             playerUI.SetActive(true);
             settingsButton.SetActive(true);
             CharacterManager.Instance.UnlockPlayerMovement();
+            InventoryManager.Instance.AddHealthKitContextMenu();
+            InventoryManager.Instance.AddWeaponContextMenu();
+            
+            //unlocked equip
+            InventoryManager.Instance.AddArmorContextMenu();
+            InventoryManager.Instance.AddRevivalContextMenu();
+            InventoryManager.Instance.AddSniperContextMenu();
+            InventoryManager.Instance.AddShotgunContextMenu();
+            InventoryManager.Instance.AddBootsContextMenu();
+            InventoryManager.Instance.AddChestArmorContextMenu();
+            InventoryManager.Instance.AddKnifeContextMenu();
         }
 
         public void SetFire()
@@ -478,17 +496,17 @@ namespace UI
 
         public void SetBackgroundVolume(float value)
         {
-            _optionsManager.SetBackgroundVolume(value);
+            _audioManager.SetBackgroundVolume(value);
         }
 
         public void SetPlayerVolume(float value)
         {
-            _optionsManager.SetPlayerVolume(value);
+            _audioManager.SetPlayerVolume(value);
         }
 
         public void SetEnemyVolume(float value)
         {
-            _optionsManager.SetEnemyVolume(value);
+            _audioManager.SetEnemyVolume(value);
         }
 
         public void SetQuality(int qualityIndex)

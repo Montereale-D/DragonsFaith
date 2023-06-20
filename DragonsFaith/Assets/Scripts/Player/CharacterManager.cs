@@ -67,6 +67,11 @@ namespace Player
             return _characterInfo.GetMaxHealth();
         }
 
+        public int GetHealth()
+        {
+            return _characterInfo.GetHealth();
+        }
+
         public int GetMaxMana()
         {
             return _characterInfo.GetMaxMana();
@@ -167,6 +172,12 @@ namespace Player
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
             InventoryManager.Instance.LockEquipmentSlots();
+            var weapon = InventoryManager.Instance.GetWeapon();
+            if (weapon)
+            {
+                weapon.Reload();    
+            }
+            
             mode = Mode.Grid;
         }
 

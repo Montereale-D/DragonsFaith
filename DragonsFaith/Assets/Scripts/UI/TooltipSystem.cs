@@ -18,9 +18,12 @@ namespace UI
             
             try
             {
-                current.tooltip.SetText(content, header);
-                current.tooltip.gameObject.SetActive(true);
-                current.tooltip.FadeStart();
+                if (current.tooltip != null)
+                {
+                    current.tooltip.SetText(content, header);
+                    current.tooltip.gameObject.SetActive(true);
+                    current.tooltip.FadeStart();
+                }
             }
             catch (Exception e)
             {
@@ -30,7 +33,7 @@ namespace UI
 
         public static void Hide()
         {
-            if (!current.tooltip.enabled) return;
+            if (!current.tooltip.enabled || current.tooltip == null) return;
             current.tooltip.FadeFinished();
             LeanTween.delayedCall(0.1f, () => { current.tooltip.gameObject.SetActive(false); });
         }

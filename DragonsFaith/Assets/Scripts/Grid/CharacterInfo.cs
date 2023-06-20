@@ -129,6 +129,7 @@ public class CharacterInfo : MonoBehaviour
         else
         {
             _characterUI.UpdateHealth(health);
+            if (!CombatSystem.instance) return;
             var popUI = GetComponent<CharacterGridPopUpUI>();
             if (popUI)
             {
@@ -208,6 +209,11 @@ public class CharacterInfo : MonoBehaviour
     public int GetMaxHealth()
     {
         return maxHealth;
+    }
+
+    public int GetHealth()
+    {
+        return health;
     }
 
     public int GetMaxMana()

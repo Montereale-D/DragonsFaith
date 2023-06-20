@@ -28872,6 +28872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f8a2ad8c054e6992de81f0fea99882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBossRoom: 0
 --- !u!114 &353413983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32971,10 +32972,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterList: []
   obstacleList: []
+  explosionRange: 2
+  explosiveDamage: 10
   otherPlayerName: 
   coverLayerMaskHit:
     serializedVersion: 2
-    m_Bits: 904
+    m_Bits: 776
+  _moveInProgress: 0
 --- !u!114 &1993676594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33096,7 +33100,7 @@ PrefabInstance:
       objectReference: {fileID: 5631713877944055002, guid: f46ac385270bd6b439377d31dfb9be5c, type: 3}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: obstaclePrefabs.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: enemyGameObjects.Array.size
@@ -33114,6 +33118,10 @@ PrefabInstance:
       propertyPath: obstaclePrefabs.Array.data[1]
       value: 
       objectReference: {fileID: 6136244409482889238, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
+    - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
+      propertyPath: obstaclePrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 6460200261005188858, guid: f8ebe23aee074f0448ea1fb2d9fa270a, type: 3}
     - target: {fileID: 6564926774763214376, guid: 15dd70bb673827145ab768ff92deacbf, type: 3}
       propertyPath: enemyGameObjects.Array.data[0]
       value: 

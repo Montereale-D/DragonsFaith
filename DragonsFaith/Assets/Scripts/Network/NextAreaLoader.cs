@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UI;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -11,8 +12,7 @@ namespace Network
     public class NextAreaLoader : MonoBehaviour
     {
         [Header("Debug")] [SerializeField] private bool activateOnFirstTrigger;
-
-        private SceneManager _sceneManager;
+        
         [SerializeField] private string sceneName;
         [SerializeField] private int numberOfDungeons;
         private int _playersReady;
@@ -29,7 +29,6 @@ namespace Network
         private void Awake()
         {
             GetComponent<Collider2D>().isTrigger = true;
-            _sceneManager = FindObjectOfType<SceneManager>();
             activationArea.color = Color.red;
 
             if (!toDungeon) return;
@@ -90,9 +89,8 @@ namespace Network
                     break;
             }
 
-            //TODO: different if room is hub or dungeon or to boss room
             if (_playersReady != 2) return;
-            if (toDungeon) PlayerUI.instance.ShowMessage("Entering dungeon.");
+            if (toDungeon) PlayerUI.instance.ShowMessage("Entering facility.");
             else if (toBoss) PlayerUI.instance.ShowMessage("Entering final area.");
             else PlayerUI.instance.ShowMessage("Returning to hub.");
             OnPlayersReady();
@@ -111,6 +109,7 @@ namespace Network
         {
             if(!_offSetActive)
                 return;
+            _offSetActive = false;
             
             if (door)
             {
@@ -119,15 +118,10 @@ namespace Network
                 AudioManager.instance.PlayOpenGateSound();
             }
 
-            if (_sceneManager)
+            if (NetworkManager.Singleton.IsHost)
             {
-                _sceneManager.LoadSceneSingleDungeon(sceneName);
+                SceneManager.instance.LoadSceneSingleDungeon(sceneName);
             }
-            else
-            {
-                Debug.LogWarning("Scene manager is null, Ok is appear in client");
-            }
-            //StartCoroutine(LoadScene());
         }
 
         public void Unlock()

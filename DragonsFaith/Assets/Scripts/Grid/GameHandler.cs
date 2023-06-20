@@ -28,7 +28,7 @@ public class GameHandler : NetworkBehaviour
         }
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 

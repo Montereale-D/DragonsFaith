@@ -25,9 +25,14 @@ namespace Interactable
             //_spriteRenderer.color = Color.green;
             _spriteRenderer.sprite = openDoor;
             _boxCollider.enabled = false;
-            AudioManager.instance.PlayOpenGateSound();
+            //AudioManager.instance.PlayOpenGateSound();
             return true;
 
+        }
+
+        public void Open()
+        {
+            OpenAction();
         }
 
         public override bool CloseAction()

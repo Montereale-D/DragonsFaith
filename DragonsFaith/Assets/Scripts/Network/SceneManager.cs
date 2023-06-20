@@ -21,12 +21,13 @@ namespace Network
         private bool _isLoading;
         private bool _isFirstDungeon = true;
         private bool _isFirstLoad = true;
+        public bool isFirstEntering = true;
 
         private void Awake()
         {
             if (instance != null)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
 
@@ -40,6 +41,7 @@ namespace Network
             {
                 instance = null;
             }
+            //StartCoroutine(ReturnToMainMenuCoroutine());
             base.OnDestroy();
         }
 
@@ -48,7 +50,6 @@ namespace Network
             if (IsServer)
             {
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
-                //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
@@ -57,10 +58,15 @@ namespace Network
 
         private void OnSceneLoaded(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
         {
-            if(!_isLoading) return;
+            //if(!_isLoading) return;
             
             Debug.Log("On scene loaded");
-            TransitionBackground.instance.FadeIn();
+
+            if (scenename != "Grid" && scenename != "BossRoom")
+            {
+                TransitionBackground.instance.FadeIn();
+            }
+
             _isLoading = false;
         }
 
@@ -97,9 +103,10 @@ namespace Network
 
         public bool LoadSceneSingle(string sceneName)
         {
-            if(_isLoading) return false;
+            Debug.Log("LoadSceneSingle, isLoading " + _isLoading);
+            //if(_isLoading) return false;
 
-            _isLoading = true;
+            //_isLoading = true;
 
             if (_isFirstLoad)
             {
@@ -144,7 +151,20 @@ namespace Network
             _isFirstLoad = true;
             AudioManager.instance.StopSoundTrackExplore();
             NetworkManager.Singleton.Shutdown();
+            //UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+            StartCoroutine(ReturnToMainMenuCoroutine());
+        }
+
+        private IEnumerator ReturnToMainMenuCoroutine()
+        {
+            if (!TransitionBackground.instance.IsFadedOut())
+            {
+                TransitionBackground.instance.FadeOut();
+                yield return new WaitForSeconds(1f);
+            }
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+            TransitionBackground.instance.FadeIn();
+            Destroy(instance.gameObject);
         }
 
         private static void CleanDontDestroy()
@@ -158,16 +178,15 @@ namespace Network
             {
                 Destroy(CharacterManager.Instance.gameObject);
             }
-
             if (InventoryManager.Instance != null)
             {
                 Destroy(InventoryManager.Instance.gameObject);
             }
 
-            if (SceneManager.instance != null)
+            /*if (SceneManager.instance != null)
             {
                 Destroy(SceneManager.instance.gameObject);
-            }
+            }*/
 
             if (OptionsManager.instance != null)
             {
@@ -214,9 +233,9 @@ namespace Network
                 Destroy(DungeonProgressManager.instance.gameObject);
             }
 
-            if (DataManager.Instance != null)
+            if (DataManager.instance != null)
             {
-                Destroy(DataManager.Instance.gameObject);
+                Destroy(DataManager.instance.gameObject);
             }
         }
 
@@ -305,15 +324,12 @@ namespace Network
                         Debug.LogWarning("Load event timed out for the following client " +
                                          $"identifiers:({sceneEvent.ClientsThatTimedOut})");
                     }
-                    
-                    
 
-                    /*if (_loadedScene.name != "Grid")
+                    if (sceneEvent.SceneName != "Grid" && sceneEvent.SceneName != "BossRoom")
                     {
-                        Debug.Log("Notify interpolation active");
-                        EnableInterpolationClientRpc();
-                        EnableInterpolation(true);
-                    }*/
+                        ForceFadeInClientRpc();
+                    }
+                    
 
                     break;
                 }
@@ -330,6 +346,14 @@ namespace Network
                     break;
                 }
             }
+        }
+
+        [ClientRpc]
+        private void ForceFadeInClientRpc()
+        {
+            Debug.Log("ForceFadeInClientRpc");
+            TransitionBackground.instance.FadeIn();
+            _isLoading = false;
         }
 
         /*[ClientRpc]
@@ -357,6 +381,44 @@ namespace Network
         private string dungeonSceneName;
         public void LoadSceneSingleDungeon(string sceneName)
         {
+            NotifyPlayerLoadSceneSingleDungeon(sceneName);
+            dungeonSceneName = sceneName;
+            LoadSceneSingle(sceneName);
+            if (!_isFirstDungeon) return;
+            PlayerUI.instance.StartDungeonTutorial();
+            _isFirstDungeon = false;
+        }
+        
+
+        private void NotifyPlayerLoadSceneSingleDungeon(string sceneName)
+        {
+            if (IsHost)
+            {
+                LoadSceneSingleDungeonClientRpc(sceneName);
+            }
+            else
+            {
+                LoadSceneSingleDungeonServerRpc(sceneName);
+            }
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        private void LoadSceneSingleDungeonServerRpc(string sceneName)
+        {
+            if (!IsHost) return;
+            
+            dungeonSceneName = sceneName;
+            LoadSceneSingle(sceneName);
+            if (!_isFirstDungeon) return;
+            PlayerUI.instance.StartDungeonTutorial();
+            _isFirstDungeon = false;
+        }
+
+        [ClientRpc]
+        private void LoadSceneSingleDungeonClientRpc(string sceneName)
+        {
+            if(IsHost) return;
+            
             dungeonSceneName = sceneName;
             LoadSceneSingle(sceneName);
             if (!_isFirstDungeon) return;
@@ -368,6 +430,14 @@ namespace Network
         {
             Debug.Log("ReloadSceneSingleDungeon");
             LoadSceneSingle(dungeonSceneName);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                TransitionBackground.instance.FadeIn();
+            }
         }
     }
 }

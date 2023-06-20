@@ -19,6 +19,8 @@ namespace Grid
         [HideInInspector] public List<PlayerGridMovement> characterList;
         [HideInInspector] public List<Obstacle> obstacleList;
         private int _indexCharacterTurn = -1;
+        [SerializeField] private int explosionRange = 1;
+        [SerializeField] private int explosiveDamage = 10;
 
         public PlayerGridMovement activeUnit { get; private set; }
         private bool _canMoveThisTurn;
@@ -45,6 +47,7 @@ namespace Grid
 
         private List<Tile> _skillRange;
         private List<Tile> _skillAoE;
+        private List<Tile> _explosionRange;
 
         #region Core
 
@@ -52,7 +55,7 @@ namespace Grid
         {
             if (instance != null && instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
 
@@ -111,6 +114,8 @@ namespace Grid
             _playerUI.ToggleCombatUI(characterList);
             _turnUI = _playerUI.GetCombatUI().GetTurnUI();
             _isUIReady = true;
+            
+            TransitionBackground.instance.FadeIn();
         }
 
         private Vector2Int GetHostPos(bool isBossFight)
@@ -263,6 +268,13 @@ namespace Grid
             {
                 CheckSkillRange();
             }
+            else if (_explosionRange != null && _explosionRange.Count > 0)
+            {
+                foreach (var expTile in _explosionRange)
+                {
+                    expTile.ShowDamageArea();
+                }
+            }
             else if (_canMoveThisTurn) _mapHandler.ShowNavigableTiles(activeUnit.onTile, activeUnit.movement);
 
             if (_selectedTile)
@@ -311,6 +323,7 @@ namespace Grid
             _canMoveThisTurn = true;
             _canAttackThisTurn = true;
             _selectedTile = null;
+            _explosionRange = null;
             _isUsingSkill = false;
             activeUnit.GetComponent<CharacterInfo>().isBlocking = false;
             activeUnit.GetComponent<CharacterGridPopUpUI>().HideShield();
@@ -387,6 +400,7 @@ namespace Grid
 
             return true;
         }
+
         public bool UseItem(Item item)
         {
             if (!_canAttackThisTurn)
@@ -398,7 +412,7 @@ namespace Grid
             {
                 return false;
             }
-                
+
             NotifyItemUseClientRpc(activeUnit.charName, item.itemName);
             _canAttackThisTurn = false;
             return true;
@@ -619,6 +633,7 @@ namespace Grid
                 UnselectTile();
             }
 
+            _explosionRange = null;
             _selectedTile = tile;
             _selectedTile.SelectTile();
 
@@ -716,6 +731,11 @@ namespace Grid
                             "Target is within weapon range " + weapon.range + "." + System.Environment.NewLine +
                             "Strike object to destroy it");
                         _playerUI.ToggleMoveAttackButton("Destroy");
+
+                        if (obstacle.explosive)
+                        {
+                            _explosionRange = _mapHandler.GetTilesInRange(obstacle.onTile, explosionRange);
+                        }
                     }
                     else
                     {
@@ -1272,15 +1292,84 @@ namespace Grid
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
+        
+        private void NotifyExplosionToPlayer(PlayerGridMovement target, int damage, bool isProtected)
+        {
+            var targetIndex = characterList.IndexOf(target);
+            
+            if (IsHost)
+            {
+                NotifyExplosionToPlayerClientRpc(targetIndex, damage, isProtected);
+            }
+            else
+            {
+                NotifyExplosionToPlayerServerRpc(targetIndex, damage, isProtected);
+            }
+
+            if (target.gameObject == _localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+            else
+            {
+                target.GetComponent<CharacterInfo>().Damage(damage);
+            }
+
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        private void NotifyExplosionToPlayerServerRpc(int targetIndex, int damage, bool isProtected)
+        {
+            if(!IsHost) return;
+            
+            var target = characterList[targetIndex];
+            if (target.gameObject == _localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+            else
+            {
+                target.GetComponent<CharacterInfo>().Damage(damage);
+            }
+
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ClientRpc]
+        private void NotifyExplosionToPlayerClientRpc(int targetIndex, int damage, bool isProtected)
+        {
+            if(IsHost) return;
+            
+            var target = characterList[targetIndex];
+            if (target.gameObject == _localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+            else
+            {
+                target.GetComponent<CharacterInfo>().Damage(damage);
+            }
+
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
 
         public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, bool isProtected, string weaponName = "",
             string skillElement = "")
         {
             var targetIndex = characterList.IndexOf(target);
+
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
-            if (skillElement != "") target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-            else target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
+            if (skillElement != "")
+                target.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+            else
+                target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
             activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
 
             if (IsHost)
@@ -1292,6 +1381,43 @@ namespace Grid
                 NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, isProtected, weaponName, skillElement);
             }
         }
+        public void NotifyExplosionToEnemy(PlayerGridMovement target, int damage, bool isProtected)
+        {
+            var targetIndex = characterList.IndexOf(target);
+
+            if (IsHost)
+            {
+                NotifyExplosionToEnemyClientRpc(targetIndex, damage, isProtected);
+            }
+            else
+            {
+                NotifyExplosionToEnemyServerRpc(targetIndex, damage, isProtected);
+            }
+            
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        private void NotifyExplosionToEnemyServerRpc(int targetIndex, int damage, bool isProtected)
+        {
+            var target = characterList[targetIndex];
+
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ClientRpc]
+        private void NotifyExplosionToEnemyClientRpc(int targetIndex, int damage, bool isProtected)
+        {
+            var target = characterList[targetIndex];
+
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
 
         [ServerRpc(RequireOwnership = false)]
         private void NotifyAttackFromClientToEnemyServerRpc(int targetIndex, int damage, bool isProtected,
@@ -1299,13 +1425,24 @@ namespace Grid
             string skillElement = "")
         {
             if (!IsHost) return;
-            characterList[targetIndex].GetComponent<EnemyGridBehaviour>().Damage(damage);
-            characterList[targetIndex].GetComponent<CharacterGridPopUpUI>()
-                .ShowDamageCounter(damage, false, isProtected);
-            if (skillElement != "")
-                characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
-            else characterList[targetIndex].GetComponent<CharacterGridPopUpUI>().ShowBlood();
-            activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
+
+            try
+            {
+                var character = characterList[targetIndex];
+                character.GetComponent<EnemyGridBehaviour>().Damage(damage);
+                character.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+
+                if (skillElement != "")
+                    character.GetComponent<CharacterGridPopUpUI>().ShowSkillEffect(skillElement);
+                else
+                    character.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+
+                activeUnit.GetComponent<PlayerGridMovement>().TriggerAttackAnimation(weaponName);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("NotifyAttackFromHostToEnemyClientRpc index " + e);
+            }
         }
 
         [ClientRpc]
@@ -1330,7 +1467,7 @@ namespace Grid
             }
             catch (Exception e)
             {
-                Debug.LogError("NotifyAttackFromHostToEnemyClientRpc " + e);
+                Debug.LogWarning("NotifyAttackFromHostToEnemyClientRpc index " + e);
             }
         }
 
@@ -1387,10 +1524,12 @@ namespace Grid
 
         public void ButtonDestroyAction()
         {
-            DestroyObstacle(_selectedTile.GetObstacle());
+            if (activeUnit != _localPlayer.GetComponent<PlayerGridMovement>()) return;
+            DestroyObstacle(_selectedTile.GetObstacle(), true);
+            _explosionRange = null;
         }
 
-        private void DestroyObstacle(Obstacle obstacle)
+        private void DestroyObstacle(Obstacle obstacle, bool notify)
         {
             if (!obstacle)
             {
@@ -1398,12 +1537,50 @@ namespace Grid
                 return;
             }
 
-            NotifyDestroyedObstacle(obstacle);
+            if (notify)
+            {
+                NotifyDestroyedObstacle(obstacle);
+            }
+
             obstacle.onTile.ClearTile();
-            Destroy(obstacle.gameObject);
-            AudioManager.instance.PlayObstacleDestroyedSound();
+            
+            if (!obstacle.explosive) obstacle.DestroyObj();
+            else
+            {
+                ExplosiveObstacleDamage(obstacle.onTile, notify);
+                obstacle.TriggerExplosion();
+            }
 
             _canAttackThisTurn = false;
+        }
+
+        private void ExplosiveObstacleDamage(Tile onTile, bool notify)
+        {
+            var damageArea = MapHandler.instance.GetTilesInRange(onTile, explosionRange);
+            damageArea.Remove(onTile);
+            
+            foreach (var tile in damageArea)
+            {
+                var obstacle = tile.GetObstacle();
+                if (obstacle && obstacle.destroyable)
+                {
+                    DestroyObstacle(obstacle, notify);
+                }
+                else
+                {
+                    var character = tile.GetCharacter();
+                    if(!character) continue;
+
+                    if (character.GetTeam() == PlayerGridMovement.Team.Players)
+                    {
+                        NotifyExplosionToPlayer(character, explosiveDamage, false);
+                    }
+                    else
+                    {
+                        NotifyExplosionToEnemy(character, explosiveDamage, false);
+                    }
+                }
+            }
         }
 
         private void NotifyDestroyedObstacle(Obstacle obstacle)
@@ -1411,40 +1588,40 @@ namespace Grid
             var pos = obstacle.onTile.mapPosition;
             if (IsHost)
             {
-                DestroyedObstacleClientRpc(pos.x, pos.y);
+                DestroyedObstacleClientRpc(pos.x, pos.y, obstacle.explosive);
             }
             else
             {
-                DestroyedObstacleServerRpc(pos.x, pos.y);
+                DestroyedObstacleServerRpc(pos.x, pos.y, obstacle.explosive);
             }
         }
 
         [ClientRpc]
-        private void DestroyedObstacleClientRpc(int x, int y)
+        private void DestroyedObstacleClientRpc(int x, int y, bool explosive)
         {
             if (IsHost) return;
 
             var toPosition = new Vector2Int(x, y);
             var tile = _mapHandler.GetMap()[toPosition];
-
             var obstacle = tile.GetObstacle();
+
             tile.ClearTile();
-            Destroy(obstacle.gameObject);
-            AudioManager.instance.PlayObstacleDestroyedSound();
+            if (!obstacle.explosive) obstacle.DestroyObj();
+            else obstacle.TriggerExplosion();
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void DestroyedObstacleServerRpc(int x, int y)
+        private void DestroyedObstacleServerRpc(int x, int y, bool explosive)
         {
             if (!IsHost) return;
 
             var toPosition = new Vector2Int(x, y);
             var tile = _mapHandler.GetMap()[toPosition];
-
             var obstacle = tile.GetObstacle();
+
             tile.ClearTile();
-            Destroy(obstacle.gameObject);
-            AudioManager.instance.PlayObstacleDestroyedSound();
+            if (!obstacle.explosive) obstacle.DestroyObj();
+            else obstacle.TriggerExplosion();
         }
 
         #endregion

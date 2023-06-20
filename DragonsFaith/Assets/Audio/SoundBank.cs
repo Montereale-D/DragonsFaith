@@ -40,8 +40,12 @@ public class SoundBank : ScriptableObject
     public AudioClip SoundTrackExplore;
     public AudioClip SoundTrackCombat;
     
+    [Header("Dragon")]
+    public AudioClip fireBreath;
+
     [Header("Other")]
     public AudioClip obstacleDestruction;
+    public AudioClip barrelExplosion;
     public AudioClip openingChest;
     public AudioClip openingGate;
     public AudioClip openingHiddenArea;

@@ -19,14 +19,13 @@ namespace UI
         {
             if (instance != null && instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
             }
             else
             {
                 instance = this;
+                DontDestroyOnLoad(this);
             }
-
-            DontDestroyOnLoad(this);
         }
 
         #region UI
@@ -166,6 +165,15 @@ namespace UI
 
         #endregion
 
+        #region Dragon
+
+        public void PlayDragonAttackSound()
+        {
+            enemySound.PlayOneShot(soundBank.fireBreath);
+        }
+
+        #endregion
+
         #region Music
         
         public void PlaySoundTrackMenu()
@@ -214,7 +222,12 @@ namespace UI
 
         public void PlayObstacleDestroyedSound()
         {
-            playerSound.PlayOneShot(soundBank.obstacleDestruction);
+            enemySound.PlayOneShot(soundBank.obstacleDestruction);
+        }
+        
+        public void PlayBarrelExplosionSound()
+        {
+            enemySound.PlayOneShot(soundBank.barrelExplosion);
         }
         
         public void PlayOpenChestSound()
@@ -242,6 +255,37 @@ namespace UI
             playerSound.PlayOneShot(soundBank.spotted);
         }
 
+        #endregion
+
+        #region SettersAndGetters
+        
+        public void SetPlayerVolume(float value)
+        {
+            playerSound.volume = value;
+        }
+        public float GetPlayerVolumeSound()
+        {
+            return playerSound.volume;
+        }
+        
+        public void SetEnemyVolume(float value)
+        {
+            enemySound.volume = value;
+        }
+        public float GetEnemyVolumeSound()
+        {
+            return enemySound.volume;
+        }
+        
+        public void SetBackgroundVolume(float value)
+        {
+            backgroundMusic.volume = value;
+        }
+        public float GetBackgroundVolumeSound()
+        {
+            return backgroundMusic.volume;
+        }
+        
         #endregion
     }
 }

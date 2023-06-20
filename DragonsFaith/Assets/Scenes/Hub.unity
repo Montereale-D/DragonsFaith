@@ -14516,7 +14516,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 574671227}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.2, y: 12, z: 0}
+  m_LocalPosition: {x: 2.2, y: 13.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -25342,7 +25342,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1043104043}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.5, y: 14, z: 0}
+  m_LocalPosition: {x: -4.5, y: 15.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -30091,11 +30091,11 @@ RectTransform:
   m_Father: {fileID: 1257730243}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -644.3904, y: -3.6607666}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 38, y: 0}
   m_SizeDelta: {x: 550, y: 473.3}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1177292183
 GameObject:
   m_ObjectHideFlags: 0
@@ -34663,7 +34663,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1348998238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.5, y: 12, z: 0}
+  m_LocalPosition: {x: -4.5, y: 13.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43276,11 +43276,11 @@ RectTransform:
   m_Father: {fileID: 942572522}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -644.3903, y: -3.660797}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 44, y: 0}
   m_SizeDelta: {x: 550, y: 473.3}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1697032564
 GameObject:
   m_ObjectHideFlags: 0
@@ -49370,8 +49370,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: Inside a dungeon you will encounter patrolling enemies that, if they spot
-    you, they will initiate a combat encounter. You are spotted if you enter the
-    vision cone of an enemy. In the final room of the dungeon, you will find a miniboss
+    you, will initiate a combat encounter. You are spotted if you enter the vision
+    cone of an enemy. In the final room of the dungeon, you will find a miniboss
     that needs to be defeated to unlock the door to return to the hub.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
@@ -52974,7 +52974,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2039176765}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.2, y: 14, z: 0}
+  m_LocalPosition: {x: 2.2, y: 15.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -53945,6 +53945,14 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[140].second.m_TileSpriteIndex
       value: 158
       objectReference: {fileID: 0}
+    - target: {fileID: 2559313734137278285, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2559313734137278285, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 2622002211282943180, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_Size.x
       value: 0.16
@@ -53971,7 +53979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: isBlocked
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2622002211282943182, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: sceneName
@@ -54031,7 +54039,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.95
       objectReference: {fileID: 0}
     - target: {fileID: 3073505798662018449, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -54084,6 +54092,14 @@ PrefabInstance:
     - target: {fileID: 4413061609816060500, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_ColliderPaths.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4637785781981960430, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4637785781981960430, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 8688264915427968316, guid: 2d3df414c8c69d741a6b256f43600f9c, type: 3}
       propertyPath: m_Name

@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Bare hand, no weapon
   id: c714e6ee-fb97-4dfc-b4c5-77b662dcc6c6
   tile: {fileID: 0}
-  image: {fileID: 0}
+  image: {fileID: 1718063727, guid: a8333e8efd30f314eafe9334e7740d9d, type: 3}
   weaponType: 0
   range: 1
   damage: 2

@@ -7,11 +7,11 @@ public class SaveButtons : MonoBehaviour
 {
     public void OnSaveClick()
     {
-        DataManager.Instance.SaveGameRequest();
+        DataManager.instance.SaveGameRequest();
     }
     
     public void OnLoadClick()
     {
-        DataManager.Instance.LoadGameRequest();
+        DataManager.instance.LoadGameRequest();
     }
 }

@@ -17,26 +17,19 @@ namespace UI
         private int _currentResolutionIndex;
 
         private string _playerName;
-
-        [Header("Audio Sources")]
-        [SerializeField] private AudioSource backgroundMusic;
-        [SerializeField] private AudioSource uiSound;
-        [SerializeField] private AudioSource enemySound;
-        [SerializeField] private AudioSource playerSound;
-
-
+        
         private void Awake()
         {
             if (instance != null && instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
             }
             else
             {
                 instance = this;
+                DontDestroyOnLoad(this);
             }
 
-            DontDestroyOnLoad(this);
             
             var resolutions = Screen.resolutions.Select(resolution => new Resolution
             {
@@ -87,39 +80,6 @@ namespace UI
         public void SavePlayerName(string str)
         {
             PlayerPrefs.SetString("playerName", str);
-        }
-        
-        /*public string RetrievePlayerName()
-        {
-            return _playerName;
-        }*/
-        
-        //TODO: add audio sources
-        public void SetPlayerVolume(float value)
-        {
-            playerSound.volume = value;
-        }
-        public float GetPlayerVolumeSound()
-        {
-            return playerSound.volume;
-        }
-        
-        public void SetEnemyVolume(float value)
-        {
-            enemySound.volume = value;
-        }
-        public float GetEnemyVolumeSound()
-        {
-            return enemySound.volume;
-        }
-        
-        public void SetBackgroundVolume(float value)
-        {
-            backgroundMusic.volume = value;
-        }
-        public float GetBackgroundVolumeSound()
-        {
-           return backgroundMusic.volume;
         }
     }
 }
