@@ -31,7 +31,9 @@ MonoBehaviour:
   SoundTrackMenu: {fileID: 8300000, guid: 3111c6aca0bde764ea75b74eb6cbf060, type: 3}
   SoundTrackExplore: {fileID: 8300000, guid: e4bfe81cd18bb4149a918735bfa66e03, type: 3}
   SoundTrackCombat: {fileID: 8300000, guid: 50df86e95eb96b34c8e5b4939c9a49fa, type: 3}
+  fireBreath: {fileID: 8300000, guid: 1951d7f71d0eb284383d33d093c2c100, type: 3}
   obstacleDestruction: {fileID: 8300000, guid: 19c980d3d1ba71d4894d8d32dc6dfef6, type: 3}
+  barrelExplosion: {fileID: 8300000, guid: 99fc7087cb35e344d8853c70ee222b74, type: 3}
   openingChest: {fileID: 8300000, guid: 3f093c1432d9c4240ae771ac3585c502, type: 3}
   openingGate: {fileID: 8300000, guid: b0b5856184bd1d74aae1493f8ccd6825, type: 3}
   openingHiddenArea: {fileID: 8300000, guid: 49184e769999a014c89afe8ced3446fa, type: 3}

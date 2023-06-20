@@ -90,7 +90,7 @@ namespace Network
             }
 
             if (_playersReady != 2) return;
-            if (toDungeon) PlayerUI.instance.ShowMessage("Entering dungeon.");
+            if (toDungeon) PlayerUI.instance.ShowMessage("Entering facility.");
             else if (toBoss) PlayerUI.instance.ShowMessage("Entering final area.");
             else PlayerUI.instance.ShowMessage("Returning to hub.");
             OnPlayersReady();
