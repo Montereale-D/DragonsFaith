@@ -1340,7 +1340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991083875914707883, guid: 0f8a7cab0e9e739428ff4ae7375709ba, type: 3}
       propertyPath: saveId
-      value: f1e4960d-2a39-4b29-8585-0650ddfc3b28
+      value: 3a9575b6-4aa9-4a09-8327-666472eaf6e3
       objectReference: {fileID: 0}
     - target: {fileID: 7991083875914707883, guid: 0f8a7cab0e9e739428ff4ae7375709ba, type: 3}
       propertyPath: openable
@@ -1693,6 +1693,10 @@ PrefabInstance:
       value: AbiltyChecker (1)
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
+      propertyPath: saveId
+      value: e4a1360d-8fac-4958-aee8-ef36b4c2159f
+      objectReference: {fileID: 0}
+    - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: onSuccess.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -1815,7 +1819,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: saveId
-      value: e44ac4a3-364c-4bf0-a2a1-d13c47cce33a
+      value: c46007f1-1cf8-48d1-abc3-e5d72ca4e57e
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: onSuccess.m_PersistentCalls.m_Calls.Array.size
@@ -2286,7 +2290,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991083875914707883, guid: 0f8a7cab0e9e739428ff4ae7375709ba, type: 3}
       propertyPath: saveId
-      value: f1e4960d-2a39-4b29-8585-0650ddfc3b28
+      value: a5cf0a85-179b-45cd-994a-5eae71e6cfe1
       objectReference: {fileID: 0}
     - target: {fileID: 7991083875914707883, guid: 0f8a7cab0e9e739428ff4ae7375709ba, type: 3}
       propertyPath: openable
