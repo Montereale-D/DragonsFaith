@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4411962178672604481}
   - component: {fileID: 2444328468891494127}
   - component: {fileID: 8403036609258905593}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 9056945334946390816}
   - component: {fileID: 4711083725818997478}
   - component: {fileID: 8249299156600929132}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 1903108883621488136}
   - component: {fileID: 219339536092419909}
   - component: {fileID: 3792251988095568237}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 555139263663050442}
   - component: {fileID: 3178762734973586170}
   - component: {fileID: 1278420724051494247}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -641,7 +641,7 @@ GameObject:
   - component: {fileID: 7063720747624519367}
   - component: {fileID: 7063720747624519366}
   - component: {fileID: 2779655179280606292}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: KeyPressController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -728,7 +728,7 @@ GameObject:
   - component: {fileID: 9088300157277548886}
   - component: {fileID: 1952790216816328816}
   - component: {fileID: 5341213841995188608}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -863,7 +863,7 @@ GameObject:
   - component: {fileID: 2413990000507502146}
   - component: {fileID: 1747161641974930923}
   - component: {fileID: 2663350881064746581}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

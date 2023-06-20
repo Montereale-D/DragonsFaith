@@ -89,7 +89,6 @@ GameObject:
   - component: {fileID: 6870420458554985037}
   - component: {fileID: 3263148781412382535}
   - component: {fileID: 5674218427252541878}
-  - component: {fileID: 7377669135128293809}
   m_Layer: 0
   m_Name: MeleeSoldier
   m_TagString: Enemy
@@ -215,44 +214,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.20000005, y: 1.5213408}
   m_Size: {x: 2, y: 2.9573183}
   m_Direction: 0
---- !u!114 &7377669135128293809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277841241995616070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: 1740614436
-    TransitionDuration: 0
-    TriggerNameHash: 1740614436
-    TransitionIndex: 0
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: 1273568435
-    TransitionDuration: 0
-    TriggerNameHash: 237393061
-    TransitionIndex: 2
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: -1525363869
-    TransitionDuration: 0
-    TriggerNameHash: -1525363869
-    TransitionIndex: 3
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: -608183251
-    TransitionDuration: 0
-    TriggerNameHash: -1864224364
-    TransitionIndex: 4
-  m_Animator: {fileID: 6870420458554985037}
 --- !u!1 &809007258253916776
 GameObject:
   m_ObjectHideFlags: 0
@@ -939,6 +900,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 1
   pathMovementSpeed: 5
+  enemyLocalOrder: 0
   isMoving: 0
   turnSprite: {fileID: -1789146564, guid: 810671a87e384a14ca71358c8f1246c9, type: 3}
   charName: 
@@ -994,6 +956,8 @@ MonoBehaviour:
   healthBar: {fileID: 8373586654216748649}
   healthNumber: {fileID: 1951617335428420341}
   characterName: {fileID: 6153899990271757736}
+  manaBar: {fileID: 0}
+  manaNumber: {fileID: 0}
   damageCounter: {fileID: 2481019766956630270}
   damageCounterText: {fileID: 3657803955770086486}
   coveredSymbol: {fileID: 7278521031094500583}

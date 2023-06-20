@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: CombatKnife
   description: 'Range = 1 cell
 
-    Damage = 3 hp
+    Damage = 8 hp
 
     No ammo'
   id: e5cb1d3d-22e0-4f35-80dc-a157793b6f06
@@ -23,6 +23,6 @@ MonoBehaviour:
   image: {fileID: 104612895, guid: 04b8b4c1d142b744b9a022be5161b930, type: 3}
   weaponType: 0
   range: 1
-  damage: 3
+  damage: 8
   capacity: 1000
   weaponObject: {fileID: 0}

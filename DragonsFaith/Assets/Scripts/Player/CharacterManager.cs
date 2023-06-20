@@ -14,6 +14,12 @@ namespace Player
         private CharacterInfo _characterInfo;
 
         public static CharacterManager Instance { get; private set; }
+        public Mode mode;
+
+        public enum Mode
+        {
+            Free, Grid
+        }
 
         private void Awake()
         {
@@ -160,6 +166,8 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = false;
             localPlayer.GetComponent<BoxCollider2D>().enabled = false;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = true;
+            InventoryManager.Instance.LockEquipmentSlots();
+            mode = Mode.Grid;
         }
 
         public void SetPlayerFreeMode()
@@ -169,6 +177,8 @@ namespace Player
             localPlayer.GetComponent<CameraFindPlayer>().enabled = true;
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
+            InventoryManager.Instance.UnlockEquipmentSlots();
+            mode = Mode.Free;
         }
         
         [ContextMenu("Increase Max Health")]
@@ -187,6 +197,18 @@ namespace Player
         public string GetCharName()
         {
             return _characterInfo.characterName;
+        }
+
+        public void LockPlayerMovement()
+        {
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().enabled = false;
+        }
+
+        public void UnlockPlayerMovement()
+        {
+            var localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject;
+            localPlayer.GetComponent<PlayerMovement>().enabled = true;
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Network;
 using Save;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -194,10 +195,17 @@ namespace Enemy
                 Debug.Log("Not ready to CombatStart || already started");
                 return;
             }
-
+            
             _isReadyToFight = false;
+
+            if (!IsHost)
+            {
+                StopMovementServerRpc();
+            }
+
             fieldOfView.Stop();
             _keepMoving = false;
+            AudioManager.instance.PlaySpottedSound();
 
             Debug.Log("OnCombatStart " + position);
             
@@ -224,6 +232,14 @@ namespace Enemy
                     OnCombatStartClientRpc(position);
                 }
             }
+        }
+
+        [ServerRpc]
+        private void StopMovementServerRpc()
+        {
+            fieldOfView.Stop();
+            _keepMoving = false;
+            AudioManager.instance.PlaySpottedSound();
         }
 
         [ClientRpc]

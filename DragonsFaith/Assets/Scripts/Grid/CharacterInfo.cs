@@ -77,6 +77,10 @@ public class CharacterInfo : MonoBehaviour
         {
             health = 0;
         }
+        else
+        {
+            AudioManager.instance.PlayPLayerHurtSound();
+        }
 
         if (isLocalPlayer)
         {
@@ -91,11 +95,16 @@ public class CharacterInfo : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            AudioManager.instance.PlayPLayerHurtSound();
+        }
     }
     
     private void Die()
     {
         CombatSystem.instance.CharacterDied(_gridMovement);
+        AudioManager.instance.PlayPLayerDieSound();
         _gridMovement.OnDeath();
     }
 
@@ -120,7 +129,11 @@ public class CharacterInfo : MonoBehaviour
         else
         {
             _characterUI.UpdateHealth(health);
-            GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(heal, true, false);
+            var popUI = GetComponent<CharacterGridPopUpUI>();
+            if (popUI)
+            {
+                popUI.ShowDamageCounter(heal, true, false);
+            }
         }
     }
 

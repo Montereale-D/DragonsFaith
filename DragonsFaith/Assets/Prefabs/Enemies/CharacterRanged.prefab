@@ -94,7 +94,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6349163487113056293
 RectTransform:
   m_ObjectHideFlags: 0
@@ -209,7 +209,6 @@ GameObject:
   - component: {fileID: 5443257883402750039}
   - component: {fileID: 4151190422598366557}
   - component: {fileID: 6515629686619556780}
-  - component: {fileID: 7247785166705605845}
   m_Layer: 0
   m_Name: AssaultSoldier
   m_TagString: Enemy
@@ -335,44 +334,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.20000005, y: 1.5213408}
   m_Size: {x: 2, y: 2.9573183}
   m_Direction: 0
---- !u!114 &7247785166705605845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1660106522546789724}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: 1740614436
-    TransitionDuration: 0
-    TriggerNameHash: 1740614436
-    TransitionIndex: 0
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: 1273568435
-    TransitionDuration: 0
-    TriggerNameHash: 237393061
-    TransitionIndex: 2
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: -1525363869
-    TransitionDuration: 0
-    TriggerNameHash: -1525363869
-    TransitionIndex: 3
-  - Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: -608183251
-    TransitionDuration: 0
-    TriggerNameHash: -1864224364
-    TransitionIndex: 4
-  m_Animator: {fileID: 5443257883402750039}
 --- !u!1 &2299332687858514034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,6 +1087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 1
   pathMovementSpeed: 5
+  enemyLocalOrder: 0
   isMoving: 0
   turnSprite: {fileID: -2102863413, guid: 049dce31061bbcc499477f2b0c89ee7c, type: 3}
   charName: 
@@ -1181,6 +1143,8 @@ MonoBehaviour:
   healthBar: {fileID: 6982269953699593331}
   healthNumber: {fileID: 1137014411519283439}
   characterName: {fileID: 4734970248699203506}
+  manaBar: {fileID: 0}
+  manaNumber: {fileID: 0}
   damageCounter: {fileID: 3944220202040025828}
   damageCounterText: {fileID: 2743207176039175756}
   coveredSymbol: {fileID: 2444990743350568014}

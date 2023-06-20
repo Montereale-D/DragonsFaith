@@ -1,4 +1,5 @@
 using Network;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Android;
@@ -22,8 +23,7 @@ namespace Interactable
             Debug.Log("animator activating");
             animator.SetTrigger(Reveal);
             wall.SetActive(false);
-            
-            
+            AudioManager.instance.PlayOpenHiddenSound();
             return true;
         }
 

@@ -107,6 +107,7 @@ public class GameHandler : NetworkBehaviour
     {
         Debug.Log("GAME OVER");
         //todo UI show GameOver screen
+        AudioManager.instance.StopSoundTrackExplore();
         SceneManager.instance.LoadSceneSingle("GameOver");
         //FindObjectOfType<SceneManager>().LoadSceneAdditive("Menu");
     }
@@ -120,11 +121,22 @@ public class GameHandler : NetworkBehaviour
             popUpUI.HideUI();
         }
 
-        CharacterManager.Instance.SetPlayerFreeMode();
+        foreach (var playerGridMovement in FindObjectsOfType<PlayerGridMovement>())
+        {
+            if (playerGridMovement.gameObject != NetworkManager.LocalClient.PlayerObject.gameObject)
+            {
+                playerGridMovement.movement = 0;
+            }
+        }
+        
         PlayerUI.instance.HideCombatUI();
+
+        CharacterManager.Instance.SetPlayerFreeMode();
+        
 
         if (!isBossRoom)
         {
+            AudioManager.instance.StopSoundTrackCombat();
             SceneManager.instance.ReloadSceneSingleDungeon();
         }
         else

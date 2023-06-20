@@ -91,6 +91,11 @@ namespace UI
             _turnUI.DestroyList();
         }
 
+        public void OnCombatEnd()
+        {
+            //_turnUI.isCombatEnd = true;
+        }
+
         private void SetItemsTab()
         {
             equippedItemsTab.SetActive(!equippedItemsTab.activeSelf);
@@ -145,9 +150,9 @@ namespace UI
                 case "Show":
                     skillButton.onClick.RemoveAllListeners();
                     skillButton.GetComponent<TooltipTrigger>().header = "Show";
-                    skillButton.GetComponent<TooltipTrigger>().content = "Show the skill's area of effect." +
+                    skillButton.GetComponent<TooltipTrigger>().content = "Show the skill's area of effect." + System.Environment.NewLine +
                                                                          "Range is shown in the direction of the selected cell.";
-                    skillButton.onClick.AddListener(CombatSystem.instance.CheckSkillRange);
+                    skillButton.onClick.AddListener(CombatSystem.instance.ButtonSkillRange);
                     break;
                 case "Hide":
                     skillButton.onClick.RemoveAllListeners();

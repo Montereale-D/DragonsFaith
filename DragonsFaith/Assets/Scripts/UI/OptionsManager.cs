@@ -10,14 +10,14 @@ namespace UI
 {
     public class OptionsManager : MonoBehaviour
     {
-        public static OptionsManager Instance { get; private set; }
+        public static OptionsManager instance { get; private set; }
         
         private Resolution[] _resolutions;
         private List<string> _options = new List<string>();
         private int _currentResolutionIndex;
 
         private string _playerName;
-        
+
         [Header("Audio Sources")]
         [SerializeField] private AudioSource backgroundMusic;
         [SerializeField] private AudioSource uiSound;
@@ -27,13 +27,13 @@ namespace UI
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
+            if (instance != null && instance != this)
             {
                 Destroy(this);
             }
             else
             {
-                Instance = this;
+                instance = this;
             }
 
             DontDestroyOnLoad(this);
@@ -97,32 +97,29 @@ namespace UI
         //TODO: add audio sources
         public void SetPlayerVolume(float value)
         {
-            //playerSound.volume = value;
+            playerSound.volume = value;
         }
         public float GetPlayerVolumeSound()
         {
-            //return playerSound.volume;
-            return 0;
+            return playerSound.volume;
         }
         
         public void SetEnemyVolume(float value)
         {
-            //enemySound.volume = value;
+            enemySound.volume = value;
         }
         public float GetEnemyVolumeSound()
         {
-            //return enemySound.volume;
-            return 0;
+            return enemySound.volume;
         }
         
         public void SetBackgroundVolume(float value)
         {
-            //backgroundMusic.volume = value;
+            backgroundMusic.volume = value;
         }
         public float GetBackgroundVolumeSound()
         {
-           //return backgroundMusic.volume;
-           return 0;
+           return backgroundMusic.volume;
         }
     }
 }

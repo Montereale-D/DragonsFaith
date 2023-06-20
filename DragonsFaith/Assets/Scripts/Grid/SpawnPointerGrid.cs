@@ -114,15 +114,16 @@ public class SpawnPointerGrid : NetworkBehaviour
             var position = new Vector3(spawnPoint.x, spawnPoint.y, 0);
             var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
             var go = Instantiate(randomPrefab, position, Quaternion.identity);
+            go.GetComponent<PlayerGridMovement>().enemyLocalOrder = i;
             var networkObject = go.GetComponent<NetworkObject>();
             
             networkObject.Spawn(true);
-            SetUpEnemyClientRpc(networkObject.NetworkObjectId, position);
+            SetUpEnemyClientRpc(networkObject.NetworkObjectId, position, i);
         }
     }
     
     [ClientRpc]
-    private void SetUpEnemyClientRpc(ulong objectIdToSet, Vector3 position)
+    private void SetUpEnemyClientRpc(ulong objectIdToSet, Vector3 position, int enemyLocalOrder)
     {
         if(IsHost) return;
         
@@ -135,6 +136,7 @@ public class SpawnPointerGrid : NetworkBehaviour
         }
 
         objToSet.transform.position = position;
+        objToSet.GetComponent<PlayerGridMovement>().enemyLocalOrder = enemyLocalOrder;
     }
     
     [ClientRpc]
@@ -168,7 +170,7 @@ public class SpawnPointerGrid : NetworkBehaviour
             var y = Random.Range(minY, maxY + 1);
             var point = new Vector2Int(x, y);
             
-            if (IsAvailable(point))
+            if (!tmpList.Contains(point) && IsAvailable(point))
             {
                 tmpList.Add(point);
                 i++;

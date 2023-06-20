@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,10 +44,7 @@ namespace Grid
             ShowUI();
             _maxHealth = maxHealth;
             healthBar.maxValue = maxHealth;
-            //_maxMana = maxMana;
-            //manaBar.maxValue = maxMana;
             UpdateHealth(maxHealth);
-            //UpdateMana(maxMana);
             characterName.text = charName;
             HideUI();
         }
@@ -81,6 +79,7 @@ namespace Grid
             coveredSymbol.SetActive(isProtected);
             damageCounterText.color = heal ? Color.green : Color.red;
             _isOpening = true;
+            AudioManager.instance.PlayPLayerHurtSound();
             //ShowBlood();
         }
 

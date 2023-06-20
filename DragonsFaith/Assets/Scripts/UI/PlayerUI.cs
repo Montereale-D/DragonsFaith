@@ -54,6 +54,7 @@ namespace UI
 
         [Header("Player UI")] public GameObject playerUI;
         public GameObject settingsButton;
+        public GameObject dungeonTutorial;
         public Image portrait;
         public Sprite[] portraitSprites;
 
@@ -135,7 +136,7 @@ namespace UI
             skillsTab.SetActive(false);
             faithTab.SetActive(true);
 
-            _optionsManager = OptionsManager.Instance;
+            _optionsManager = OptionsManager.instance;
 
             _optionsManager.SetDropdown(resolutionDropdown);
 
@@ -156,6 +157,7 @@ namespace UI
         private void Start()
         {
             InventoryManager.Instance.SetUpSlots(inventorySlots, equipmentSlots, passiveSkillSlots);
+            CharacterManager.Instance.LockPlayerMovement();
         }
 
         private void Update()
@@ -243,14 +245,8 @@ namespace UI
                     skillsTab.SetActive(!skillsTab.activeSelf);
                     break;
                 case Tab.Faith:
-                    //FadeOutElement(_rectTransformFaithTab, faithTabFadeOutTime);
                     LeanTween.alpha(_rectTransformFaithTab, 0f, faithTabFadeOutTime).setEase(LeanTweenType.linear)
                         .setOnComplete(FaithTabAnimComplete);
-                    /*delay = LeanTween.delayedCall(faithTabFadeOutTime, () =>
-                    {
-                        faithTab.SetActive(false);
-                    });*/
-                    //faithTab.SetActive(false);
                     _faithChoiceDone = true;
                     break;
                 case Tab.Main:
@@ -298,22 +294,7 @@ namespace UI
             var spriteIdx = Random.Range(0, portraitSprites.Length);
             portraitIdx = spriteIdx;
             portrait.sprite = portraitSprites[spriteIdx];
-            //StartCoroutine(GetOtherPlayerSprite(portraitIdx));
         }
-
-        /*private IEnumerator GetOtherPlayerSprite(int idx)
-        {
-            _dataManager.SendPortraitSprite(idx);
-            while (!_dataManager.received)
-            {
-                Debug.Log("waiting...");
-                yield return new WaitForSeconds(0.2f);
-            }
-
-            /*Debug.Assert(_dataManager.otherPlayerSpriteIdx != null, 
-                "_dataManager.otherPlayerSpriteIdx != null");#1#
-            otherPlayerSprite = portraitSprites[_dataManager.otherPlayerSpriteIdx];
-        }*/
 
         public void OpenMenu()
         {
@@ -364,6 +345,7 @@ namespace UI
             SetPortraitSprite();
             playerUI.SetActive(true);
             settingsButton.SetActive(true);
+            CharacterManager.Instance.UnlockPlayerMovement();
         }
 
         public void SetFire()
@@ -385,7 +367,7 @@ namespace UI
         public void SetAir()
         {
             SetFaithSprite(Element.Air);
-            var skill = ExchangeManager.Instance.CreateSkill("Thunder Bolt");
+            var skill = ExchangeManager.Instance.CreateSkill("Thunder Strike");
             var passive1 = ExchangeManager.Instance.CreateSkill("Dexterity increase");
             var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
             InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
@@ -559,6 +541,7 @@ namespace UI
 
         public void HideCombatUI()
         {
+            _combatUI.OnCombatEnd();
             combatUI.gameObject.SetActive(false);
         }
 
@@ -568,6 +551,7 @@ namespace UI
         {
             if (!combatUI.gameObject.activeSelf)
             {
+                if (dungeonTutorial.activeSelf) dungeonTutorial.SetActive(false);
                 combatUI.gameObject.SetActive(true);
                 FadeInElement(combatUI, turnUIFadeInTime);
                 _combatUI = combatUI.GetComponent<CombatUI>();
@@ -595,6 +579,11 @@ namespace UI
         public void SkillButtonAction(string mode)
         {
             _combatUI.SkillButtonAction(mode);
+        }
+
+        public void StartDungeonTutorial()
+        {
+            dungeonTutorial.SetActive(true);
         }
 
         public void ReturnToMainMenu()
