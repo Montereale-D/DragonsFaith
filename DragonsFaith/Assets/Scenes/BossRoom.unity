@@ -33269,9 +33269,7 @@ MonoBehaviour:
   spawnPointPlayer1: {x: -8, y: 1}
   spawnPointPlayer2: {x: -8, y: -1}
   spawnPointBoss: {x: 5, y: 0}
-  spawnPointEnemies:
-  - {x: 3, y: 2}
-  - {x: 3, y: -2}
+  spawnPointEnemies: []
   spawnPointObstacles:
   - {x: 0, y: 0}
   - {x: 1, y: 0}

@@ -921,7 +921,7 @@ MonoBehaviour:
   agility: 3
   healthMax: 80
   weapon: {fileID: 11400000, guid: e5de230ab3c41694391ae5e7ce81d299, type: 2}
-  skipTurn: 0
+  skipTurn: 1
 --- !u!114 &5112907475707427200
 MonoBehaviour:
   m_ObjectHideFlags: 0
