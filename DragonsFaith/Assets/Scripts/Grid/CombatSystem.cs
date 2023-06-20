@@ -19,6 +19,7 @@ namespace Grid
         [HideInInspector] public List<PlayerGridMovement> characterList;
         [HideInInspector] public List<Obstacle> obstacleList;
         private int _indexCharacterTurn = -1;
+        [SerializeField] private int explosiveDamage = 10;
 
         public PlayerGridMovement activeUnit { get; private set; }
         private bool _canMoveThisTurn;
@@ -1270,6 +1271,70 @@ namespace Grid
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
+        
+        private void NotifyExplosionToPlayer(PlayerGridMovement target, int damage, bool isProtected)
+        {
+            var targetIndex = characterList.IndexOf(target);
+            
+            if (IsHost)
+            {
+                NotifyExplosionToPlayerClientRpc(targetIndex, damage, isProtected);
+            }
+            else
+            {
+                NotifyExplosionToPlayerServerRpc(targetIndex, damage, isProtected);
+            }
+
+            if (target.gameObject == _localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+            else
+            {
+                target.GetComponent<CharacterInfo>().Damage(damage);
+            }
+
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        private void NotifyExplosionToPlayerServerRpc(int targetIndex, int damage, bool isProtected)
+        {
+            if(!IsHost) return;
+            
+            var target = characterList[targetIndex];
+            if (target.gameObject == _localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+            else
+            {
+                target.GetComponent<CharacterInfo>().Damage(damage);
+            }
+
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ClientRpc]
+        private void NotifyExplosionToPlayerClientRpc(int targetIndex, int damage, bool isProtected)
+        {
+            if(IsHost) return;
+            
+            var target = characterList[targetIndex];
+            if (target.gameObject == _localPlayer)
+            {
+                CharacterManager.Instance.Damage(damage);
+            }
+            else
+            {
+                target.GetComponent<CharacterInfo>().Damage(damage);
+            }
+
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
 
         public void NotifyAttackToEnemy(PlayerGridMovement target, int damage, bool isProtected, string weaponName = "",
             string skillElement = "")
@@ -1294,6 +1359,43 @@ namespace Grid
             {
                 NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, isProtected, weaponName, skillElement);
             }
+        }
+        public void NotifyExplosionToEnemy(PlayerGridMovement target, int damage, bool isProtected)
+        {
+            var targetIndex = characterList.IndexOf(target);
+
+            if (IsHost)
+            {
+                NotifyExplosionToEnemyClientRpc(targetIndex, damage, isProtected);
+            }
+            else
+            {
+                NotifyExplosionToEnemyServerRpc(targetIndex, damage, isProtected);
+            }
+            
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        private void NotifyExplosionToEnemyServerRpc(int targetIndex, int damage, bool isProtected)
+        {
+            var target = characterList[targetIndex];
+
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+        }
+
+        [ClientRpc]
+        private void NotifyExplosionToEnemyClientRpc(int targetIndex, int damage, bool isProtected)
+        {
+            var target = characterList[targetIndex];
+
+            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -1401,10 +1503,10 @@ namespace Grid
 
         public void ButtonDestroyAction()
         {
-            DestroyObstacle(_selectedTile.GetObstacle());
+            DestroyObstacle(_selectedTile.GetObstacle(), true);
         }
 
-        private void DestroyObstacle(Obstacle obstacle)
+        private void DestroyObstacle(Obstacle obstacle, bool notify)
         {
             if (!obstacle)
             {
@@ -1412,12 +1514,51 @@ namespace Grid
                 return;
             }
 
-            NotifyDestroyedObstacle(obstacle);
+            if (notify)
+            {
+                NotifyDestroyedObstacle(obstacle);
+            }
+
             obstacle.onTile.ClearTile();
+
+            if (obstacle.explosive)
+            {
+                ExplosiveObstacleDamage(obstacle.onTile, notify);
+            }
+            
             Destroy(obstacle.gameObject);
             AudioManager.instance.PlayObstacleDestroyedSound();
 
             _canAttackThisTurn = false;
+        }
+
+        private void ExplosiveObstacleDamage(Tile onTile, bool notify)
+        {
+            var damageArea = MapHandler.instance.GetTilesInRange(onTile, 1);
+            damageArea.Remove(onTile);
+            
+            foreach (var tile in damageArea)
+            {
+                var obstacle = tile.GetObstacle();
+                if (obstacle && obstacle.destroyable)
+                {
+                    DestroyObstacle(obstacle, notify);
+                }
+                else
+                {
+                    var character = tile.GetCharacter();
+                    if(!character) continue;
+
+                    if (character.GetTeam() == PlayerGridMovement.Team.Players)
+                    {
+                        NotifyExplosionToPlayer(character, explosiveDamage, false);
+                    }
+                    else
+                    {
+                        NotifyExplosionToEnemy(character, explosiveDamage, false);
+                    }
+                }
+            }
         }
 
         private void NotifyDestroyedObstacle(Obstacle obstacle)
@@ -1425,37 +1566,37 @@ namespace Grid
             var pos = obstacle.onTile.mapPosition;
             if (IsHost)
             {
-                DestroyedObstacleClientRpc(pos.x, pos.y);
+                DestroyedObstacleClientRpc(pos.x, pos.y, obstacle.explosive);
             }
             else
             {
-                DestroyedObstacleServerRpc(pos.x, pos.y);
+                DestroyedObstacleServerRpc(pos.x, pos.y, obstacle.explosive);
             }
         }
 
         [ClientRpc]
-        private void DestroyedObstacleClientRpc(int x, int y)
+        private void DestroyedObstacleClientRpc(int x, int y, bool explosive)
         {
             if (IsHost) return;
 
             var toPosition = new Vector2Int(x, y);
             var tile = _mapHandler.GetMap()[toPosition];
-
             var obstacle = tile.GetObstacle();
+
             tile.ClearTile();
             Destroy(obstacle.gameObject);
             AudioManager.instance.PlayObstacleDestroyedSound();
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void DestroyedObstacleServerRpc(int x, int y)
+        private void DestroyedObstacleServerRpc(int x, int y, bool explosive)
         {
             if (!IsHost) return;
 
             var toPosition = new Vector2Int(x, y);
             var tile = _mapHandler.GetMap()[toPosition];
-
             var obstacle = tile.GetObstacle();
+
             tile.ClearTile();
             Destroy(obstacle.gameObject);
             AudioManager.instance.PlayObstacleDestroyedSound();

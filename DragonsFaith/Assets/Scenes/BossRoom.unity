@@ -33314,3 +33314,4 @@ MonoBehaviour:
   obstaclePrefabs:
   - {fileID: 6136244409482889238, guid: a8aa3cd0a22a1124d971c750a300a6c8, type: 3}
   - {fileID: 6136244409482889238, guid: a50883cd64d3a4e4c8185f97bd4e2b42, type: 3}
+  - {fileID: 6460200261005188858, guid: f8ebe23aee074f0448ea1fb2d9fa270a, type: 3}
