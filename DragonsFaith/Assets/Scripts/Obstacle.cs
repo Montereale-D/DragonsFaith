@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UI;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Obstacle : MonoBehaviour
@@ -50,7 +51,11 @@ public class Obstacle : MonoBehaviour
     public void DestroyObj()
     {
         AudioManager.instance.PlayObstacleDestroyedSound();
-        Destroy(gameObject);
+
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Destroy(gameObject);
+        }
     }
 
 }
