@@ -555,8 +555,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -387247453, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
-  m_Color: {r: 0.3811708, g: 1, b: 0.006289184, a: 1}
+  m_Sprite: {fileID: 2100126727, guid: 128e81389e7b3e049960f564e234b543, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -583,7 +583,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.3, y: 0.32}
+    oldSize: {x: 0.29, y: 0.27}
     newSize: {x: 1.28, y: 1.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -620,8 +620,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f83f7fa6dd2e040a3d6ab3f2aa5233, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  usedSprite: {fileID: 651660845, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
-  unusedSprite: {fileID: -387247453, guid: 28126dd0ede427e4ab9fb9a938aba901, type: 3}
+  usedSprite: {fileID: -481652289, guid: 128e81389e7b3e049960f564e234b543, type: 3}
+  unusedSprite: {fileID: 2100126727, guid: 128e81389e7b3e049960f564e234b543, type: 3}
   abilityToCheck:
     attribute: 4
     score: 1
@@ -783,7 +783,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press E to interact
+  m_text: Press E to hack
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
   m_sharedMaterial: {fileID: -2713363486176451765, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
@@ -918,7 +918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Chest
+  m_text: Computer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
   m_sharedMaterial: {fileID: -2713363486176451765, guid: 47506fbde1fe4284ea5ff10935b11023, type: 2}
