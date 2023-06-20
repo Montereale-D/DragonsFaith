@@ -50,13 +50,9 @@ namespace Network
             if (IsServer)
             {
                 NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
-                //NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-                
             }
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
-            //NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
-            //NetworkManager.SceneManager.OnLoadEventCompleted += TransitionBackground.instance.FadeIn;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnPlayerDisconnect;
         }
 
@@ -65,7 +61,12 @@ namespace Network
             //if(!_isLoading) return;
             
             Debug.Log("On scene loaded");
-            TransitionBackground.instance.FadeIn();
+
+            if (scenename != "Grid" && scenename != "BossRoom")
+            {
+                TransitionBackground.instance.FadeIn();
+            }
+
             _isLoading = false;
         }
 
@@ -324,14 +325,11 @@ namespace Network
                                          $"identifiers:({sceneEvent.ClientsThatTimedOut})");
                     }
 
-                    ForceFadeInClientRpc();
-
-                    /*if (_loadedScene.name != "Grid")
+                    if (sceneEvent.SceneName != "Grid" && sceneEvent.SceneName != "BossRoom")
                     {
-                        Debug.Log("Notify interpolation active");
-                        EnableInterpolationClientRpc();
-                        EnableInterpolation(true);
-                    }*/
+                        ForceFadeInClientRpc();
+                    }
+                    
 
                     break;
                 }
