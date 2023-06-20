@@ -89,6 +89,8 @@ namespace Interactable
             if(!IsHost) return;
             
             DungeonProgressManager.instance.AbilityPassed(saveId, gameObject);
+            _isUsed.Value = true;
+            onSuccess?.Invoke();
         }
 
         private void ShowNotAble()
