@@ -156,10 +156,12 @@ namespace Inventory
                     if (CharacterManager.Instance.mode == CharacterManager.Mode.Free)
                     {
                         isUsed = OnConsumableUse(item, CharacterManager.Mode.Free);
+                        Debug.Log("OnSlotUse + free: " + isUsed);
                     }
                     else if(CombatSystem.instance != null && CombatSystem.instance.CanUseItem())
                     {
                         isUsed = CombatSystem.instance.UseItem(item.item);
+                        Debug.Log("OnSlotUse + grid: " + isUsed);
                     }
 
                     return isUsed;
@@ -195,6 +197,7 @@ namespace Inventory
                 case Consumable.ConsumableType.Revival:
                     if (CharacterManager.Instance.mode == CharacterManager.Mode.Grid)
                     {
+                        Debug.Log("OnConsumableUse use revive");
                         CharacterManager.Instance.GiveRevive();
                         return true;
                     }
@@ -326,6 +329,37 @@ namespace Inventory
             }
             
             return output < 1 ? 1 : output;
+        }
+        
+        public float GetEquipmentModifiersAbs(AttributeType type)
+        {
+            var output = 0f;
+
+            foreach (var slot in equipmentSlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if (!inventoryItem) continue;
+                
+                var armor = inventoryItem.item as Armor;
+                if (armor)
+                {
+                    output += GetArmorModifiers(armor, type);
+                }
+            }
+            
+            foreach (var slot in passiveSkillSlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if (!inventoryItem) continue;
+                
+                var skill = inventoryItem.item as PassiveSkill;
+                if (skill)
+                {
+                    output += GetSkillModifiers(skill, type);
+                }
+            }
+            
+            return output;
         }
 
         public static float GetArmorModifiers(Armor item, AttributeType type)
@@ -471,13 +505,6 @@ namespace Inventory
             {
             }
         }
-
-        [ContextMenu("Add Armor")]
-        public void AddArmorContextMenu()
-        {
-            var armor = ExchangeManager.Instance.CreateItem("777225e7-ea15-4ea2-bb10-40a5d2dbac4a");
-            Debug.Log("AddItem request " + AddItem(armor));
-        }
         
         [ContextMenu("Add Weapon")]
         public void AddWeaponContextMenu()
@@ -511,7 +538,7 @@ namespace Inventory
             Debug.Log("AddItem request " + AddItem(armor));
         }
         [ContextMenu("Add boots")]
-        public void AddBootsContextMenu()
+        public void AddPantsContextMenu()
         {
             var armor = ExchangeManager.Instance.CreateItem("777225e7-ea15-4ea2-bb10-40a5d2dbac4a");
             Debug.Log("AddItem request " + AddItem(armor));

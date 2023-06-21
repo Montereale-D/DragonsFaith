@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   itemName: Pistol
-  description: 'Range = 3 cells
+  description: 'Range = 4 cells
 
     Damage = 5 hp
 
@@ -22,7 +22,7 @@ MonoBehaviour:
   tile: {fileID: 0}
   image: {fileID: -10514552, guid: e0082552569e407449e5dee4b1552d29, type: 3}
   weaponType: 1
-  range: 3
+  range: 4
   damage: 5
   capacity: 5
   weaponObject: {fileID: 7563764566049780249, guid: ac47259529df24745a0af4aa771dcc9a, type: 3}

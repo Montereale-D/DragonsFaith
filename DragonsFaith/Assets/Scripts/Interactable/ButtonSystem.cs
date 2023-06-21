@@ -140,5 +140,10 @@ namespace Interactable
         {
             saveId = System.Guid.NewGuid().ToString();
         }
+
+        public void KeyOpenableChangeStatusProcedure()
+        {
+            ChangeStatusProcedure(true);
+        }
     }
 }
