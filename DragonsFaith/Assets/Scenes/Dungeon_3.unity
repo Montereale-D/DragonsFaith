@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &32571895 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2972866263436648557, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+  m_PrefabInstance: {fileID: 1410517572}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba988e7124b2124786980dbda6729d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100998602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1385,6 +1396,14 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2208447818
       objectReference: {fileID: 0}
+    - target: {fileID: 6899670294905722481, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: saveId
+      value: d7f7351a-1b6e-456d-acd7-e18f499210b9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6899670294905722481, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
+      propertyPath: openable
+      value: 
+      objectReference: {fileID: 32571895}
     - target: {fileID: 6933003865038067650, guid: 5b055fb886af55747a4e2f8280340501, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2155,7 +2174,7 @@ PrefabInstance:
       objectReference: {fileID: 2100126727, guid: 128e81389e7b3e049960f564e234b543, type: 3}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: abilityToCheck.score
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: onSuccess.m_PersistentCalls.m_Calls.Array.size

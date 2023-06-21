@@ -88,13 +88,16 @@ namespace UI
             reloadButton.onClick.RemoveAllListeners();
             itemsButton.onClick.RemoveAllListeners();
             skipTurnButton.onClick.RemoveAllListeners();
+
+            if (equippedItemsTab.activeSelf) equippedItemsTab.SetActive(false);
+            
             _turnUI.DestroyList();
         }
 
-        public void OnCombatEnd()
+        /*public void OnCombatEnd()
         {
             //_turnUI.isCombatEnd = true;
-        }
+        }*/
 
         private void SetItemsTab()
         {

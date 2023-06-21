@@ -327,6 +327,37 @@ namespace Inventory
             
             return output < 1 ? 1 : output;
         }
+        
+        public float GetEquipmentModifiersAbs(AttributeType type)
+        {
+            var output = 0f;
+
+            foreach (var slot in equipmentSlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if (!inventoryItem) continue;
+                
+                var armor = inventoryItem.item as Armor;
+                if (armor)
+                {
+                    output += GetArmorModifiers(armor, type);
+                }
+            }
+            
+            foreach (var slot in passiveSkillSlots)
+            {
+                var inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+                if (!inventoryItem) continue;
+                
+                var skill = inventoryItem.item as PassiveSkill;
+                if (skill)
+                {
+                    output += GetSkillModifiers(skill, type);
+                }
+            }
+            
+            return output;
+        }
 
         public static float GetArmorModifiers(Armor item, AttributeType type)
         {

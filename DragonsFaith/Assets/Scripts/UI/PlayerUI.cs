@@ -387,7 +387,7 @@ namespace UI
             SetFaithSprite(Element.Air);
             var skill = ExchangeManager.Instance.CreateSkill("Thunder Strike");
             var passive1 = ExchangeManager.Instance.CreateSkill("Dexterity increase");
-            var passive2 = ExchangeManager.Instance.CreateSkill("Agility increase");
+            var passive2 = ExchangeManager.Instance.CreateSkill("Constitution increase");
             InventoryManager.Instance.SpawnNewItem(skill, activeSkillSlot, 1);
             InventoryManager.Instance.SpawnNewItem(passive1, passiveSkillSlots[0], 1);
             InventoryManager.Instance.SpawnNewItem(passive2, passiveSkillSlots[1], 1);
@@ -487,11 +487,11 @@ namespace UI
 
         public void SetAllAttributeValues()
         {
-            SetStrengthText((int)CharacterManager.Instance.GetTotalStr());
-            SetAgilityText((int)CharacterManager.Instance.GetTotalAgi());
-            SetDexterityText((int)CharacterManager.Instance.GetTotalDex());
-            SetConstitutionText((int)CharacterManager.Instance.GetTotalConst());
-            SetIntelligenceText((int)CharacterManager.Instance.GetTotalInt());
+            SetStrengthText((int)CharacterManager.Instance.GetTotalStrAbs());
+            SetAgilityText((int)CharacterManager.Instance.GetTotalAgiAbs());
+            SetDexterityText((int)CharacterManager.Instance.GetTotalDexAbs());
+            SetConstitutionText((int)CharacterManager.Instance.GetTotalConstAbs());
+            SetIntelligenceText((int)CharacterManager.Instance.GetTotalIntAbs());
         }
 
         public void SetBackgroundVolume(float value)
@@ -559,7 +559,7 @@ namespace UI
 
         public void HideCombatUI()
         {
-            _combatUI.OnCombatEnd();
+            //_combatUI.OnCombatEnd();
             combatUI.gameObject.SetActive(false);
         }
 

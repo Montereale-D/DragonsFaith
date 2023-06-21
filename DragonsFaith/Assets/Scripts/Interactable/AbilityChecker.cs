@@ -96,7 +96,8 @@ namespace Interactable
 
         private void ShowNotAble()
         {
-            PlayerUI.instance.ShowMessage("Not enough intelligence to hack.");
+            PlayerUI.instance.ShowMessage("Not enough intelligence to hack." + System.Environment.NewLine +
+                                          "Intelligence required: " + abilityToCheck.score);
             Debug.Log("Not enough ability!");
         }
         
