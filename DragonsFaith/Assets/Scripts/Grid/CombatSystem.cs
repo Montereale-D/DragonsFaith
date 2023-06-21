@@ -755,7 +755,7 @@ namespace Grid
                 {
                     _playerUI.SetCombatPopUp(true, "Already moved this turn.");
                 }
-                else if (!_mapHandler.GetTilesInRange(activeUnit.onTile, activeUnit.movement).Contains(_selectedTile))
+                else if (!_mapHandler.GetTilesInMovementRange(activeUnit.onTile, activeUnit.movement).Contains(_selectedTile))
                 {
                     _playerUI.SetCombatPopUp(true, "Cell outside movement range.");
                 }
@@ -828,7 +828,7 @@ namespace Grid
 
         private bool CheckMovement(Tile toTile)
         {
-            if (!_mapHandler.GetTilesInRange(activeUnit.onTile, activeUnit.movement).Contains(toTile))
+            if (!_mapHandler.GetTilesInMovementRange(activeUnit.onTile, activeUnit.movement).Contains(toTile))
             {
                 //_playerUI.ShowMessage("Cell is too far away.");
                 //_playerUI.SetCombatPopUp(true, "Cell is too far away.");

@@ -236,9 +236,9 @@ namespace Grid
             Tile targetTile = target.onTile;
             Tile tileToReach;
 
-            var agilityMaxMovement = MapHandler.instance.GetTilesInRange(onTile, agility);
+            var agilityMaxMovement = MapHandler.instance.GetTilesInMovementRange(onTile, agility);
             List<Tile> reachable =
-                MapHandler.instance.GetNeighbourTiles(targetTile, agilityMaxMovement);
+                MapHandler.instance.GetWalkableNeighbourTiles(targetTile, agilityMaxMovement);
 
             reachable.RemoveAll(x => x.IsOccupied());
 
@@ -352,7 +352,7 @@ namespace Grid
                     Debug.Log(tile);
                 }
 
-                List<Tile> movementRange = MapHandler.instance.GetTilesInRange(onTile, agility);
+                List<Tile> movementRange = MapHandler.instance.GetTilesInMovementRange(onTile, agility);
                 movementRange.RemoveAll(x => x.IsOccupied());
                 
                 Debug.Log("Movement range");
@@ -383,7 +383,7 @@ namespace Grid
             else
             {
                 Debug.Log("Move towards not reachable target, then check if the other player is in weapon range");
-                var tileToReach = MoveTowardTarget(targetTile, MapHandler.instance.GetTilesInRange(onTile, agility));
+                var tileToReach = MoveTowardTarget(targetTile, MapHandler.instance.GetTilesInMovementRange(onTile, agility));
                 //CombatSystem.instance.PerformEnemyMovement(tileToReach);
                 if (!tileToReach)
                 {

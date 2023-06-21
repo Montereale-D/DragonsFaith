@@ -126,6 +126,52 @@ public class MapHandler : MonoBehaviour
         return neighbours;
     }
 
+    public List<Tile> GetWalkableNeighbourTiles(Tile current, List<Tile> toExamine)
+    {
+        var tiles = new Dictionary<Vector2Int, Tile>();
+        if (toExamine.Count > 0)
+        {
+            foreach (var tile in toExamine)
+            {
+                tiles.Add(tile.mapPosition, tile);
+            }
+        }
+        else tiles = map; // if toExamine is empty we check ALL tiles in map
+
+        var neighbours = new List<Tile>();
+
+
+        // Check the tile over the current one
+        var positionToCheck = current.mapPosition + Vector2Int.up;
+        if (tiles.ContainsKey(positionToCheck))
+        {
+            if (!tiles[positionToCheck].IsOccupied()) neighbours.Add(tiles[positionToCheck]);
+        }
+
+        // Check the tile under the current one
+        positionToCheck = current.mapPosition + Vector2Int.down;
+        if (tiles.ContainsKey(positionToCheck))
+        {
+            if (!tiles[positionToCheck].IsOccupied()) neighbours.Add(tiles[positionToCheck]);
+        }
+
+        // Check the tile at the left of the current one
+        positionToCheck = current.mapPosition + Vector2Int.left;
+        if (tiles.ContainsKey(positionToCheck))
+        {
+            if (!tiles[positionToCheck].IsOccupied()) neighbours.Add(tiles[positionToCheck]);
+        }
+
+        // Check the tile at the right of the current one
+        positionToCheck = current.mapPosition + Vector2Int.right;
+        if (tiles.ContainsKey(positionToCheck))
+        {
+            if (!tiles[positionToCheck].IsOccupied()) neighbours.Add(tiles[positionToCheck]);
+        }
+
+        return neighbours;
+    }
+
     //return a list of all tiles in range from a starting tile
     public List<Tile> GetTilesInRange(Tile start, int range)
     {
@@ -151,6 +197,31 @@ public class MapHandler : MonoBehaviour
         return inRange.Distinct().ToList();
     }
 
+    //return a list of all tiles in range from a starting tile
+    public List<Tile> GetTilesInMovementRange(Tile start, int range)
+    {
+        var inRange = new List<Tile>();
+        var previousStep = new List<Tile>();
+        var step = 0;
+        inRange.Add(start);
+        previousStep.Add(start);
+
+        while (step < range)
+        {
+            var neighbourhood = new List<Tile>();
+            foreach (var tile in previousStep)
+            {
+                neighbourhood.AddRange(GetWalkableNeighbourTiles(tile, new List<Tile>()));
+            }
+
+            inRange.AddRange(neighbourhood);
+            previousStep = inRange.Distinct().ToList();
+            step++;
+        }
+
+        return inRange.Distinct().ToList();
+    }
+
     public void HideAllTiles()
     {
         foreach (var tile in map.Values)
@@ -162,7 +233,7 @@ public class MapHandler : MonoBehaviour
     //shows all tiles player can move to
     public void ShowNavigableTiles(Tile characterTile, int movement)
     {
-        var tiles = GetTilesInRange(characterTile, movement);
+        var tiles = GetTilesInMovementRange(characterTile, movement);
         foreach (var tile in tiles)
         {
             if(tile.navigable)
