@@ -156,10 +156,12 @@ namespace Inventory
                     if (CharacterManager.Instance.mode == CharacterManager.Mode.Free)
                     {
                         isUsed = OnConsumableUse(item, CharacterManager.Mode.Free);
+                        Debug.Log("OnSlotUse + free: " + isUsed);
                     }
                     else if(CombatSystem.instance != null && CombatSystem.instance.CanUseItem())
                     {
                         isUsed = CombatSystem.instance.UseItem(item.item);
+                        Debug.Log("OnSlotUse + grid: " + isUsed);
                     }
 
                     return isUsed;
@@ -195,6 +197,7 @@ namespace Inventory
                 case Consumable.ConsumableType.Revival:
                     if (CharacterManager.Instance.mode == CharacterManager.Mode.Grid)
                     {
+                        Debug.Log("OnConsumableUse use revive");
                         CharacterManager.Instance.GiveRevive();
                         return true;
                     }

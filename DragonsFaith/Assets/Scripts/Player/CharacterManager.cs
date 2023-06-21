@@ -53,6 +53,7 @@ namespace Player
 
         public void GiveRevive()
         {
+            Debug.Log("Give revive");
             CombatSystem.instance.PlayerReviveAction();
             CombatSystem.instance.NotifyRevive();
         }
