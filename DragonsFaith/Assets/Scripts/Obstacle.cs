@@ -45,7 +45,12 @@ public class Obstacle : MonoBehaviour
         animator.SetTrigger(Explode);
         AudioManager.instance.PlayBarrelExplosionSound();
         yield return new WaitForSeconds(1f);
-        Destroy(gameObject);
+
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Destroy(gameObject);
+        }
+        
     }
 
     public void DestroyObj()

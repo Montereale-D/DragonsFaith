@@ -229,6 +229,20 @@ namespace Player
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
             InventoryManager.Instance.UnlockEquipmentSlots();
+            
+            if (_characterInfo.GetHealth() <= 0)
+            {
+                ReceiveRevive();
+            }
+
+            foreach (var player in FindObjectsOfType<PlayerGridMovement>())
+            {
+                if (player.GetTeam() == PlayerGridMovement.Team.Players && player.GetComponent<NetworkObject>() != localPlayer)
+                {
+                    player.GetComponent<CharacterInfo>().Revive();
+                }
+            }
+            
             mode = Mode.Free;
         }
         
