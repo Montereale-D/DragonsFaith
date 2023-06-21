@@ -126,6 +126,12 @@ public class PlayerGridMovement : MonoBehaviour
         Debug.Log("Request movement to tile " + tile.mapPosition);
         MapHandler.instance.HideAllTiles();
         List<Tile> toExamine = MapHandler.instance.GetTilesInRange(onTile, movement);
+        
+        foreach (Tile t in toExamine)
+        {
+            if (!t.navigable) toExamine.Remove(t);
+        }
+        
         Debug.Log("Path from " + onTile.mapPosition + " to " + tile.mapPosition);
         List<Tile> path = FindPath(onTile, tile, toExamine);
         StartCoroutine(MoveAlongPath(path));
