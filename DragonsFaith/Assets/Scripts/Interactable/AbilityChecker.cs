@@ -1,4 +1,5 @@
 using Player;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -95,6 +96,7 @@ namespace Interactable
 
         private void ShowNotAble()
         {
+            PlayerUI.instance.ShowMessage("Not enough intelligence to hack.");
             Debug.Log("Not enough ability!");
         }
         

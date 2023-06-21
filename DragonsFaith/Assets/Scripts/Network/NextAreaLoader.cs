@@ -71,7 +71,11 @@ namespace Network
         private void OnTriggerEnter2D(Collider2D col)
         {
             Debug.Log("TriggerEnter");
-            if (isBlocked) return;
+            if (isBlocked)
+            {
+                PlayerUI.instance.ShowMessage("Locked.");
+                return;
+            }
 
             if (activateOnFirstTrigger)
             {

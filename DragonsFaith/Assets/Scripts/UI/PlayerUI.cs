@@ -357,11 +357,11 @@ namespace UI
             InventoryManager.Instance.AddWeaponContextMenu();
             
             //unlocked equip
-            InventoryManager.Instance.AddArmorContextMenu();
+            InventoryManager.Instance.AddHelmetContextMenu();
             InventoryManager.Instance.AddRevivalContextMenu();
             InventoryManager.Instance.AddSniperContextMenu();
             InventoryManager.Instance.AddShotgunContextMenu();
-            InventoryManager.Instance.AddBootsContextMenu();
+            InventoryManager.Instance.AddPantsContextMenu();
             InventoryManager.Instance.AddChestArmorContextMenu();
             InventoryManager.Instance.AddKnifeContextMenu();
         }

@@ -1481,6 +1481,10 @@ PrefabInstance:
       value: 6e4a6a60-a72c-403e-841c-351159ecd6ff
       objectReference: {fileID: 0}
     - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
+      propertyPath: abilityToCheck.score
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6658175673000552568, guid: 584a57dbec1a71942b40a5b76f05d60f, type: 3}
       propertyPath: onSuccess.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}

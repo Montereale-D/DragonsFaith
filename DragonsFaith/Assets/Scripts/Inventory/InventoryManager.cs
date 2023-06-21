@@ -471,13 +471,6 @@ namespace Inventory
             {
             }
         }
-
-        [ContextMenu("Add Armor")]
-        public void AddArmorContextMenu()
-        {
-            var armor = ExchangeManager.Instance.CreateItem("777225e7-ea15-4ea2-bb10-40a5d2dbac4a");
-            Debug.Log("AddItem request " + AddItem(armor));
-        }
         
         [ContextMenu("Add Weapon")]
         public void AddWeaponContextMenu()
@@ -511,7 +504,7 @@ namespace Inventory
             Debug.Log("AddItem request " + AddItem(armor));
         }
         [ContextMenu("Add boots")]
-        public void AddBootsContextMenu()
+        public void AddPantsContextMenu()
         {
             var armor = ExchangeManager.Instance.CreateItem("777225e7-ea15-4ea2-bb10-40a5d2dbac4a");
             Debug.Log("AddItem request " + AddItem(armor));
