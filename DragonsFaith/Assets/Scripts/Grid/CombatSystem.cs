@@ -867,12 +867,6 @@ namespace Grid
             // Set entire Tilemap to Invisible
             _mapHandler.HideAllTiles();
 
-            // Remove Unit from tile
-            activeUnit.onTile.ClearTile();
-
-            // Set Unit on target Grid Object
-            toTile.SetCharacterOnTile(activeUnit);
-
             if (animatePath)
             {
                 activeUnit.MoveToTile(toTile);
@@ -882,6 +876,12 @@ namespace Grid
                 activeUnit.SetTile(toTile);
                 _moveInProgress = false;
             }
+
+            // Remove Unit from tile
+            activeUnit.onTile.ClearTile();
+
+            // Set Unit on target Grid Object
+            toTile.SetCharacterOnTile(activeUnit);
         }
 
         [ServerRpc(RequireOwnership = false)]
