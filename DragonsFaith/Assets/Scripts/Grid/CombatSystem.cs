@@ -64,7 +64,7 @@ namespace Grid
             _playerUI = PlayerUI.instance;
             _mapHandler = MapHandler.instance;
             _localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject;
-            
+
             AudioManager.instance.PlaySoundTrackCombat();
 
             /*_turnDelay = 2.1f;
@@ -114,7 +114,7 @@ namespace Grid
             _playerUI.ToggleCombatUI(characterList);
             _turnUI = _playerUI.GetCombatUI().GetTurnUI();
             _isUIReady = true;
-            
+
             TransitionBackground.instance.FadeIn();
         }
 
@@ -384,6 +384,7 @@ namespace Grid
         #endregion
 
         #region Items
+
         public bool CanUseItem()
         {
             if (!_canAttackThisTurn)
@@ -413,6 +414,8 @@ namespace Grid
                 return false;
             }
 
+            CharacterManager.Instance.GiveRevive();
+
             NotifyItemUseClientRpc(activeUnit.charName, item.itemName);
             _canAttackThisTurn = false;
             return true;
@@ -425,7 +428,7 @@ namespace Grid
         }
 
         #endregion
-        
+
         public void CharacterDied(PlayerGridMovement character)
         {
             _turnUI.OnDeath(character);
@@ -589,8 +592,8 @@ namespace Grid
 
         private void ReceiveRevive()
         {
+            Debug.Log("ReceiveRevive");
             CharacterManager.Instance.ReceiveRevive();
-            //_localPlayer.GetComponent<PlayerGridMovement>().OnRevive();
             _turnUI.OnRevive(_localPlayer.GetComponent<PlayerGridMovement>());
         }
 
@@ -618,6 +621,7 @@ namespace Grid
         private void NotifyReviveClientRpc()
         {
             if (IsHost) return;
+            Debug.Log("NotifyReviveClientRpc");
 
             ReceiveRevive();
         }
@@ -926,6 +930,7 @@ namespace Grid
             {
                 t.ShowTile();
             }
+
             if (!_selectedTile) return;
             //I chose 4 as fixed value because it produces a nice AOE without being able to reach targets too far in a straight line; 3 should be tested too
 
@@ -934,11 +939,11 @@ namespace Grid
                 //Exhale a fiery breath in a cone area that deals fire damage and has a chance of setting enemies on fire.
                 case PlayerUI.Element.Fire:
                 {
-                   
                     _skillAoE = ConeAttack(_skillRange);
-                    foreach (Tile t in _skillAoE){
-                            t.SkillTile();
-                            }
+                    foreach (Tile t in _skillAoE)
+                    {
+                        t.SkillTile();
+                    }
 
                     var character = _selectedTile.GetCharacter();
                     if (!_canAttackThisTurn)
@@ -977,13 +982,13 @@ namespace Grid
                 //Launch an air wave in a cone area that deals damage and pushes away enemies. Has a chance to make enemies fall to the ground
                 case PlayerUI.Element.Air:
                 {
-                        _skillAoE = ConeAttack(_skillRange);
-                        foreach (Tile t in _skillAoE)
-                        {
-                            t.SkillTile();
-                        }
+                    _skillAoE = ConeAttack(_skillRange);
+                    foreach (Tile t in _skillAoE)
+                    {
+                        t.SkillTile();
+                    }
 
-                        var character = _selectedTile.GetCharacter();
+                    var character = _selectedTile.GetCharacter();
                     if (!_canAttackThisTurn)
                     {
                         _playerUI.SetCombatPopUp(true, "Already performed action.");
@@ -1292,11 +1297,11 @@ namespace Grid
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
-        
+
         private void NotifyExplosionToPlayer(PlayerGridMovement target, int damage, bool isProtected)
         {
             var targetIndex = characterList.IndexOf(target);
-            
+
             if (IsHost)
             {
                 NotifyExplosionToPlayerClientRpc(targetIndex, damage, isProtected);
@@ -1319,11 +1324,11 @@ namespace Grid
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
-        [ServerRpc (RequireOwnership = false)]
+        [ServerRpc(RequireOwnership = false)]
         private void NotifyExplosionToPlayerServerRpc(int targetIndex, int damage, bool isProtected)
         {
-            if(!IsHost) return;
-            
+            if (!IsHost) return;
+
             var target = characterList[targetIndex];
             if (target.gameObject == _localPlayer)
             {
@@ -1341,8 +1346,8 @@ namespace Grid
         [ClientRpc]
         private void NotifyExplosionToPlayerClientRpc(int targetIndex, int damage, bool isProtected)
         {
-            if(IsHost) return;
-            
+            if (IsHost) return;
+
             var target = characterList[targetIndex];
             if (target.gameObject == _localPlayer)
             {
@@ -1381,6 +1386,7 @@ namespace Grid
                 NotifyAttackFromClientToEnemyServerRpc(targetIndex, damage, isProtected, weaponName, skillElement);
             }
         }
+
         public void NotifyExplosionToEnemy(PlayerGridMovement target, int damage, bool isProtected)
         {
             var targetIndex = characterList.IndexOf(target);
@@ -1393,30 +1399,48 @@ namespace Grid
             {
                 NotifyExplosionToEnemyServerRpc(targetIndex, damage, isProtected);
             }
-            
+
             target.GetComponent<EnemyGridBehaviour>().Damage(damage);
             target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
             target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
         }
 
-        [ServerRpc (RequireOwnership = false)]
+        [ServerRpc(RequireOwnership = false)]
         private void NotifyExplosionToEnemyServerRpc(int targetIndex, int damage, bool isProtected)
         {
-            var target = characterList[targetIndex];
+            if (!IsHost) return;
 
-            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
-            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
-            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+            try
+            {
+                var target = characterList[targetIndex];
+
+                target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+                target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+                target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("NotifyExplosionToEnemyServerRpc index " + e);
+            }
         }
 
         [ClientRpc]
         private void NotifyExplosionToEnemyClientRpc(int targetIndex, int damage, bool isProtected)
         {
-            var target = characterList[targetIndex];
+            if (IsHost) return;
 
-            target.GetComponent<EnemyGridBehaviour>().Damage(damage);
-            target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
-            target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+            try
+            {
+                var target = characterList[targetIndex];
+
+                target.GetComponent<EnemyGridBehaviour>().Damage(damage);
+                target.GetComponent<CharacterGridPopUpUI>().ShowDamageCounter(damage, false, isProtected);
+                target.GetComponent<CharacterGridPopUpUI>().ShowBlood();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("NotifyExplosionToEnemyClientRpc index " + e);
+            }
         }
 
         [ServerRpc(RequireOwnership = false)]
@@ -1543,7 +1567,7 @@ namespace Grid
             }
 
             obstacle.onTile.ClearTile();
-            
+
             if (!obstacle.explosive) obstacle.DestroyObj();
             else
             {
@@ -1558,7 +1582,7 @@ namespace Grid
         {
             var damageArea = MapHandler.instance.GetTilesInRange(onTile, explosionRange);
             damageArea.Remove(onTile);
-            
+
             foreach (var tile in damageArea)
             {
                 var obstacle = tile.GetObstacle();
@@ -1569,7 +1593,7 @@ namespace Grid
                 else
                 {
                     var character = tile.GetCharacter();
-                    if(!character) continue;
+                    if (!character) continue;
 
                     if (character.GetTeam() == PlayerGridMovement.Team.Players)
                     {

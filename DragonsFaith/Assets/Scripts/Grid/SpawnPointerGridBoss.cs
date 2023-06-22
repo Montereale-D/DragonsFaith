@@ -17,7 +17,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
 
     public Vector2Int spawnPointBoss;
     public List<Vector2Int> spawnPointEnemies;
-    public List<Vector2Int> spawnPointObstacles;
+    private List<Vector2Int> spawnPointObstacles;
     private List<PlayerMovement> _players;
 
     public GameObject bossPrefab;
@@ -36,7 +36,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
         instance = this;
 
         //spawnPointEnemies = new List<Vector2Int>();
-        //spawnPointObstacles = new List<Vector2Int>();
+        spawnPointObstacles = new List<Vector2Int>();
     }
     
     public override void OnDestroy()
@@ -114,6 +114,10 @@ public class SpawnPointerGridBoss : NetworkBehaviour
 
     private void SpawnObstacle()
     {
+        var topLeft = new Vector2Int(-10, 3);
+        var bottomRight = new Vector2Int(7, -4);
+        spawnPointObstacles = GenerateSpawnPoints(15, topLeft, bottomRight);
+        
         foreach (var spawnPoint in spawnPointObstacles)
         {
             var position = new Vector3(spawnPoint.x, spawnPoint.y, -1);
@@ -125,23 +129,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
             SetUpObstacleClientRpc(networkObject.NetworkObjectId, position);
         }
     }
-
-    /*private void SpawnEnemy(Vector2Int topLeft, Vector2Int bottomRight, int enemyCount)
-    {
-        spawnPointEnemies = GenerateSpawnPoints(enemyCount, topLeft, bottomRight);
-        
-        for (var i = 0; i < enemyCount; i++)
-        {
-            var spawnPoint = spawnPointEnemies[i];
-            var position = new Vector3(spawnPoint.x, spawnPoint.y, 0);
-            var randomPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-            var go = Instantiate(randomPrefab, position, Quaternion.identity);
-            var networkObject = go.GetComponent<NetworkObject>();
-            
-            networkObject.Spawn(true);
-            SetUpEnemyClientRpc(networkObject.NetworkObjectId, position);
-        }
-    }*/
+    
     private void SpawnBoss()
     {
         var position = new Vector3(spawnPointBoss.x, spawnPointBoss.y, 0);
@@ -198,7 +186,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
         objToSet.transform.position = position;
     }
 
-    /*private List<Vector2Int> GenerateSpawnPoints(int n, Vector2Int topLeft, Vector2Int bottomRight)
+    private List<Vector2Int> GenerateSpawnPoints(int n, Vector2Int topLeft, Vector2Int bottomRight)
     {
         var tmpList = new List<Vector2Int>();
         var maxX = bottomRight.x;
@@ -213,7 +201,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
             var y = Random.Range(minY, maxY + 1);
             var point = new Vector2Int(x, y);
             
-            if (IsAvailable(point))
+            if (!tmpList.Contains(point) && IsAvailable(point))
             {
                 tmpList.Add(point);
                 i++;
@@ -221,11 +209,16 @@ public class SpawnPointerGridBoss : NetworkBehaviour
         }
 
         return tmpList;
-    }*/
+    }
 
-    /*private bool IsAvailable(Vector2Int position)
+    private bool IsAvailable(Vector2Int position)
     {
         if (position == spawnPointPlayer1 || position == spawnPointPlayer2)
+        {
+            return false;
+        }
+
+        if (position == spawnPointBoss)
         {
             return false;
         }
@@ -247,7 +240,7 @@ public class SpawnPointerGridBoss : NetworkBehaviour
         }
 
         return true;
-    }*/
+    }
 
     public Vector2Int GetPlayerSpawnPoint(GameData.PlayerType playerType)
     {

@@ -53,6 +53,7 @@ namespace Player
 
         public void GiveRevive()
         {
+            Debug.Log("Give revive");
             CombatSystem.instance.PlayerReviveAction();
             CombatSystem.instance.NotifyRevive();
         }
@@ -91,11 +92,11 @@ namespace Player
         {
             var playerScore = abilityAttribute.attribute switch
             {
-                AttributeType.Strength => GetTotalStr(),
-                AttributeType.Intelligence => GetTotalInt(),
-                AttributeType.Agility => GetTotalAgi(),
-                AttributeType.Constitution => GetTotalConst(),
-                AttributeType.Dexterity => GetTotalDex(),
+                AttributeType.Strength => GetTotalStrAbs(),
+                AttributeType.Intelligence => GetTotalIntAbs(),
+                AttributeType.Agility => GetTotalAgiAbs(),
+                AttributeType.Constitution => GetTotalConstAbs(),
+                AttributeType.Dexterity => GetTotalDexAbs(),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -109,6 +110,14 @@ namespace Player
             Debug.Log("Strength " + score + " x " + modifiers);
             return score * modifiers;
         }
+        
+        public float GetTotalStrAbs()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Strength);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiersAbs(AttributeType.Strength);
+            Debug.Log("Strength " + score + " + " + modifiers);
+            return score + modifiers;
+        }
 
         public float GetTotalDex()
         {
@@ -116,6 +125,14 @@ namespace Player
             var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Dexterity);
             Debug.Log("Dexterity " + score + " x " + modifiers);
             return score * modifiers;
+        }
+        
+        public float GetTotalDexAbs()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Dexterity);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiersAbs(AttributeType.Dexterity);
+            Debug.Log("Dexterity " + score + " + " + modifiers);
+            return score + modifiers;
         }
 
         public float GetTotalInt()
@@ -125,6 +142,14 @@ namespace Player
             Debug.Log("Intelligence " + score + " x " + modifiers);
             return score * modifiers;
         }
+        
+        public float GetTotalIntAbs()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Intelligence);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiersAbs(AttributeType.Intelligence);
+            Debug.Log("Intelligence " + score + " + " + modifiers);
+            return score + modifiers;
+        }
 
         public float GetTotalConst()
         {
@@ -133,6 +158,14 @@ namespace Player
             Debug.Log("Constitution " + score + " x " + modifiers);
             return score * modifiers;
         }
+        
+        public float GetTotalConstAbs()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Constitution);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiersAbs(AttributeType.Constitution);
+            Debug.Log("Constitution " + score + " + " + modifiers);
+            return score + modifiers;
+        }
 
         public float GetTotalAgi()
         {
@@ -140,6 +173,14 @@ namespace Player
             var modifiers = InventoryManager.Instance.GetEquipmentModifiers(AttributeType.Agility);
             Debug.Log("Agility " + score + " x " + modifiers);
             return score * modifiers;
+        }
+        
+        public float GetTotalAgiAbs()
+        {
+            var score = (int)characterSo.GetAttributeScore(AttributeType.Agility);
+            var modifiers = InventoryManager.Instance.GetEquipmentModifiersAbs(AttributeType.Agility);
+            Debug.Log("Agility " + score + " + " + modifiers);
+            return score + modifiers;
         }
 
 
@@ -189,6 +230,20 @@ namespace Player
             localPlayer.GetComponent<BoxCollider2D>().enabled = true;
             localPlayer.GetComponent<PlayerGridMovement>().enabled = false;
             InventoryManager.Instance.UnlockEquipmentSlots();
+            
+            if (_characterInfo.GetHealth() <= 0)
+            {
+                ReceiveRevive();
+            }
+
+            foreach (var player in FindObjectsOfType<PlayerGridMovement>())
+            {
+                if (player.GetTeam() == PlayerGridMovement.Team.Players && player.GetComponent<NetworkObject>() != localPlayer)
+                {
+                    player.GetComponent<CharacterInfo>().Revive();
+                }
+            }
+            
             mode = Mode.Free;
         }
         

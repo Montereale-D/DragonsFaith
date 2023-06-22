@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Inventory.Items;
 using UI;
 using UnityEngine;
@@ -48,6 +49,14 @@ namespace Inventory
                 inventoryItem.UpdateParent(transform);
                 onSlotUpdate.Invoke(inventoryItem);
             }
+
+            StartCoroutine(UpdatePlayerUI());
+        }
+
+        private IEnumerator UpdatePlayerUI()
+        {
+            yield return new WaitForSeconds(0.1f);
+            PlayerUI.instance.SetAllAttributeValues();
         }
 
         public void OnSelect()

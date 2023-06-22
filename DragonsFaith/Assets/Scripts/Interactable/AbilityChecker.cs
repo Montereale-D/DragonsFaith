@@ -1,4 +1,5 @@
 using Player;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -89,10 +90,14 @@ namespace Interactable
             if(!IsHost) return;
             
             DungeonProgressManager.instance.AbilityPassed(saveId, gameObject);
+            _isUsed.Value = true;
+            onSuccess?.Invoke();
         }
 
         private void ShowNotAble()
         {
+            PlayerUI.instance.ShowMessage("Not enough intelligence to hack." + System.Environment.NewLine +
+                                          "Intelligence required: " + abilityToCheck.score);
             Debug.Log("Not enough ability!");
         }
         
