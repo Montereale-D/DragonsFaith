@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b220ce3c642fbd64e8e7df3ecd0ce0f3, type: 3}
+  m_Name: Sound Bank
+  m_EditorClassIdentifier: 
+  PlayerWalk: {fileID: 8300000, guid: 220a86ba6f567a4449473d8940ede16f, type: 3}
+  PlayerDash: {fileID: 8300000, guid: da592564e56ffbb4c8e91cf3bd04cecf, type: 3}
+  PlayerHurt: {fileID: 8300000, guid: 5d495ebd673c2da4ba69c98f6c628597, type: 3}
+  PlayerDie: {fileID: 8300000, guid: 5d8e3fd97a3b294479455871f58d2bf1, type: 3}
+  PlayerReward: {fileID: 8300000, guid: acd087391fab3e543b2c6c48ffecb0e2, type: 3}
+  knifeAttack: {fileID: 8300000, guid: c0af5e5912bdce54493e40f1ada49e45, type: 3}
+  pistolAttack: {fileID: 8300000, guid: c3d5a493c27fa2a4daca8989f06bf590, type: 3}
+  pistolReload: {fileID: 8300000, guid: ccbf3dbd083495c43bbd2c5996079d7b, type: 3}
+  assaultRifleAttack: {fileID: 8300000, guid: 0213b112262c89d47a7f9f8083ae309d, type: 3}
+  assaultRifleReload: {fileID: 8300000, guid: 7af348c54b4df24438e7e6eb8a0f5c71, type: 3}
+  shotgunAttack: {fileID: 8300000, guid: 2cb6c8fd4459ffb4fb0a83bfc1c97490, type: 3}
+  shotgunReload: {fileID: 8300000, guid: 2d4af8a2d8885cb49a6aab3505ec74e6, type: 3}
+  sniperRifleAttack: {fileID: 8300000, guid: 15177868b2cd1444f85da809b38e0f90, type: 3}
+  sniperRifleReload: {fileID: 8300000, guid: 10f3ac251cac12741b6b9efcd6b0dd8a, type: 3}
+  ClickUIButton: {fileID: 8300000, guid: cc687edfedc90ad4e95913e51f24f07b, type: 3}
+  OverUIButton: {fileID: 8300000, guid: 5712c13a0d9599d4d9264c7cbe0fad47, type: 3}
+  SoundTrackMenu: {fileID: 8300000, guid: 3111c6aca0bde764ea75b74eb6cbf060, type: 3}
+  SoundTrackExplore: {fileID: 8300000, guid: e4bfe81cd18bb4149a918735bfa66e03, type: 3}
+  SoundTrackCombat: {fileID: 8300000, guid: 50df86e95eb96b34c8e5b4939c9a49fa, type: 3}
+  fireBreath: {fileID: 8300000, guid: 1951d7f71d0eb284383d33d093c2c100, type: 3}
+  obstacleDestruction: {fileID: 8300000, guid: 19c980d3d1ba71d4894d8d32dc6dfef6, type: 3}
+  barrelExplosion: {fileID: 8300000, guid: 99fc7087cb35e344d8853c70ee222b74, type: 3}
+  openingChest: {fileID: 8300000, guid: 3f093c1432d9c4240ae771ac3585c502, type: 3}
+  openingGate: {fileID: 8300000, guid: b0b5856184bd1d74aae1493f8ccd6825, type: 3}
+  openingHiddenArea: {fileID: 8300000, guid: 49184e769999a014c89afe8ced3446fa, type: 3}
+  usingItem: {fileID: 8300000, guid: d8dcd5abda88643499fcae85ecc6742f, type: 3}
+  spotted: {fileID: 8300000, guid: 45fe433f8112a1a4992f775c8f941779, type: 3}

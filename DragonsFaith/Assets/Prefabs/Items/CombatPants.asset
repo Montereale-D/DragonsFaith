@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0afc6ed53f4400af3a7ab473842c7f, type: 3}
+  m_Name: CombatPants
+  m_EditorClassIdentifier: 
+  itemName: CombatPants
+  description: Increases constitution and agility by 1.
+  id: 777225e7-ea15-4ea2-bb10-40a5d2dbac4a
+  tile: {fileID: 0}
+  image: {fileID: -2018716907, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}
+  Str: 0
+  Dex: 0
+  Int: 0
+  Const: 1
+  Agi: 1

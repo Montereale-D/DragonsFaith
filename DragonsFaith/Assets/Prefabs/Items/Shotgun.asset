@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  itemName: Shotgun
+  description: 'Range = 3 cells
+
+    Damage = 10 hp
+
+    Ammo = 2'
+  id: f8a775c3-dd5d-48b0-bd95-a3015d386a5f
+  tile: {fileID: 0}
+  image: {fileID: 334628651, guid: e0082552569e407449e5dee4b1552d29, type: 3}
+  weaponType: 1
+  range: 3
+  damage: 10
+  capacity: 2
+  weaponObject: {fileID: 7563764566049780249, guid: c2e1f546bb04099448b6d96832f74833, type: 3}

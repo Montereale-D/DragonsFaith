@@ -3,20 +3,25 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PlayerSpawnPoint
+  - Enemy
+  - KeyBind
+  - playerInput
+  - PlayerUI
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - PlayerInteractable
+  - Walls
+  - Obstacles
+  - Enemy
+  - Tiles
+  - KeyPress
   - 
   - 
   - 

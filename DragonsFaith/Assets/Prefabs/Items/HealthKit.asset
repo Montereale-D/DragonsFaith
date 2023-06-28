@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9db5253304db4267902c1690a5c44d79, type: 3}
+  m_Name: HealthKit
+  m_EditorClassIdentifier: 
+  itemName: Health Kit
+  description: Restores 20 health points.
+  id: 190cd2eb-04ba-42df-af91-dbb48316af90
+  tile: {fileID: 0}
+  image: {fileID: -561074673, guid: ffab30892e659fc4d91f26abe119f86a, type: 3}
+  consumableType: 0

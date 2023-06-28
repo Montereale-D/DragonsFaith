@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1699218a63ca48c7a5d1a935a473de46, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  itemName: Pistol
+  description: 'Range = 4 cells
+
+    Damage = 5 hp
+
+    Max ammo = 5'
+  id: 3785c742-f8ff-4016-a374-81d62dc75746
+  tile: {fileID: 0}
+  image: {fileID: -10514552, guid: e0082552569e407449e5dee4b1552d29, type: 3}
+  weaponType: 1
+  range: 4
+  damage: 5
+  capacity: 5
+  weaponObject: {fileID: 7563764566049780249, guid: ac47259529df24745a0af4aa771dcc9a, type: 3}
